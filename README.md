@@ -6,7 +6,7 @@
 
 모든 문장은 4축 좌표 위의 한 점이다:
 `series(be|verb) × subject(I|she|he|it|we|they) × tense(present|past|will|goingto) × form(aff|neg|q)` = 144문장.
-문장은 빌드 시 전량 사전 생성되어 `src/data.js`에 들어 있다 (백엔드·로그인 없음, 기록은 localStorage).
+문장은 빌드 시 전량 사전 생성되어 `src/data.js`에 들어 있다 (백엔드·로그인·저장 일체 없음).
 
 ## 로컬 실행
 
@@ -30,7 +30,8 @@ npm test        # 데이터 스냅샷 테스트 (node --test)
 
 - **자동 산책** — 앱이 무작위 지시를 생성. 세트(be/일반동사/혼합), 시제 범위, 걸음 폭(1~3축), 축 가중치, 세션 길이(10/15/20걸음)를 홈 화면에서 설정.
 - **지정 경로** — URL 파라미터로 교사가 경로를 사전 지정 (아래 참고).
-- **랠리** — 수업용 수동 모드. 교사가 하단 칩을 탭해 지시를 주고, 학생은 발화 후 화면을 탭해 확인. 지나온 걸음이 `she→과거→not` 형태로 누적 표시된다.
+
+세션의 마지막 걸음을 마치면 홈 화면으로 돌아간다.
 
 ## 지정 경로 URL 파라미터
 
@@ -64,8 +65,7 @@ She is lovely. → They are here. → Are they here? → Were they here? → The
 scripts/generate-data.mjs   어휘표 → 144문장 생성 (src/data.js 를 씀)
 src/data.js                 생성된 문장 데이터 (직접 수정 금지)
 src/engine.js               좌표 이동·무작위 걸음·경로 파싱 로직
-src/app.jsx                 화면 컴포넌트 (홈/드릴/랠리/요약/기록)
-src/storage.js              localStorage 세션 기록
+src/app.jsx                 화면 컴포넌트 (홈/드릴)
 build.mjs                   esbuild 빌드/개발 서버
 test/data.test.mjs          명세 3.3 스냅샷 + 전수 검증 테스트
 dist/                       빌드 결과물 (Cloudflare Pages 업로드 대상)

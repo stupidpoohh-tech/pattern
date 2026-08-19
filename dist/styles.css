@@ -82,19 +82,6 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 .token-form { background: var(--form-bg); color: var(--form-ink); }
 .token-series { background: var(--series-bg); color: var(--series-ink); }
 
-.judge { display: flex; gap: 0.75rem; }
-.judge-btn {
-  padding: 0.5rem 1.4rem;
-  border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 600;
-  border: 1.5px solid var(--line);
-  background: #fff;
-}
-.judge-ok { color: #1d7a4f; border-color: #bfe0cf; }
-.judge-no { color: #b03a2e; border-color: #ecc8c3; }
-.judge-btn:active { transform: scale(0.96); }
-
 .stage-hint {
   padding: 1rem;
   text-align: center;
@@ -102,38 +89,7 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
   color: var(--muted);
 }
 
-/* ---------- 랠리 교사 패널 ---------- */
-
-.rally-panel {
-  border-top: 1px solid var(--line);
-  padding: 0.6rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  background: #fff;
-}
-
-.path-trail {
-  font-size: 0.85rem;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow-x: auto;
-  padding-bottom: 0.2rem;
-}
-
-.chip-row { display: flex; align-items: center; gap: 0.5rem; }
-.chip-row-label { font-size: 0.75rem; color: var(--muted); width: 2.2rem; flex-shrink: 0; }
-.chip-row-chips { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-.chip {
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-.chip:disabled { opacity: 0.3; cursor: default; }
-.chip-active { outline: 2px solid var(--ink); }
-
-/* ---------- 일반 페이지 (홈·요약·기록) ---------- */
+/* ---------- 일반 페이지 (홈·요약) ---------- */
 
 .page {
   max-width: 34rem;
@@ -147,7 +103,6 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 .app-title { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
 .app-sub { color: var(--muted); margin-top: -0.9rem; }
 .page-title { font-size: 1.6rem; font-weight: 800; }
-.summary-sub { color: var(--muted); margin-top: -0.9rem; font-size: 0.9rem; }
 
 .card {
   border: 1px solid var(--line);
@@ -196,62 +151,6 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
   font-size: 0.9rem;
   background: #fff;
 }
-.ghost-btn.wide { width: 100%; padding: 0.8rem; }
-
-.row-gap { display: flex; gap: 0.6rem; align-items: center; }
-
-/* 요약 */
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-.stat {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: #fff;
-  padding: 0.8rem 0.4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-}
-.stat-num { font-size: 1.15rem; font-weight: 800; }
-.stat-label { font-size: 0.75rem; color: var(--muted); }
-
-.summary-section { display: flex; flex-direction: column; gap: 0.5rem; }
-.summary-section h2 { font-size: 1rem; }
-.summary-section ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-
-.record-line {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #fff;
-  padding: 0.55rem 0.7rem;
-  font-size: 0.9rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem;
-}
-.record-from { color: var(--muted); }
-.record-arrow { color: var(--line); }
-.record-tokens { font-weight: 700; color: var(--accent); }
-.record-to { font-weight: 600; }
-.record-time { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
-
-/* 기록 */
-.history-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-.history-item {
-  width: 100%;
-  text-align: left;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: #fff;
-  padding: 0.75rem 0.9rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-.history-date { font-weight: 700; font-size: 0.95rem; }
-.history-meta { font-size: 0.85rem; color: var(--muted); }
-
 .empty-note { color: var(--muted); }
 .error-note {
   border: 1px solid #ecc8c3;
