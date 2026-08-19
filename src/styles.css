@@ -76,10 +76,26 @@ code {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.6rem;
 }
 .header-spacer { width: 3.5rem; }
 .progress { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* 세션 진행 바 — 남은 양을 한눈에 */
+.progress-bar {
+  height: 3px;
+  margin: 0 1rem;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.progress-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
 
 .stage-center {
   flex: 1;
@@ -174,7 +190,7 @@ code {
 .gram-dot-neg { background: var(--gram-neg); }
 
 .stage-hint {
-  padding: 1rem;
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
   text-align: center;
   font-size: 0.82rem;
   color: var(--muted);
@@ -199,7 +215,7 @@ code {
 .page {
   max-width: 34rem;
   margin: 0 auto;
-  padding: 2.2rem 1.25rem 2.5rem;
+  padding: max(1.6rem, env(safe-area-inset-top)) 1.1rem calc(2.2rem + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -243,6 +259,12 @@ code {
 }
 .primary-btn:hover { opacity: 0.9; }
 .primary-btn:active { transform: scale(0.99); }
+.primary-btn:disabled {
+  background: var(--surface-soft);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+.primary-btn:disabled:active { transform: none; }
 
 .ghost-btn {
   padding: 0.5rem 0.9rem;
@@ -271,9 +293,14 @@ code {
 
 .matrix {
   display: grid;
-  grid-template-columns: 4rem 1fr 1fr;
+  grid-template-columns: 3.6rem 1fr 1fr;
   gap: 0.3rem;
   align-items: stretch;
+  /* 드래그 일괄 토글이 스크롤에 뺏기지 않도록 */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 .matrix-head {
   font-size: 0.84rem;
@@ -291,12 +318,13 @@ code {
   align-items: center;
   justify-content: center;
   gap: 0 0.3rem;
+  min-height: 3rem;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
   padding: 0.5rem 0.2rem;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-variant-numeric: tabular-nums;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
@@ -347,7 +375,8 @@ code {
   border: 1px solid var(--line);
 }
 .seg-btn {
-  padding: 0.32rem 0.75rem;
+  padding: 0.5rem 0.7rem;
+  min-width: 3rem;
   border-radius: 7px;
   font-size: 0.84rem;
   color: var(--muted);
@@ -373,18 +402,19 @@ code {
 .stepper-val {
   display: flex;
   align-items: center;
-  padding: 0.3rem 0.8rem;
-  font-size: 0.88rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.92rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  min-width: 3.1rem;
+  min-width: 3.2rem;
   justify-content: center;
 }
 .stepper-arrows { display: flex; flex-direction: column; border-left: 1px solid var(--line); }
 .stepper-btn {
   flex: 1;
-  padding: 0 0.55rem;
-  font-size: 0.52rem;
+  min-height: 1.35rem;
+  padding: 0 0.7rem;
+  font-size: 0.58rem;
   line-height: 1;
   color: var(--ink-soft);
   background: var(--surface-soft);
@@ -395,7 +425,7 @@ code {
 .stepper-btn:disabled { color: #cfd3d9; }
 
 /* 스위치 (반복 노출) */
-.switch { display: inline-flex; align-items: center; gap: 0.5rem; }
+.switch { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
 .switch-track {
   width: 2.5rem;
   height: 1.45rem;
@@ -543,3 +573,40 @@ code {
   gap: 0.55rem;
 }
 .credit { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.01em; }
+
+/* ---------- 모바일 (세로 폰) ---------- */
+
+@media (max-width: 480px) {
+  .app-title { font-size: 1.65rem; }
+  .card { padding: 1rem 0.9rem 1.1rem; border-radius: 14px; }
+
+  /* 설정 행: 라벨과 컨트롤이 좁은 폭에서 겹치지 않게 */
+  .set-row { gap: 0.5rem; min-height: 3.2rem; }
+  .set-label { font-size: 0.85rem; flex-shrink: 0; }
+  .seg-btn { padding: 0.5rem 0.55rem; min-width: 2.6rem; font-size: 0.8rem; }
+
+  .matrix { grid-template-columns: 3.1rem 1fr 1fr; gap: 0.28rem; }
+  .matrix-cell { min-height: 3.1rem; font-size: 0.88rem; }
+  .matrix-head { font-size: 0.8rem; }
+
+  /* 문장표: 화면 폭에 맞춰 여백을 줄이고 가로 스크롤 여지를 넓힌다 */
+  .page-wide { padding-left: 0.7rem; padding-right: 0.7rem; }
+  .sentence-table { min-width: 26rem; font-size: 0.86rem; }
+  .sentence-table th, .sentence-table td { padding: 0.45rem 0.5rem; }
+  .table-walk-row .walk-btn { flex: 1; text-align: center; }
+  .tab { padding: 0.45rem 0.8rem; }
+
+  .gram-legend { gap: 0.15rem 0.7rem; }
+}
+
+/* 손가락 입력 기기: 호버 스타일이 눌린 것처럼 남지 않게 */
+@media (hover: none) {
+  .icon-btn:hover, .ghost-btn:hover, .matrix-head:hover,
+  .matrix-cell:hover, .tab:hover, .primary-btn:hover, .walk-btn:hover {
+    background: inherit;
+    opacity: 1;
+  }
+  .matrix-cell:hover { border-color: var(--line); }
+  .cell-on:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .tab-on:hover { background: var(--accent); }
+}

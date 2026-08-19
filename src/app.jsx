@@ -73,11 +73,14 @@ function KoInstruction({ coord, steps }) {
 
 // ---------- 학생 루프 세션 (자동 산책 / 지정 경로) ----------
 
-function DrillSession({ initialCoord, totalSteps, getSteps, koMode, onEnd, onExit }) {
+function DrillSession({ initialCoord, totalSteps, getSteps, instrMode = "token", onEnd, onExit }) {
+  // 지시 표시: 토큰 / 한국어 해석 / 랜덤(걸음마다 무작위로 둘 중 하나)
+  const pickKo = () => instrMode === "ko" || (instrMode === "random" && Math.random() < 0.5);
   const [coord, setCoord] = useState(initialCoord);
   const [phase, setPhase] = useState("instruction"); // instruction | revealed
   const [stepIdx, setStepIdx] = useState(0);
   const [steps, setSteps] = useState(() => getSteps(0, initialCoord, []));
+  const [koNow, setKoNow] = useState(pickKo);
   const historyRef = useRef([]);
   const lockRef = useRef(0);
   const tapRef = useRef(() => {});
@@ -118,6 +121,7 @@ function DrillSession({ initialCoord, totalSteps, getSteps, koMode, onEnd, onExi
     if (!next || next.length === 0) return onEnd();
     setStepIdx(nextIdx);
     setSteps(next);
+    setKoNow(pickKo());
     setPhase("instruction");
   };
 
@@ -129,12 +133,16 @@ function DrillSession({ initialCoord, totalSteps, getSteps, koMode, onEnd, onExi
         <span className="header-spacer" />
       </header>
 
+      <div className="progress-bar" aria-hidden="true">
+        <span style={{ width: `${((phase === "revealed" ? stepIdx + 1 : stepIdx) / totalSteps) * 100}%` }} />
+      </div>
+
       <main className="stage-center">
         <p key={keyOf(coord)} className="sentence fade-in">
           <GrammarText text={sentenceOf(coord)} />
         </p>
         {phase === "instruction" &&
-          (koMode ? (
+          (koNow ? (
             <KoInstruction coord={coord} steps={steps} />
           ) : (
             <TokenChips tokens={displayTokens(coord, steps)} />
@@ -363,25 +371,42 @@ function Segmented({ options, value, onChange }) {
   );
 }
 
+const stagesOf = (id) => {
+  const [rowId, colId] = id.split(":");
+  return cellStages(rowId, colId);
+};
+
+function MatrixCell({ id, stage, onPointerDown, onPointerUp, onClick }) {
+  const stages = stagesOf(id);
+  const on = stage > 0;
+  // 꺼져 있으면 최대 단계 기준(전체 문장 수·전체 라벨)을 보여준다
+  const shown = stages[(on ? stage : stages.length) - 1];
+  return (
+    <button
+      className={`matrix-cell ${on ? "cell-on" : ""}`}
+      data-cell-id={id}
+      aria-pressed={on}
+      onPointerDown={(e) => onPointerDown(e, id)}
+      onPointerUp={(e) => onPointerUp(e, id)}
+      onClick={() => onClick(id)}
+    >
+      <span className="cell-check">{on ? "✓" : ""}</span>
+      <span className="cell-count">{scopeCoords(shown.scope).length}</span>
+      {shown.label && <span className="cell-stage">{shown.label}</span>}
+    </button>
+  );
+}
+
 function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
   const [length, setLength] = useState("short");
-  const [koMode, setKoMode] = useState(false);
-
-  const stagesOf = (id) => {
-    const [rowId, colId] = id.split(":");
-    return cellStages(rowId, colId);
-  };
-  const anyOn = (sel) => Object.values(sel).some((v) => v > 0);
+  const [instrMode, setInstrMode] = useState("token");
 
   // 칸 탭: 다음 단계로 (마지막 단계에서 한 번 더 탭하면 꺼짐)
   const tapCell = (id) =>
-    setSelected((prev) => {
-      const next = { ...prev, [id]: ((prev[id] || 0) + 1) % (stagesOf(id).length + 1) };
-      return anyOn(next) ? next : prev; // 최소 1칸
-    });
+    setSelected((prev) => ({ ...prev, [id]: ((prev[id] || 0) + 1) % (stagesOf(id).length + 1) }));
 
   // 행·열 탭: 전부 최대 단계로 켜기 ↔ 전부 끄기
   const toggleGroup = (ids) =>
@@ -391,28 +416,102 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
       ids.forEach((id) => {
         next[id] = allMax ? 0 : stagesOf(id).length;
       });
-      return anyOn(next) ? next : prev; // 최소 1칸
+      return next;
     });
+
+  // ---- 드래그 일괄 토글 ----
+  // 칸을 누른 채 다른 칸으로 끌면, 처음 누른 칸의 상태로 동작이 정해진다:
+  // 꺼진 칸에서 시작 → 지나가는 칸을 모두 켬 / 켜진 칸에서 시작 → 모두 끔.
+  // 움직이지 않고 떼면 기존 단계 순환(탭)이 그대로 동작한다.
+  const paintRef = useRef(null);
+  const pointerHandledRef = useRef(false); // 포인터로 처리한 탭 — 뒤따르는 click 무시
+
+  const paint = (id, action) =>
+    setSelected((prev) => {
+      const target = action === "on" ? stagesOf(id).length : 0;
+      return (prev[id] || 0) === target ? prev : { ...prev, [id]: target };
+    });
+
+  const cellAt = (x, y) => {
+    const el = document.elementFromPoint(x, y);
+    const cell = el && el.closest("[data-cell-id]");
+    return cell ? cell.dataset.cellId : null;
+  };
+
+  const onCellPointerDown = (e, id) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    // 터치는 암묵적 포인터 캡처가 걸려 다른 칸을 감지하지 못하므로 풀어준다
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId))
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    pointerHandledRef.current = false;
+    paintRef.current = {
+      startId: id,
+      wasOn: (selected[id] || 0) > 0,
+      action: null,
+      lastPt: { x: e.clientX, y: e.clientY },
+    };
+  };
+
+  const onMatrixPointerMove = (e) => {
+    const p = paintRef.current;
+    if (!p) return;
+    if (!p.action) {
+      const id = cellAt(e.clientX, e.clientY);
+      if (!id || id === p.startId) return; // 아직 시작 칸 안 — 탭일 수 있다
+      p.action = p.wasOn ? "off" : "on";
+      pointerHandledRef.current = true; // 드래그였으므로 뒤따르는 click은 무시
+      paint(p.startId, p.action);
+    }
+    // 빠른 스와이프로 건너뛴 칸까지 칠하도록 직전 지점과 현재 지점 사이를 보간한다
+    const from = p.lastPt;
+    for (let i = 1; i <= 6; i++) {
+      const t = i / 6;
+      const id = cellAt(from.x + (e.clientX - from.x) * t, from.y + (e.clientY - from.y) * t);
+      if (id) paint(id, p.action);
+    }
+    p.lastPt = { x: e.clientX, y: e.clientY };
+  };
+
+  useEffect(() => {
+    const end = () => {
+      paintRef.current = null;
+    };
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    return () => {
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    };
+  }, []);
+
+  // 탭 판정은 pointerup에서 한다 — 브라우저의 click 합성 타이밍에 의존하지 않도록.
+  const onCellPointerUp = (e, id) => {
+    const p = paintRef.current;
+    if (!p || p.action || p.startId !== id) return; // 드래그였거나 다른 칸에서 뗌
+    pointerHandledRef.current = true;
+    tapCell(id);
+  };
+
+  // click은 키보드(Enter/Space)용 — 포인터로 이미 처리한 경우는 넘긴다
+  const onCellClick = (id) => {
+    if (pointerHandledRef.current) {
+      pointerHandledRef.current = false;
+      return;
+    }
+    tapCell(id);
+  };
 
   const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
   const colIds = (colId) => MATRIX_ROWS.map((r) => cellId(r.id, colId));
 
   const count = scopeCoords(buildScopes(selected)).length;
-
-  const Cell = ({ id }) => {
-    const stages = stagesOf(id);
-    const stage = selected[id] || 0;
-    const on = stage > 0;
-    // 꺼져 있으면 최대 단계 기준(전체 문장 수·전체 라벨)을 보여준다
-    const shown = stages[(on ? stage : stages.length) - 1];
-    return (
-      <button className={`matrix-cell ${on ? "cell-on" : ""}`} onClick={() => tapCell(id)}>
-        <span className="cell-check">{on ? "✓" : ""}</span>
-        <span className="cell-count">{scopeCoords(shown.scope).length}</span>
-        {shown.label && <span className="cell-stage">{shown.label}</span>}
-      </button>
-    );
-  };
+  const cellProps = (id) => ({
+    id,
+    stage: selected[id] || 0,
+    onPointerDown: onCellPointerDown,
+    onPointerUp: onCellPointerUp,
+    onClick: onCellClick,
+  });
 
   return (
     <div className="page">
@@ -427,7 +526,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
         </div>
 
         <div className="field">
-          <div className="matrix">
+          <div className="matrix" onPointerMove={onMatrixPointerMove}>
             <span className="matrix-corner" />
             {MATRIX_COLS.map((c) => (
               <button key={c.id} className="matrix-head" onClick={() => toggleGroup(colIds(c.id))}>
@@ -440,7 +539,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
                   {r.title}
                 </button>
                 {MATRIX_COLS.map((c) => (
-                  <Cell key={c.id} id={cellId(r.id, c.id)} />
+                  <MatrixCell key={c.id} {...cellProps(cellId(r.id, c.id))} />
                 ))}
               </React.Fragment>
             ))}
@@ -448,7 +547,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
               조동사
             </button>
             <div className="cell-span">
-              <Cell id="modal:all" />
+              <MatrixCell {...cellProps("modal:all")} />
             </div>
           </div>
         </div>
@@ -507,20 +606,24 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
             <span className="set-label">지시</span>
             <Segmented
               options={[
-                { v: false, t: "토큰" },
-                { v: true, t: "한국어" },
+                { v: "token", t: "토큰" },
+                { v: "ko", t: "한국어" },
+                { v: "random", t: "랜덤" },
               ]}
-              value={koMode}
-              onChange={setKoMode}
+              value={instrMode}
+              onChange={setInstrMode}
             />
           </div>
         </div>
 
         <button
           className="primary-btn"
-          onClick={() => onStartWalk({ scopes: buildScopes(selected), width, repeat, length, koMode })}
+          disabled={count < 2}
+          onClick={() =>
+            onStartWalk({ scopes: buildScopes(selected), width, repeat, length, instrMode })
+          }
         >
-          학습 시작 · {length === "short" ? Math.min(15, count) : count}문장
+          {count < 2 ? "범위를 선택하세요" : `학습 시작 · ${length === "short" ? Math.min(15, count) : count}문장`}
         </button>
       </section>
 
@@ -611,7 +714,7 @@ export default function App() {
     setRoute({ name: "home" });
   };
 
-  const startWalk = ({ scopes, width = 1, repeat = false, length = "full", koMode = false }) => {
+  const startWalk = ({ scopes, width = 1, repeat = false, length = "full", instrMode = "token" }) => {
     const coords = scopeCoords(scopes);
     if (coords.length < 2) return;
     // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
@@ -628,7 +731,7 @@ export default function App() {
       if (steps) visited.add(keyOf(applySteps(coord, steps)));
       return steps;
     };
-    setRoute({ name: "walk", start, total, getSteps, koMode });
+    setRoute({ name: "walk", start, total, getSteps, instrMode });
   };
 
   if (route.name === "path-error")
@@ -660,7 +763,7 @@ export default function App() {
         initialCoord={route.start}
         totalSteps={route.total}
         getSteps={route.getSteps}
-        koMode={route.koMode}
+        instrMode={route.instrMode}
         onEnd={() => setRoute({ name: "done", count: route.total + 1 })}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
