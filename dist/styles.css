@@ -87,6 +87,13 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
   color: var(--muted);
   font-weight: 500;
 }
+.token-ko {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+}
 
 .stage-hint {
   padding: 1rem;
@@ -195,6 +202,31 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 }
 .empty-note { color: var(--muted); }
 .ghost-btn.wide { width: 100%; padding: 0.8rem; }
+.row-gap { display: flex; gap: 0.6rem; align-items: center; }
+
+/* 어휘 바꾸기 */
+.vocab-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.vocab-row {
+  display: grid;
+  grid-template-columns: 2.6rem 6.5rem 1fr 1fr;
+  gap: 0.4rem;
+  align-items: center;
+}
+.vocab-subj { font-weight: 700; }
+.vocab-default { font-size: 0.8rem; color: var(--muted); }
+.vocab-input {
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  font-size: 0.9rem;
+  background: #fff;
+  min-width: 0;
+}
+.vocab-input:focus { outline: none; border-color: var(--accent); }
+@media (max-width: 480px) {
+  .vocab-row { grid-template-columns: 2.2rem 4.5rem 1fr 1fr; }
+}
 
 /* 세션 완료 신호 */
 .done-mark {

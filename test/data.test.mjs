@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { SENTENCES, SETS, SUBJECTS } from "../src/data.js";
+import { SENTENCES, KO, SETS, SUBJECTS } from "../src/data.js";
 
 // 문장표 스냅샷 — 각 세트에서 표본 추출 (원 명세 3.3 포함)
 const SNAPSHOTS = {
@@ -41,6 +41,25 @@ test("좌표 공간 전체(396문장)가 채워져 있다", () => {
           const key = `${set.id}-${su}-${t}-${f}`;
           assert.ok(typeof SENTENCES[key] === "string" && SENTENCES[key].length > 0, key);
         }
+});
+
+test("한국어 해석: 모든 문장에 있고, 같은 시제·형태 안에서 문장을 특정할 수 있다", () => {
+  assert.equal(Object.keys(KO).length, Object.keys(SENTENCES).length);
+  assert.equal(KO["be-she-present-neg"], "그녀는 아름답지 않다");
+  assert.equal(KO["verb-she-present-q"], "그녀가 그것을 좋아하니?");
+  assert.equal(KO["prog-it-present-aff"], "비가 오고 있다");
+  // 같은 세트 안에서는 해석이 서로 달라야 한다 (해석만 보고 목표 문장이 정해지도록)
+  for (const set of SETS) {
+    const seen = new Map();
+    for (const su of SUBJECTS)
+      for (const t of set.tenses)
+        for (const f of set.forms) {
+          const key = `${set.id}-${su}-${t}-${f}`;
+          assert.ok(KO[key] && KO[key].length > 0, key);
+          assert.ok(!seen.has(KO[key]), `중복 해석: ${key} = ${seen.get(KO[key])} = "${KO[key]}"`);
+          seen.set(KO[key], key);
+        }
+  }
 });
 
 test("구두점: 의문(q·의문사)은 ?, 평서·부정은 .", () => {

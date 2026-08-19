@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { SUBJECTS, SENTENCES } from "./data.js";
+import { SUBJECTS, SENTENCES, KO } from "./data.js";
+import { BE_DEFAULTS, loadVocab, saveVocab, applyVocab } from "./vocab.js";
 import {
   SET_BY_ID,
   keyOf,
@@ -29,9 +30,23 @@ function TokenChips({ tokens }) {
   );
 }
 
+// 한국어 해석 모드 지시: 세트가 바뀌면 세트 토큰을, 그 외에는 목표 문장의 해석만 보여준다.
+function KoInstruction({ coord, steps }) {
+  const next = applySteps(coord, steps);
+  const ko = KO[keyOf(next)];
+  if (!ko) return <TokenChips tokens={displayTokens(coord, steps)} />;
+  const seriesStep = steps.find((s) => s.axis === "series");
+  return (
+    <div className="tokens" aria-label="지시">
+      {seriesStep && <span className="token token-series">{tokenLabel(seriesStep)}</span>}
+      <span className="token token-ko">({ko})</span>
+    </div>
+  );
+}
+
 // ---------- 학생 루프 세션 (자동 산책 / 지정 경로) ----------
 
-function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
+function DrillSession({ initialCoord, totalSteps, getSteps, koMode, onEnd, onExit }) {
   const [coord, setCoord] = useState(initialCoord);
   const [phase, setPhase] = useState("instruction"); // instruction | revealed
   const [stepIdx, setStepIdx] = useState(0);
@@ -89,7 +104,12 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
 
       <main className="stage-center">
         <p key={keyOf(coord)} className="sentence fade-in">{sentenceOf(coord)}</p>
-        {phase === "instruction" && <TokenChips tokens={displayTokens(coord, steps)} />}
+        {phase === "instruction" &&
+          (koMode ? (
+            <KoInstruction coord={coord} steps={steps} />
+          ) : (
+            <TokenChips tokens={displayTokens(coord, steps)} />
+          ))}
       </main>
 
       <footer className="stage-hint">
@@ -251,11 +271,12 @@ function TableScreen({ onHome, onWalk }) {
 
 const DEFAULT_SELECTED = ["present:be", "past:be"];
 
-function HomeScreen({ onStartWalk, onTable }) {
+function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [selected, setSelected] = useState(() => new Set(DEFAULT_SELECTED));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
   const [length, setLength] = useState("short");
+  const [koMode, setKoMode] = useState(false);
 
   const toggleCells = (ids) =>
     setSelected((prev) => {
@@ -364,15 +385,86 @@ function HomeScreen({ onStartWalk, onTable }) {
           />
         </div>
 
+        <div className="field">
+          <span className="field-label">지시 표시</span>
+          <Radio
+            options={[false, true]}
+            value={koMode}
+            onChange={setKoMode}
+            render={(o) => (o ? "한국어 해석 · (그녀는 아름답지 않다)" : "토큰 · (not)")}
+          />
+        </div>
+
         <button
           className="primary-btn"
-          onClick={() => onStartWalk({ scopes: buildScopes(selected), width, repeat, length })}
+          onClick={() => onStartWalk({ scopes: buildScopes(selected), width, repeat, length, koMode })}
         >
           산책 시작 · {length === "short" ? Math.min(15, count) : count}문장
         </button>
       </section>
 
       <button className="ghost-btn wide" onClick={onTable}>전체 문장표 보기</button>
+      <button className="ghost-btn wide" onClick={onVocab}>어휘 바꾸기 (be동사 형용사)</button>
+    </div>
+  );
+}
+
+// ---------- 어휘 바꾸기 (be동사 형용사 6슬롯) ----------
+
+function VocabScreen({ onHome }) {
+  const [vocab, setVocab] = useState(loadVocab);
+
+  const update = (s, field, value) =>
+    setVocab((v) => ({ ...v, [s]: { ...(v[s] || {}), [field]: value } }));
+
+  const save = () => {
+    saveVocab(vocab);
+    applyVocab(vocab);
+    onHome();
+  };
+
+  const reset = () => {
+    if (!window.confirm("모든 슬롯을 기본 어휘로 되돌릴까요?")) return;
+    saveVocab({});
+    applyVocab({});
+    setVocab({});
+  };
+
+  return (
+    <div className="page">
+      <header className="table-header">
+        <button className="ghost-btn" onClick={onHome}>← 처음으로</button>
+        <h1 className="page-title">어휘 바꾸기</h1>
+      </header>
+      <p className="empty-note">
+        be동사 세트의 형용사를 바꿉니다. 빈칸이면 기본 어휘를 씁니다.
+        한국어 뜻은 '~하다' 앞부분만 적으세요 (예: <b>행복</b> → 행복하다/행복했다).
+        뜻을 비우면 영어 단어를 그대로 씁니다 (happy하다).
+      </p>
+      <div className="vocab-list">
+        {SUBJECTS.map((s) => (
+          <div className="vocab-row" key={s}>
+            <span className="vocab-subj">{s}</span>
+            <span className="vocab-default">{BE_DEFAULTS[s]}</span>
+            <input
+              className="vocab-input"
+              placeholder="영어 형용사"
+              value={(vocab[s] && vocab[s].en) || ""}
+              onChange={(e) => update(s, "en", e.target.value)}
+            />
+            <input
+              className="vocab-input"
+              placeholder="한국어 뜻 (선택)"
+              value={(vocab[s] && vocab[s].ko) || ""}
+              onChange={(e) => update(s, "ko", e.target.value)}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="row-gap">
+        <button className="primary-btn" onClick={save}>저장</button>
+        <button className="ghost-btn" onClick={reset}>기본값 복원</button>
+      </div>
     </div>
   );
 }
@@ -397,7 +489,7 @@ export default function App() {
     setRoute({ name: "home" });
   };
 
-  const startWalk = ({ scopes, width = 1, repeat = false, length = "full" }) => {
+  const startWalk = ({ scopes, width = 1, repeat = false, length = "full", koMode = false }) => {
     const coords = scopeCoords(scopes);
     if (coords.length < 2) return;
     // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
@@ -414,7 +506,7 @@ export default function App() {
       if (steps) visited.add(keyOf(applySteps(coord, steps)));
       return steps;
     };
-    setRoute({ name: "walk", start, total, getSteps });
+    setRoute({ name: "walk", start, total, getSteps, koMode });
   };
 
   if (route.name === "path-error")
@@ -446,6 +538,7 @@ export default function App() {
         initialCoord={route.start}
         totalSteps={route.total}
         getSteps={route.getSteps}
+        koMode={route.koMode}
         onEnd={() => setRoute({ name: "done", count: route.total + 1 })}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
@@ -461,5 +554,13 @@ export default function App() {
       />
     );
 
-  return <HomeScreen onTable={() => setRoute({ name: "table" })} onStartWalk={startWalk} />;
+  if (route.name === "vocab") return <VocabScreen onHome={goHome} />;
+
+  return (
+    <HomeScreen
+      onTable={() => setRoute({ name: "table" })}
+      onVocab={() => setRoute({ name: "vocab" })}
+      onStartWalk={startWalk}
+    />
+  );
 }
