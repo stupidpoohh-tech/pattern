@@ -130,6 +130,46 @@ code {
   font-size: clamp(1.1rem, 4.5vw, 1.4rem);
 }
 
+/* ---------- 문법 슬롯 색상 (be/do/will/have/can/의문사) ----------
+   같은 슬롯의 긍정·부정형(is/isn't, do/don't …)은 같은 색으로 묶어
+   "슬롯 값이 바뀌었을 뿐 슬롯 자체는 같다"는 걸 시각적으로 보여준다. */
+:root {
+  --gram-be: #1d5fbf;
+  --gram-do: #b1560c;
+  --gram-future: #6d28d9;
+  --gram-perfect: #0f766e;
+  --gram-modal: #be123c;
+  --gram-wh: #15803d;
+}
+.gram { font-weight: 800; }
+.gram-be { color: var(--gram-be); }
+.gram-do { color: var(--gram-do); }
+.gram-future { color: var(--gram-future); }
+.gram-perfect { color: var(--gram-perfect); }
+.gram-modal { color: var(--gram-modal); }
+.gram-wh { color: var(--gram-wh); }
+
+.gram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.9rem;
+  padding: 0.15rem 0.1rem 0.35rem;
+}
+.gram-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.gram-dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; flex-shrink: 0; }
+.gram-dot-be { background: var(--gram-be); }
+.gram-dot-do { background: var(--gram-do); }
+.gram-dot-future { background: var(--gram-future); }
+.gram-dot-perfect { background: var(--gram-perfect); }
+.gram-dot-modal { background: var(--gram-modal); }
+.gram-dot-wh { background: var(--gram-wh); }
+
 .stage-hint {
   padding: 1rem;
   text-align: center;

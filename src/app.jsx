@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SUBJECTS, SENTENCES, KO } from "./data.js";
 import { BE_DEFAULTS, loadVocab, saveVocab, applyVocab } from "./vocab.js";
+import { GRAM_CATEGORIES, tokenizeGrammar } from "./grammar.js";
 import {
   SET_BY_ID,
   keyOf,
@@ -14,6 +15,32 @@ import {
   displayTokens,
   TENSE_LABELS,
 } from "./engine.js";
+
+// 문장 속 be/do/will/have/can/의문사 슬롯을 색으로 표시 — 같은 슬롯의 긍정·부정형은 같은 색.
+function GrammarText({ text }) {
+  return tokenizeGrammar(text).map((p, i) =>
+    p.cat ? (
+      <span className={`gram gram-${p.cat}`} key={i}>{p.text}</span>
+    ) : (
+      <React.Fragment key={i}>{p.text}</React.Fragment>
+    )
+  );
+}
+
+const GRAM_LABELS = { be: "be", do: "do", future: "will·going to", perfect: "have·has", modal: "can·should", wh: "의문사" };
+
+function GrammarLegend() {
+  return (
+    <div className="gram-legend" aria-label="문법 색상 안내">
+      {GRAM_CATEGORIES.map((c) => (
+        <span className="gram-legend-item" key={c}>
+          <span className={`gram-dot gram-dot-${c}`} />
+          {GRAM_LABELS[c]}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function TokenChips({ tokens }) {
   return (
@@ -103,7 +130,9 @@ function DrillSession({ initialCoord, totalSteps, getSteps, koMode, onEnd, onExi
       </header>
 
       <main className="stage-center">
-        <p key={keyOf(coord)} className="sentence fade-in">{sentenceOf(coord)}</p>
+        <p key={keyOf(coord)} className="sentence fade-in">
+          <GrammarText text={sentenceOf(coord)} />
+        </p>
         {phase === "instruction" &&
           (koMode ? (
             <KoInstruction coord={coord} steps={steps} />
@@ -200,7 +229,7 @@ function SentenceTable({ cols, colLabels, cellOf }) {
           {SUBJECTS.map((s) => (
             <tr key={s}>
               <th>{s}</th>
-              {cols.map((c) => <td key={c}>{cellOf(s, c)}</td>)}
+              {cols.map((c) => <td key={c}><GrammarText text={cellOf(s, c)} /></td>)}
             </tr>
           ))}
         </tbody>
@@ -236,6 +265,8 @@ function TableScreen({ onHome, onWalk }) {
           </button>
         ))}
       </nav>
+
+      <GrammarLegend />
 
       <div className="table-walk-row">
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
