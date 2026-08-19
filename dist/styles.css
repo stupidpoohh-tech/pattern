@@ -163,8 +163,13 @@ code {
 }
 .page-wide { max-width: 44rem; }
 
-.app-title { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.035em; }
-.app-sub { color: var(--muted); margin-top: -0.75rem; font-size: 0.92rem; }
+.app-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  text-align: center;
+  padding: 0.2rem 0 0.3rem;
+}
 .page-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.03em; }
 
 .card {

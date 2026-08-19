@@ -1,4 +1,4 @@
-// 오프라인 지원 service worker. 빌드 시 1edde1e27b이 앱 해시로 치환된다.
+// 오프라인 지원 service worker. 빌드 시 bb788c1a9d이 앱 해시로 치환된다.
 const CACHE = "han-georeum-__VERSION__";
 const ASSETS = [
   "./",

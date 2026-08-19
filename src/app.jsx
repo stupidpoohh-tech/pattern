@@ -362,7 +362,6 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   return (
     <div className="page">
       <h1 className="app-title">문장 패턴 학습</h1>
-      <p className="app-sub">문장을 입으로 옮기고, 탭해서 확인하세요.</p>
 
       <section className="card">
         <div className="card-head">
@@ -373,7 +372,6 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
         </div>
 
         <div className="field">
-          <span className="field-label">범위 — 칸·행·열을 탭해서 고르세요 (숫자는 문장 수)</span>
           <div className="matrix">
             <span className="matrix-corner" />
             {MATRIX_COLS.map((c) => (
