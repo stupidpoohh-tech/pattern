@@ -44,9 +44,10 @@ export const tokenLabel = (step) => {
   return SET_BY_ID[step.value].label; // series
 };
 
-// 이 좌표에서 실제로 쓰이는 술부 (will/goingto 교체 반영)
+// 이 좌표에서 실제로 쓰이는 술부 (will/goingto 교체·의문사 세트의 형태별 술부 반영)
 function predOf(coord) {
   const set = SET_BY_ID[coord.series];
+  if (set.predByForm) return (set.predByForm[coord.form] || {})[coord.subject] || "";
   if ((coord.tense === "will" || coord.tense === "goingto") && set.futurePred[coord.subject])
     return set.futurePred[coord.subject];
   return set.pred[coord.subject];
@@ -58,7 +59,7 @@ export function displayTokens(coord, steps) {
   const next = applySteps(coord, steps);
   const before = predOf(coord);
   const after = predOf(next);
-  if (after !== before) return [...steps, { axis: "pred", value: after, hint: true }];
+  if (after && after !== before) return [...steps, { axis: "pred", value: after, hint: true }];
   return steps;
 }
 
@@ -141,6 +142,8 @@ export function coverageSteps(coord, cfg, history, visited) {
 
 // 반복 허용 모드: 방문 여부와 무관한 무작위 걸음.
 // 짜임새: 같은 값 이동 금지·핑퐁 방지·가족 이동 간격·술부 다리는 동일하게 적용.
+// 세트 이동은 "점프"로 처리한다: 목표 세트에 현재 시제·형태가 없으면
+// 시제·형태를 함께 묶어 한 걸음으로 이동한다 (시제가 안 겹치는 범위에 갇히지 않도록).
 export function randomSteps(coord, cfg, history = []) {
   const set = SET_BY_ID[coord.series];
   const setIds = Object.keys(cfg.scopes);
@@ -151,50 +154,65 @@ export function randomSteps(coord, cfg, history = []) {
     let values;
     if (axis === "subject") values = SUBJECTS.filter((v) => v !== coord.subject);
     else if (axis === "tense") values = cfg.scopes[coord.series].filter((v) => v !== coord.tense);
-    else if (axis === "form") values = set.forms.filter((v) => v !== coord.form);
-    else
-      values = setIds.filter(
-        (id) =>
-          id !== coord.series &&
-          SENTENCES[`${id}-${coord.subject}-${coord.tense}-${coord.form}`] !== undefined &&
-          cfg.scopes[id].includes(coord.tense)
-      );
+    else values = set.forms.filter((v) => v !== coord.form);
     // 핑퐁 방지
     const prev = lastSteps.find((p) => p.axis === axis);
     if (prev && values.length > 1) values = values.filter((v) => v !== prev.prevValue);
     return values;
   };
 
+  const seriesJump = () => {
+    let targets = setIds.filter((id) => id !== coord.series);
+    const prev = lastSteps.find((p) => p.axis === "series");
+    if (prev && targets.length > 1) targets = targets.filter((v) => v !== prev.prevValue);
+    if (targets.length === 0) return null;
+    const id = pick(targets);
+    const target = SET_BY_ID[id];
+    const tense = cfg.scopes[id].includes(coord.tense) ? coord.tense : pick(cfg.scopes[id]);
+    const form = target.forms.includes(coord.form) ? coord.form : pick(target.forms);
+    const steps = [{ axis: "series", value: id, prevValue: coord.series }];
+    if (tense !== coord.tense) steps.push({ axis: "tense", value: tense, prevValue: coord.tense });
+    if (form !== coord.form) steps.push({ axis: "form", value: form, prevValue: coord.form });
+    return steps;
+  };
+
   const pool = [];
   const add = (axis) => {
-    if (altValues(axis).length > 0) pool.push({ axis, w: 1 });
+    if (axis === "series" ? setIds.length > 1 : altValues(axis).length > 0) pool.push(axis);
   };
   if (familyReady) add("subject");
   add("tense");
   add("form");
-  if (familyReady && setIds.length > 1) add("series");
+  if (familyReady) add("series");
 
   // 가족 이동 대기 중이라 남은 축이 없으면(단일 시제 세트 등) 가족 이동을 허용한다.
   if (pool.length === 0) {
     add("subject");
-    if (setIds.length > 1) add("series");
+    add("series");
     if (pool.length === 0) return null;
   }
 
   const width = Math.min(cfg.width, pool.length);
   const axes = [];
-  const rest = [...pool.map((p) => p.axis)];
+  const rest = [...pool];
   while (axes.length < width) axes.push(...rest.splice(Math.floor(Math.random() * rest.length), 1));
 
-  return axes.map((axis) => {
-    let values = altValues(axis);
-    if (axis === "subject") {
-      // 술부 다리 우선: 같은 술부를 쓰는 주어가 있으면 그쪽으로
-      const bridged = values.filter((v) => set.pred[v] === set.pred[coord.subject]);
-      if (bridged.length > 0 && Math.random() < 0.75) values = bridged;
-    }
-    return { axis, value: pick(values), prevValue: coord[axis] };
-  });
+  if (axes.includes("series")) {
+    const jump = seriesJump();
+    if (jump) return jump;
+  }
+
+  return axes
+    .filter((a) => a !== "series")
+    .map((axis) => {
+      let values = altValues(axis);
+      if (axis === "subject") {
+        // 술부 다리 우선: 같은 술부를 쓰는 주어가 있으면 그쪽으로
+        const bridged = values.filter((v) => set.pred[v] === set.pred[coord.subject]);
+        if (bridged.length > 0 && Math.random() < 0.75) values = bridged;
+      }
+      return { axis, value: pick(values), prevValue: coord[axis] };
+    });
 }
 
 // ---- 지정 경로 (?mode=path&start=…&steps=…) ----

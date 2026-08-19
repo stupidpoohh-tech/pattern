@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SUBJECTS, SENTENCES } from "./data.js";
 import {
   SET_BY_ID,
@@ -37,8 +37,31 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   const [stepIdx, setStepIdx] = useState(0);
   const [steps, setSteps] = useState(() => getSteps(0, initialCoord, []));
   const historyRef = useRef([]);
+  const lockRef = useRef(0);
+  const tapRef = useRef(() => {});
 
   const onTapStage = () => {
+    // 더블탭 보호: 350ms 안의 연속 입력은 무시 (실수로 문장을 건너뛰지 않도록)
+    const now = Date.now();
+    if (now - lockRef.current < 350) return;
+    lockRef.current = now;
+    advance();
+  };
+
+  // 키보드 조작: 스페이스/엔터/→ = 탭과 동일
+  tapRef.current = onTapStage;
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.code === "Space" || e.code === "Enter" || e.code === "ArrowRight") {
+        e.preventDefault();
+        tapRef.current();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const advance = () => {
     if (phase === "instruction") {
       // 정답 공개 — 이 문장이 새로운 현재 문장이 된다
       historyRef.current.push(steps);
@@ -72,6 +95,23 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
       <footer className="stage-hint">
         {phase === "instruction" ? "문장을 소리 내어 말한 뒤, 화면을 탭하세요" : "탭하면 다음으로"}
       </footer>
+    </div>
+  );
+}
+
+// ---------- 세션 완료 신호 ----------
+
+function DoneScreen({ count, onHome }) {
+  useEffect(() => {
+    const t = setTimeout(onHome, 1800);
+    return () => clearTimeout(t);
+  }, [onHome]);
+  return (
+    <div className="stage" onClick={onHome}>
+      <main className="stage-center">
+        <div className="done-mark fade-in">✓</div>
+        <p className="done-text fade-in">산책 완료 · {count}문장</p>
+      </main>
     </div>
   );
 }
@@ -149,9 +189,14 @@ function SentenceTable({ cols, colLabels, cellOf }) {
   );
 }
 
-function TableScreen({ onHome }) {
+// 탭의 세트들을 시제 전체 범위(scopes)로
+const tabScopes = (tab) =>
+  Object.fromEntries(tab.sets.map((id) => [id, SET_BY_ID[id].tenses]));
+
+function TableScreen({ onHome, onWalk }) {
   const [tabId, setTabId] = useState("be");
   const tab = TABLE_TABS.find((t) => t.id === tabId);
+  const tabCount = scopeCoords(tabScopes(tab)).length;
 
   return (
     <div className="page page-wide">
@@ -171,6 +216,15 @@ function TableScreen({ onHome }) {
           </button>
         ))}
       </nav>
+
+      <div className="table-walk-row">
+        <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
+          이 범위로 짧게 산책 · {Math.min(15, tabCount)}문장
+        </button>
+        <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "full")}>
+          전체 산책 · {tabCount}문장
+        </button>
+      </div>
 
       {tab.sets.map((setId, si) => {
         const set = SET_BY_ID[setId];
@@ -201,6 +255,7 @@ function HomeScreen({ onStartWalk, onTable }) {
   const [selected, setSelected] = useState(() => new Set(DEFAULT_SELECTED));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
+  const [length, setLength] = useState("short");
 
   const toggleCells = (ids) =>
     setSelected((prev) => {
@@ -285,6 +340,16 @@ function HomeScreen({ onStartWalk, onTable }) {
         </div>
 
         <div className="field">
+          <span className="field-label">세션</span>
+          <Radio
+            options={["short", "full"]}
+            value={length}
+            onChange={setLength}
+            render={(o) => (o === "short" ? "짧게 · 랜덤 15문장" : `전체 · ${count}문장`)}
+          />
+        </div>
+
+        <div className="field">
           <span className="field-label">걸음 폭</span>
           <Radio options={[1, 2, 3]} value={width} onChange={setWidth} render={(o) => `${o}축`} />
         </div>
@@ -299,8 +364,11 @@ function HomeScreen({ onStartWalk, onTable }) {
           />
         </div>
 
-        <button className="primary-btn" onClick={() => onStartWalk({ selected, width, repeat })}>
-          산책 시작 · {count}문장
+        <button
+          className="primary-btn"
+          onClick={() => onStartWalk({ scopes: buildScopes(selected), width, repeat, length })}
+        >
+          산책 시작 · {length === "short" ? Math.min(15, count) : count}문장
         </button>
       </section>
 
@@ -329,6 +397,26 @@ export default function App() {
     setRoute({ name: "home" });
   };
 
+  const startWalk = ({ scopes, width = 1, repeat = false, length = "full" }) => {
+    const coords = scopeCoords(scopes);
+    if (coords.length < 2) return;
+    // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
+    const firstForms = coords.filter((c) => c.form === SET_BY_ID[c.series].forms[0]);
+    const start = pickRandom(firstForms.length ? firstForms : coords);
+    const visited = new Set([keyOf(start)]);
+    const ecfg = { scopes, width };
+    const total =
+      length === "short" ? Math.min(14, coords.length - 1) : coords.length - 1;
+    const getSteps = (i, coord, history) => {
+      const steps = repeat
+        ? randomSteps(coord, ecfg, history)
+        : coverageSteps(coord, ecfg, history, visited);
+      if (steps) visited.add(keyOf(applySteps(coord, steps)));
+      return steps;
+    };
+    setRoute({ name: "walk", start, total, getSteps });
+  };
+
   if (route.name === "path-error")
     return (
       <div className="page">
@@ -347,7 +435,7 @@ export default function App() {
         initialCoord={pathResult.start}
         totalSteps={pathResult.stepsList.length}
         getSteps={(i) => pathResult.stepsList[i] || null}
-        onEnd={goHome}
+        onEnd={() => setRoute({ name: "done", count: pathResult.stepsList.length + 1 })}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
     );
@@ -358,33 +446,20 @@ export default function App() {
         initialCoord={route.start}
         totalSteps={route.total}
         getSteps={route.getSteps}
-        onEnd={goHome}
+        onEnd={() => setRoute({ name: "done", count: route.total + 1 })}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
     );
 
-  if (route.name === "table") return <TableScreen onHome={goHome} />;
+  if (route.name === "done") return <DoneScreen count={route.count} onHome={goHome} />;
 
-  return (
-    <HomeScreen
-      onTable={() => setRoute({ name: "table" })}
-      onStartWalk={({ selected, width, repeat }) => {
-        const scopes = buildScopes(selected);
-        const coords = scopeCoords(scopes);
-        // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
-        const firstForms = coords.filter((c) => c.form === SET_BY_ID[c.series].forms[0]);
-        const start = pickRandom(firstForms.length ? firstForms : coords);
-        const visited = new Set([keyOf(start)]);
-        const ecfg = { scopes, width };
-        const getSteps = (i, coord, history) => {
-          const steps = repeat
-            ? randomSteps(coord, ecfg, history)
-            : coverageSteps(coord, ecfg, history, visited);
-          if (steps) visited.add(keyOf(applySteps(coord, steps)));
-          return steps;
-        };
-        setRoute({ name: "walk", start, total: coords.length - 1, getSteps });
-      }}
-    />
-  );
+  if (route.name === "table")
+    return (
+      <TableScreen
+        onHome={goHome}
+        onWalk={(scopes, length) => startWalk({ scopes, length })}
+      />
+    );
+
+  return <HomeScreen onTable={() => setRoute({ name: "table" })} onStartWalk={startWalk} />;
 }

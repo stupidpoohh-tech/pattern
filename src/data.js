@@ -301,7 +301,33 @@ export const SETS = [
       "we": "wh",
       "they": "wh"
     },
-    "futurePred": {}
+    "futurePred": {},
+    "predByForm": {
+      "where": {
+        "I": "",
+        "she": "",
+        "he": "",
+        "it": "",
+        "we": "",
+        "they": ""
+      },
+      "when": {
+        "I": "free",
+        "she": "coming",
+        "he": "coming",
+        "it": "",
+        "we": "leaving",
+        "they": "coming"
+      },
+      "why": {
+        "I": "here",
+        "she": "late",
+        "he": "angry",
+        "it": "cold",
+        "we": "here",
+        "they": "here"
+      }
+    }
   },
   {
     "id": "whdo",
@@ -327,7 +353,33 @@ export const SETS = [
       "we": "wh",
       "they": "wh"
     },
-    "futurePred": {}
+    "futurePred": {},
+    "predByForm": {
+      "what": {
+        "I": "do",
+        "she": "want",
+        "he": "want",
+        "it": "mean",
+        "we": "need",
+        "they": "want"
+      },
+      "how": {
+        "I": "know",
+        "she": "know",
+        "he": "do it",
+        "it": "work",
+        "we": "get there",
+        "they": "know"
+      },
+      "why": {
+        "I": "need it",
+        "she": "like it",
+        "he": "need it",
+        "it": "matter",
+        "we": "need it",
+        "they": "like it"
+      }
+    }
   }
 ];
 export const SENTENCES = {

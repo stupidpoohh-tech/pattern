@@ -257,8 +257,14 @@ const TABLE = {
     tenses: ["wh"],
     forms: ["where", "when", "why"],
     formHeads: ["Where", "When", "Why"],
-    // 의문사 세트는 술부 힌트를 쓰지 않는다 (모든 주어를 같은 묶음으로 둠)
+    // 주어 다리 판단용 묶음(의문사 세트는 술부 다리 개념이 없어 하나로 통일)
     pred: { I: "wh", she: "wh", he: "wh", it: "wh", we: "wh", they: "wh" },
+    // 형태(의문사)×주어별 술부 — 이동으로 술부가 바뀔 때 힌트 표시에 쓴다. 빈 값 = 술부 없음.
+    predByForm: {
+      where: { I: "", she: "", he: "", it: "", we: "", they: "" },
+      when: { I: "free", she: "coming", he: "coming", it: "", we: "leaving", they: "coming" },
+      why: { I: "here", she: "late", he: "angry", it: "cold", we: "here", they: "here" },
+    },
     rows: {
       wh: {
         I: ["Where am I?", "When am I free?", "Why am I here?"],
@@ -276,6 +282,11 @@ const TABLE = {
     forms: ["what", "how", "why"],
     formHeads: ["What", "How", "Why"],
     pred: { I: "wh", she: "wh", he: "wh", it: "wh", we: "wh", they: "wh" },
+    predByForm: {
+      what: { I: "do", she: "want", he: "want", it: "mean", we: "need", they: "want" },
+      how: { I: "know", she: "know", he: "do it", it: "work", we: "get there", they: "know" },
+      why: { I: "need it", she: "like it", he: "need it", it: "matter", we: "need it", they: "like it" },
+    },
     rows: {
       wh: {
         I: ["What do I do?", "How do I know?", "Why do I need it?"],
@@ -302,6 +313,7 @@ function build() {
       formHeads: set.formHeads || STD_FORM_HEADS,
       pred: set.pred,
       futurePred: set.futurePred || {},
+      predByForm: set.predByForm,
     });
     for (const tense of set.tenses)
       for (const subject of SUBJECTS) {

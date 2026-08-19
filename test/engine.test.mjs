@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   keyOf,
+  sentenceOf,
   applySteps,
   randomSteps,
   coverageSteps,
@@ -59,6 +60,23 @@ test("반복 허용 모드: 걸음이 항상 유효한 좌표로 이동한다", 
   }
 });
 
+test("반복 허용: 시제가 안 겹치는 범위도 세트 점프로 오간다", () => {
+  // 현재:be + 과거:일반동사 — 세트 간 공통 시제가 없어도 점프로 양쪽을 오가야 한다
+  const cfg = { scopes: { be: ["present"], verb: ["past"] }, width: 1 };
+  let coord = { series: "be", subject: "I", tense: "present", form: "aff" };
+  const history = [];
+  const seen = new Set([coord.series]);
+  for (let i = 0; i < 300; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), keyOf(coord));
+    history.push(steps);
+    seen.add(coord.series);
+  }
+  assert.ok(seen.has("verb"), "일반동사 세트에 도달하지 못함");
+  assert.ok(seen.has("be"));
+});
+
 test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
   const step = (axis, value) => [{ axis, value }];
   // It is cold → (he) → He is busy: 힌트 "busy"
@@ -83,6 +101,24 @@ test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다
   t = displayTokens(
     { series: "prog", subject: "I", tense: "present", form: "aff" },
     step("series", "keep")
+  );
+  assert.equal(t.length, 1);
+  // 의문사 세트: Why is she late? → (they) → Why are they here? — 힌트 "here"
+  t = displayTokens(
+    { series: "whbe", subject: "she", tense: "wh", form: "why" },
+    step("subject", "they")
+  );
+  assert.deepEqual(t[t.length - 1], { axis: "pred", value: "here", hint: true });
+  // Where is she? → (When) → When is she coming? — 형태 이동으로 술부가 생기면 힌트 "coming"
+  t = displayTokens(
+    { series: "whbe", subject: "she", tense: "wh", form: "where" },
+    step("form", "when")
+  );
+  assert.deepEqual(t[t.length - 1], { axis: "pred", value: "coming", hint: true });
+  // Where is she? → (they) → Where are they? — 둘 다 술부 없음 → 힌트 없음
+  t = displayTokens(
+    { series: "whbe", subject: "she", tense: "wh", form: "where" },
+    step("subject", "they")
   );
   assert.equal(t.length, 1);
 });

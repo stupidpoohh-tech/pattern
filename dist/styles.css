@@ -196,7 +196,32 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 .empty-note { color: var(--muted); }
 .ghost-btn.wide { width: 100%; padding: 0.8rem; }
 
+/* 세션 완료 신호 */
+.done-mark {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.done-text { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+
 /* ---------- 전체 문장표 ---------- */
+
+.table-walk-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.walk-btn {
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.walk-btn:active { transform: scale(0.97); }
 
 .page-wide { max-width: 44rem; }
 
