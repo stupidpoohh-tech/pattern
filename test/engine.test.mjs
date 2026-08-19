@@ -7,6 +7,7 @@ import {
   coverageSteps,
   scopeCoords,
   parsePath,
+  displayTokens,
 } from "../src/engine.js";
 
 function runCoverage(scopes, width) {
@@ -56,6 +57,34 @@ test("반복 허용 모드: 걸음이 항상 유효한 좌표로 이동한다", 
     coord = next;
     history.push(steps);
   }
+});
+
+test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
+  const step = (axis, value) => [{ axis, value }];
+  // It is cold → (he) → He is busy: 힌트 "busy"
+  let t = displayTokens(
+    { series: "be", subject: "it", tense: "present", form: "aff" },
+    step("subject", "he")
+  );
+  assert.deepEqual(t[t.length - 1], { axis: "pred", value: "busy", hint: true });
+  // She is lovely → (will) → She'll be fine: 시제 이동이어도 술부가 바뀌면 힌트 "fine"
+  t = displayTokens(
+    { series: "be", subject: "she", tense: "present", form: "aff" },
+    step("tense", "will")
+  );
+  assert.deepEqual(t[t.length - 1], { axis: "pred", value: "fine", hint: true });
+  // She's coming → (they) → They're coming: 술부 유지 → 힌트 없음
+  t = displayTokens(
+    { series: "prog", subject: "she", tense: "present", form: "aff" },
+    step("subject", "they")
+  );
+  assert.equal(t.length, 1);
+  // I'm working → (keep -ing) → I keep working: 세트 이동이지만 술부 유지 → 힌트 없음
+  t = displayTokens(
+    { series: "prog", subject: "I", tense: "present", form: "aff" },
+    step("series", "keep")
+  );
+  assert.equal(t.length, 1);
 });
 
 test("지정 경로 파싱: 정상·오류", () => {

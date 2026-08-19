@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 324문장.
+// 키: `${series}-${subject}-${tense}-${form}` — 총 396문장.
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -28,6 +28,9 @@ export const SETS = [
       "it": "cold",
       "we": "ready",
       "they": "here"
+    },
+    "futurePred": {
+      "she": "fine"
     }
   },
   {
@@ -56,6 +59,10 @@ export const SETS = [
       "it": "work",
       "we": "need it",
       "they": "like it"
+    },
+    "futurePred": {
+      "I": "see you",
+      "he": "come"
     }
   },
   {
@@ -82,7 +89,8 @@ export const SETS = [
       "it": "raining",
       "we": "waiting",
       "they": "coming"
-    }
+    },
+    "futurePred": {}
   },
   {
     "id": "pass",
@@ -108,7 +116,62 @@ export const SETS = [
       "it": "broken",
       "we": "invited",
       "they": "invited"
-    }
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "passget",
+    "label": "get 수동",
+    "tenses": [
+      "present",
+      "past"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
+    "pred": {
+      "I": "invited",
+      "she": "invited",
+      "he": "invited",
+      "it": "broken",
+      "we": "invited",
+      "they": "invited"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "keep",
+    "label": "keep -ing",
+    "tenses": [
+      "present",
+      "past"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
+    "pred": {
+      "I": "working",
+      "she": "coming",
+      "he": "waiting",
+      "it": "raining",
+      "we": "waiting",
+      "they": "coming"
+    },
+    "futurePred": {}
   },
   {
     "id": "perfbe",
@@ -133,7 +196,8 @@ export const SETS = [
       "it": "cold",
       "we": "busy",
       "they": "here"
-    }
+    },
+    "futurePred": {}
   },
   {
     "id": "perfverb",
@@ -158,7 +222,8 @@ export const SETS = [
       "it": "worked",
       "we": "seen it",
       "they": "seen it"
-    }
+    },
+    "futurePred": {}
   },
   {
     "id": "can",
@@ -183,7 +248,8 @@ export const SETS = [
       "it": "wait",
       "we": "go",
       "they": "help"
-    }
+    },
+    "futurePred": {}
   },
   {
     "id": "should",
@@ -208,7 +274,8 @@ export const SETS = [
       "it": "be ready",
       "we": "go",
       "they": "come"
-    }
+    },
+    "futurePred": {}
   },
   {
     "id": "whbe",
@@ -227,13 +294,14 @@ export const SETS = [
       "Why"
     ],
     "pred": {
-      "I": "I",
-      "she": "she",
-      "he": "he",
-      "it": "it",
-      "we": "we",
-      "they": "they"
-    }
+      "I": "wh",
+      "she": "wh",
+      "he": "wh",
+      "it": "wh",
+      "we": "wh",
+      "they": "wh"
+    },
+    "futurePred": {}
   },
   {
     "id": "whdo",
@@ -252,13 +320,14 @@ export const SETS = [
       "Why"
     ],
     "pred": {
-      "I": "I",
-      "she": "she",
-      "he": "he",
-      "it": "it",
-      "we": "we",
-      "they": "they"
-    }
+      "I": "wh",
+      "she": "wh",
+      "he": "wh",
+      "it": "wh",
+      "we": "wh",
+      "they": "wh"
+    },
+    "futurePred": {}
   }
 ];
 export const SENTENCES = {
@@ -478,6 +547,78 @@ export const SENTENCES = {
   "pass-they-past-aff": "They were invited.",
   "pass-they-past-neg": "They weren't invited.",
   "pass-they-past-q": "Were they invited?",
+  "passget-I-present-aff": "I get invited.",
+  "passget-I-present-neg": "I don't get invited.",
+  "passget-I-present-q": "Do I get invited?",
+  "passget-she-present-aff": "She gets invited.",
+  "passget-she-present-neg": "She doesn't get invited.",
+  "passget-she-present-q": "Does she get invited?",
+  "passget-he-present-aff": "He gets invited.",
+  "passget-he-present-neg": "He doesn't get invited.",
+  "passget-he-present-q": "Does he get invited?",
+  "passget-it-present-aff": "It gets broken.",
+  "passget-it-present-neg": "It doesn't get broken.",
+  "passget-it-present-q": "Does it get broken?",
+  "passget-we-present-aff": "We get invited.",
+  "passget-we-present-neg": "We don't get invited.",
+  "passget-we-present-q": "Do we get invited?",
+  "passget-they-present-aff": "They get invited.",
+  "passget-they-present-neg": "They don't get invited.",
+  "passget-they-present-q": "Do they get invited?",
+  "passget-I-past-aff": "I got invited.",
+  "passget-I-past-neg": "I didn't get invited.",
+  "passget-I-past-q": "Did I get invited?",
+  "passget-she-past-aff": "She got invited.",
+  "passget-she-past-neg": "She didn't get invited.",
+  "passget-she-past-q": "Did she get invited?",
+  "passget-he-past-aff": "He got invited.",
+  "passget-he-past-neg": "He didn't get invited.",
+  "passget-he-past-q": "Did he get invited?",
+  "passget-it-past-aff": "It got broken.",
+  "passget-it-past-neg": "It didn't get broken.",
+  "passget-it-past-q": "Did it get broken?",
+  "passget-we-past-aff": "We got invited.",
+  "passget-we-past-neg": "We didn't get invited.",
+  "passget-we-past-q": "Did we get invited?",
+  "passget-they-past-aff": "They got invited.",
+  "passget-they-past-neg": "They didn't get invited.",
+  "passget-they-past-q": "Did they get invited?",
+  "keep-I-present-aff": "I keep working.",
+  "keep-I-present-neg": "I don't keep working.",
+  "keep-I-present-q": "Do I keep working?",
+  "keep-she-present-aff": "She keeps coming.",
+  "keep-she-present-neg": "She doesn't keep coming.",
+  "keep-she-present-q": "Does she keep coming?",
+  "keep-he-present-aff": "He keeps waiting.",
+  "keep-he-present-neg": "He doesn't keep waiting.",
+  "keep-he-present-q": "Does he keep waiting?",
+  "keep-it-present-aff": "It keeps raining.",
+  "keep-it-present-neg": "It doesn't keep raining.",
+  "keep-it-present-q": "Does it keep raining?",
+  "keep-we-present-aff": "We keep waiting.",
+  "keep-we-present-neg": "We don't keep waiting.",
+  "keep-we-present-q": "Do we keep waiting?",
+  "keep-they-present-aff": "They keep coming.",
+  "keep-they-present-neg": "They don't keep coming.",
+  "keep-they-present-q": "Do they keep coming?",
+  "keep-I-past-aff": "I kept working.",
+  "keep-I-past-neg": "I didn't keep working.",
+  "keep-I-past-q": "Did I keep working?",
+  "keep-she-past-aff": "She kept coming.",
+  "keep-she-past-neg": "She didn't keep coming.",
+  "keep-she-past-q": "Did she keep coming?",
+  "keep-he-past-aff": "He kept waiting.",
+  "keep-he-past-neg": "He didn't keep waiting.",
+  "keep-he-past-q": "Did he keep waiting?",
+  "keep-it-past-aff": "It kept raining.",
+  "keep-it-past-neg": "It didn't keep raining.",
+  "keep-it-past-q": "Did it keep raining?",
+  "keep-we-past-aff": "We kept waiting.",
+  "keep-we-past-neg": "We didn't keep waiting.",
+  "keep-we-past-q": "Did we keep waiting?",
+  "keep-they-past-aff": "They kept coming.",
+  "keep-they-past-neg": "They didn't keep coming.",
+  "keep-they-past-q": "Did they keep coming?",
   "perfbe-I-perf-aff": "I have been busy.",
   "perfbe-I-perf-neg": "I haven't been busy.",
   "perfbe-I-perf-q": "Have I been busy?",

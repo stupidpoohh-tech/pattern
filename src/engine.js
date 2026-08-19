@@ -40,8 +40,27 @@ export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
   if (step.axis === "tense") return TENSE_LABELS[step.value];
   if (step.axis === "form") return FORM_LABELS[step.value];
+  if (step.axis === "pred") return step.value; // 술부 힌트
   return SET_BY_ID[step.value].label; // series
 };
+
+// 이 좌표에서 실제로 쓰이는 술부 (will/goingto 교체 반영)
+function predOf(coord) {
+  const set = SET_BY_ID[coord.series];
+  if ((coord.tense === "will" || coord.tense === "goingto") && set.futurePred[coord.subject])
+    return set.futurePred[coord.subject];
+  return set.pred[coord.subject];
+}
+
+// 지시에 표시할 토큰: 이동으로 술부가 바뀌면(It is cold → He is busy 등)
+// 학생이 새 술부를 알 수 없으므로 술부 힌트 토큰을 덧붙인다.
+export function displayTokens(coord, steps) {
+  const next = applySteps(coord, steps);
+  const before = predOf(coord);
+  const after = predOf(next);
+  if (after !== before) return [...steps, { axis: "pred", value: after, hint: true }];
+  return steps;
+}
 
 // 한 걸음(step) = {axis, value, prevValue}. steps 배열을 좌표에 적용.
 export function applySteps(coord, steps) {

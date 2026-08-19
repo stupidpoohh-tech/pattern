@@ -20,6 +20,10 @@ const SNAPSHOTS = {
   "should-it-modal-aff": "It should be ready.",
   "whbe-she-wh-when": "When is she coming?",
   "whdo-it-wh-how": "How does it work?",
+  "passget-it-past-aff": "It got broken.",
+  "passget-she-present-q": "Does she get invited?",
+  "keep-it-present-aff": "It keeps raining.",
+  "keep-she-past-neg": "She didn't keep coming.",
 };
 
 test("문장표 스냅샷 문장", () => {
@@ -28,8 +32,8 @@ test("문장표 스냅샷 문장", () => {
   }
 });
 
-test("좌표 공간 전체(324문장)가 채워져 있다", () => {
-  assert.equal(Object.keys(SENTENCES).length, 324);
+test("좌표 공간 전체(396문장)가 채워져 있다", () => {
+  assert.equal(Object.keys(SENTENCES).length, 396);
   for (const set of SETS)
     for (const su of SUBJECTS)
       for (const t of set.tenses)

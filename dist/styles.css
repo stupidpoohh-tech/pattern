@@ -81,6 +81,12 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 .token-tense { background: var(--tense-bg); color: var(--tense-ink); }
 .token-form { background: var(--form-bg); color: var(--form-ink); }
 .token-series { background: var(--series-bg); color: var(--series-ink); }
+.token-pred {
+  background: transparent;
+  border: 1.5px dashed var(--line);
+  color: var(--muted);
+  font-weight: 500;
+}
 
 .stage-hint {
   padding: 1rem;
@@ -130,39 +136,44 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
 }
 .opt-on { border-color: var(--accent); color: var(--accent); font-weight: 700; background: #f0f6f4; }
 
-.opt-sm { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
-
-/* 범위 갈래 카드 */
-.group-grid {
+/* 범위 매트릭스 (열: be | 일반동사, 행: 문법 갈래) */
+.matrix {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-  align-items: start;
+  grid-template-columns: 4.2rem 1fr 1fr;
+  gap: 0.35rem;
+  align-items: stretch;
 }
-.group-card {
-  border: 1.5px solid var(--line);
-  border-radius: 12px;
-  background: #fff;
-  overflow: hidden;
+.matrix-head {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 0.4rem 0.2rem;
+  border-radius: 8px;
 }
-.group-on { border-color: var(--accent); background: #f0f6f4; }
-.group-head {
-  width: 100%;
+.matrix-head:active { background: #f0eee7; }
+.matrix-rowhead { text-align: left; padding-left: 0.4rem; }
+.matrix-cell {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.55rem 0.75rem;
-  font-size: 0.95rem;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.5rem 0.2rem;
   color: var(--muted);
+  font-size: 0.85rem;
 }
-.group-on .group-head { color: var(--accent); font-weight: 700; }
-.group-check { font-size: 0.85rem; }
-.group-tenses {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  padding: 0 0.6rem 0.6rem;
+.cell-on {
+  border-color: var(--accent);
+  background: #f0f6f4;
+  color: var(--accent);
+  font-weight: 700;
 }
+.cell-check { width: 0.9rem; text-align: center; }
+.cell-count { font-variant-numeric: tabular-nums; }
+.cell-span { grid-column: span 2; display: flex; }
+.cell-span .matrix-cell { flex: 1; }
 
 .primary-btn {
   padding: 0.8rem 1.2rem;

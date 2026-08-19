@@ -19,6 +19,8 @@ const TABLE = {
     label: "be동사",
     tenses: ["present", "past", "will", "goingto"],
     pred: { I: "late", she: "lovely", he: "busy", it: "cold", we: "ready", they: "here" },
+    futurePred: { she: "fine" }, // will/goingto에서 술부 교체
+
     rows: {
       present: {
         I: ["I am late.", "I'm not late.", "Am I late?"],
@@ -58,6 +60,8 @@ const TABLE = {
     label: "일반동사",
     tenses: ["present", "past", "will", "goingto"],
     pred: { I: "know you", she: "like it", he: "know it", it: "work", we: "need it", they: "like it" },
+    futurePred: { I: "see you", he: "come" }, // will/goingto에서 술부 교체
+
     rows: {
       present: {
         I: ["I know you.", "I don't know you.", "Do I know you?"],
@@ -139,6 +143,54 @@ const TABLE = {
       },
     },
   },
+  // get 수동 — be 수동(pass)의 일반동사(do 조작) 짝. 수동×일반동사 칸을 채운다.
+  passget: {
+    label: "get 수동",
+    tenses: ["present", "past"],
+    pred: { I: "invited", she: "invited", he: "invited", it: "broken", we: "invited", they: "invited" },
+    rows: {
+      present: {
+        I: ["I get invited.", "I don't get invited.", "Do I get invited?"],
+        she: ["She gets invited.", "She doesn't get invited.", "Does she get invited?"],
+        he: ["He gets invited.", "He doesn't get invited.", "Does he get invited?"],
+        it: ["It gets broken.", "It doesn't get broken.", "Does it get broken?"],
+        we: ["We get invited.", "We don't get invited.", "Do we get invited?"],
+        they: ["They get invited.", "They don't get invited.", "Do they get invited?"],
+      },
+      past: {
+        I: ["I got invited.", "I didn't get invited.", "Did I get invited?"],
+        she: ["She got invited.", "She didn't get invited.", "Did she get invited?"],
+        he: ["He got invited.", "He didn't get invited.", "Did he get invited?"],
+        it: ["It got broken.", "It didn't get broken.", "Did it get broken?"],
+        we: ["We got invited.", "We didn't get invited.", "Did we get invited?"],
+        they: ["They got invited.", "They didn't get invited.", "Did they get invited?"],
+      },
+    },
+  },
+  // keep -ing — be 진행(prog)과 같은 -ing 어휘를 do 조작으로 굴린다. 진행×일반동사 칸을 채운다.
+  keep: {
+    label: "keep -ing",
+    tenses: ["present", "past"],
+    pred: { I: "working", she: "coming", he: "waiting", it: "raining", we: "waiting", they: "coming" },
+    rows: {
+      present: {
+        I: ["I keep working.", "I don't keep working.", "Do I keep working?"],
+        she: ["She keeps coming.", "She doesn't keep coming.", "Does she keep coming?"],
+        he: ["He keeps waiting.", "He doesn't keep waiting.", "Does he keep waiting?"],
+        it: ["It keeps raining.", "It doesn't keep raining.", "Does it keep raining?"],
+        we: ["We keep waiting.", "We don't keep waiting.", "Do we keep waiting?"],
+        they: ["They keep coming.", "They don't keep coming.", "Do they keep coming?"],
+      },
+      past: {
+        I: ["I kept working.", "I didn't keep working.", "Did I keep working?"],
+        she: ["She kept coming.", "She didn't keep coming.", "Did she keep coming?"],
+        he: ["He kept waiting.", "He didn't keep waiting.", "Did he keep waiting?"],
+        it: ["It kept raining.", "It didn't keep raining.", "Did it keep raining?"],
+        we: ["We kept waiting.", "We didn't keep waiting.", "Did we keep waiting?"],
+        they: ["They kept coming.", "They didn't keep coming.", "Did they keep coming?"],
+      },
+    },
+  },
   perfbe: {
     label: "완료 be",
     tenses: ["perf"],
@@ -205,7 +257,8 @@ const TABLE = {
     tenses: ["wh"],
     forms: ["where", "when", "why"],
     formHeads: ["Where", "When", "Why"],
-    pred: { I: "I", she: "she", he: "he", it: "it", we: "we", they: "they" },
+    // 의문사 세트는 술부 힌트를 쓰지 않는다 (모든 주어를 같은 묶음으로 둠)
+    pred: { I: "wh", she: "wh", he: "wh", it: "wh", we: "wh", they: "wh" },
     rows: {
       wh: {
         I: ["Where am I?", "When am I free?", "Why am I here?"],
@@ -222,7 +275,7 @@ const TABLE = {
     tenses: ["wh"],
     forms: ["what", "how", "why"],
     formHeads: ["What", "How", "Why"],
-    pred: { I: "I", she: "she", he: "he", it: "it", we: "we", they: "they" },
+    pred: { I: "wh", she: "wh", he: "wh", it: "wh", we: "wh", they: "wh" },
     rows: {
       wh: {
         I: ["What do I do?", "How do I know?", "Why do I need it?"],
@@ -248,6 +301,7 @@ function build() {
       forms,
       formHeads: set.formHeads || STD_FORM_HEADS,
       pred: set.pred,
+      futurePred: set.futurePred || {},
     });
     for (const tense of set.tenses)
       for (const subject of SUBJECTS) {

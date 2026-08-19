@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { SUBJECTS, SETS, SENTENCES } from "./data.js";
+import { SUBJECTS, SENTENCES } from "./data.js";
 import {
   SET_BY_ID,
   keyOf,
@@ -10,16 +10,19 @@ import {
   scopeCoords,
   parsePath,
   tokenLabel,
+  displayTokens,
   TENSE_LABELS,
 } from "./engine.js";
 
-function TokenChips({ steps }) {
+function TokenChips({ tokens }) {
   return (
     <div className="tokens" aria-label="지시">
-      {steps.map((s, i) => (
+      {tokens.map((s, i) => (
         <React.Fragment key={i}>
-          {i > 0 && <span className="token-plus">+</span>}
-          <span className={`token token-${s.axis}`}>{tokenLabel(s)}</span>
+          {i > 0 && !s.hint && <span className="token-plus">+</span>}
+          <span className={`token ${s.hint ? "token-pred" : `token-${s.axis}`}`}>
+            {s.hint ? `(${tokenLabel(s)})` : tokenLabel(s)}
+          </span>
         </React.Fragment>
       ))}
     </div>
@@ -63,7 +66,7 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
 
       <main className="stage-center">
         <p key={keyOf(coord)} className="sentence fade-in">{sentenceOf(coord)}</p>
-        {phase === "instruction" && <TokenChips steps={steps} />}
+        {phase === "instruction" && <TokenChips tokens={displayTokens(coord, steps)} />}
       </main>
 
       <footer className="stage-hint">
@@ -73,36 +76,55 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   );
 }
 
-// ---------- 갈래 (홈 카드와 문장표 탭이 공유) ----------
+// ---------- 범위 매트릭스 (열: be | 일반동사, 행: 문법 갈래) ----------
 
-const GROUPS = [
-  { id: "be", title: "be동사", sets: ["be"] },
-  { id: "verb", title: "일반동사", sets: ["verb"] },
-  { id: "prog", title: "진행", sets: ["prog"] },
-  { id: "pass", title: "수동", sets: ["pass"] },
-  { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
-  { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
-  { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
+const MATRIX_COLS = [
+  { id: "be", title: "be" },
+  { id: "verb", title: "일반동사" },
 ];
 
-// 갈래의 시제 선택지 (여러 시제를 가진 세트만 해당)
-const groupTenses = (g) => {
-  const t = SET_BY_ID[g.sets[0]].tenses;
-  return t.length > 1 ? t : null;
-};
+// 각 칸(cell) = { 세트id: [시제...] }
+const MATRIX_ROWS = [
+  { id: "present", title: "현재", cells: { be: { be: ["present"] }, verb: { verb: ["present"] } } },
+  { id: "past", title: "과거", cells: { be: { be: ["past"] }, verb: { verb: ["past"] } } },
+  { id: "future", title: "미래", cells: { be: { be: ["will", "goingto"] }, verb: { verb: ["will", "goingto"] } } },
+  { id: "pass", title: "수동", cells: { be: { pass: ["present", "past"] }, verb: { passget: ["present", "past"] } } },
+  { id: "prog", title: "진행", cells: { be: { prog: ["present", "past"] }, verb: { keep: ["present", "past"] } } },
+  { id: "perf", title: "완료", cells: { be: { perfbe: ["perf"] }, verb: { perfverb: ["perf"] } } },
+  { id: "wh", title: "의문사", cells: { be: { whbe: ["wh"] }, verb: { whdo: ["wh"] } } },
+];
 
-// 갈래별 선택(그룹 id → 시제 배열) → 엔진 scopes(세트 id → 시제 배열)
-function buildScopes(groupSel) {
+// 조동사(can·should)는 be/일반 열 구분이 없어 전폭 칸으로 둔다
+const MODAL_SCOPE = { can: ["modal"], should: ["modal"] };
+
+const cellId = (rowId, colId) => `${rowId}:${colId}`;
+const cellScope = (rowId, colId) =>
+  rowId === "modal" ? MODAL_SCOPE : MATRIX_ROWS.find((r) => r.id === rowId).cells[colId];
+
+// 선택된 칸들 → 엔진 scopes(세트 id → 시제 배열, 합집합)
+function buildScopes(selected) {
   const scopes = {};
-  for (const [gid, tenses] of Object.entries(groupSel)) {
-    const g = GROUPS.find((x) => x.id === gid);
-    for (const setId of g.sets)
-      scopes[setId] = groupTenses(g) ? tenses : SET_BY_ID[setId].tenses;
+  for (const id of selected) {
+    const [rowId, colId] = id.split(":");
+    for (const [setId, tenses] of Object.entries(cellScope(rowId, colId))) {
+      const cur = scopes[setId] || [];
+      scopes[setId] = [...new Set([...cur, ...tenses])];
+    }
   }
   return scopes;
 }
 
 // ---------- 전체 문장표 (수업용 열람 화면) ----------
+
+const TABLE_TABS = [
+  { id: "be", title: "be동사", sets: ["be"] },
+  { id: "verb", title: "일반동사", sets: ["verb"] },
+  { id: "prog", title: "진행", sets: ["prog", "keep"], headings: ["be 진행", "keep -ing"] },
+  { id: "pass", title: "수동", sets: ["pass", "passget"], headings: ["be 수동", "get 수동"] },
+  { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
+  { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
+  { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
+];
 
 function SentenceTable({ cols, colLabels, cellOf }) {
   return (
@@ -129,7 +151,7 @@ function SentenceTable({ cols, colLabels, cellOf }) {
 
 function TableScreen({ onHome }) {
   const [tabId, setTabId] = useState("be");
-  const tab = GROUPS.find((t) => t.id === tabId);
+  const tab = TABLE_TABS.find((t) => t.id === tabId);
 
   return (
     <div className="page page-wide">
@@ -139,7 +161,7 @@ function TableScreen({ onHome }) {
       </header>
 
       <nav className="tab-row">
-        {GROUPS.map((t) => (
+        {TABLE_TABS.map((t) => (
           <button
             key={t.id}
             className={`tab ${t.id === tabId ? "tab-on" : ""}`}
@@ -171,47 +193,38 @@ function TableScreen({ onHome }) {
   );
 }
 
-// ---------- 홈 (설정 + 시작) ----------
+// ---------- 홈 (범위 매트릭스 + 시작) ----------
 
-const DEFAULT_CFG = {
-  groups: { be: ["present", "past"] }, // 그룹 id → 시제 선택
-  width: 1,
-  repeat: false,
-};
+const DEFAULT_SELECTED = ["present:be", "past:be"];
 
 function HomeScreen({ onStartWalk, onTable }) {
-  const [cfg, setCfg] = useState(DEFAULT_CFG);
+  const [selected, setSelected] = useState(() => new Set(DEFAULT_SELECTED));
+  const [width, setWidth] = useState(1);
+  const [repeat, setRepeat] = useState(false);
 
-  const toggleGroup = (g) =>
-    setCfg((c) => {
-      const groups = { ...c.groups };
-      if (groups[g.id]) {
-        if (Object.keys(groups).length === 1) return c; // 최소 1개
-        delete groups[g.id];
+  const toggleCells = (ids) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      const allOn = ids.every((id) => next.has(id));
+      if (allOn) {
+        ids.forEach((id) => next.delete(id));
+        if (next.size === 0) return prev; // 최소 1칸
       } else {
-        groups[g.id] = groupTenses(g) || [];
+        ids.forEach((id) => next.add(id));
       }
-      return { ...c, groups };
+      return next;
     });
 
-  const toggleTense = (g, t) =>
-    setCfg((c) => {
-      const cur = c.groups[g.id];
-      const has = cur.includes(t);
-      if (has && cur.length === 1) return c; // 최소 1개
-      return {
-        ...c,
-        groups: { ...c.groups, [g.id]: has ? cur.filter((x) => x !== t) : [...cur, t] },
-      };
-    });
+  const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
+  const colIds = (colId) => MATRIX_ROWS.map((r) => cellId(r.id, colId));
 
-  const count = scopeCoords(buildScopes(cfg.groups)).length;
+  const count = scopeCoords(buildScopes(selected)).length;
 
   const Radio = ({ options, value, onChange, render }) => (
     <div className="opt-row">
       {options.map((o) => (
         <button
-          key={o}
+          key={String(o)}
           className={`opt ${value === o ? "opt-on" : ""}`}
           onClick={() => onChange(o)}
         >
@@ -220,6 +233,16 @@ function HomeScreen({ onStartWalk, onTable }) {
       ))}
     </div>
   );
+
+  const Cell = ({ id, count }) => {
+    const on = selected.has(id);
+    return (
+      <button className={`matrix-cell ${on ? "cell-on" : ""}`} onClick={() => toggleCells([id])}>
+        <span className="cell-check">{on ? "✓" : ""}</span>
+        <span className="cell-count">{count}</span>
+      </button>
+    );
+  };
 
   return (
     <div className="page">
@@ -230,57 +253,53 @@ function HomeScreen({ onStartWalk, onTable }) {
         <h2>자동 산책</h2>
 
         <div className="field">
-          <span className="field-label">범위 (복수 선택 — 선택한 문장 전체가 한 세션)</span>
-          <div className="group-grid">
-            {GROUPS.map((g) => {
-              const sel = cfg.groups[g.id];
-              const tenses = groupTenses(g);
-              return (
-                <div key={g.id} className={`group-card ${sel ? "group-on" : ""}`}>
-                  <button className="group-head" onClick={() => toggleGroup(g)}>
-                    <span className="group-title">{g.title}</span>
-                    <span className="group-check">{sel ? "✓" : ""}</span>
-                  </button>
-                  {sel && tenses && (
-                    <div className="group-tenses">
-                      {tenses.map((t) => (
-                        <button
-                          key={t}
-                          className={`opt opt-sm ${sel.includes(t) ? "opt-on" : ""}`}
-                          onClick={() => toggleTense(g, t)}
-                        >
-                          {TENSE_LABELS[t]}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          <span className="field-label">범위 — 칸·행·열을 탭해서 고르세요 (숫자는 문장 수)</span>
+          <div className="matrix">
+            <span className="matrix-corner" />
+            {MATRIX_COLS.map((c) => (
+              <button key={c.id} className="matrix-head" onClick={() => toggleCells(colIds(c.id))}>
+                {c.title}
+              </button>
+            ))}
+            {MATRIX_ROWS.map((r) => (
+              <React.Fragment key={r.id}>
+                <button className="matrix-head matrix-rowhead" onClick={() => toggleCells(rowIds(r.id))}>
+                  {r.title}
+                </button>
+                {MATRIX_COLS.map((c) => (
+                  <Cell
+                    key={c.id}
+                    id={cellId(r.id, c.id)}
+                    count={scopeCoords(cellScope(r.id, c.id)).length}
+                  />
+                ))}
+              </React.Fragment>
+            ))}
+            <button className="matrix-head matrix-rowhead" onClick={() => toggleCells(["modal:all"])}>
+              조동사
+            </button>
+            <div className="cell-span">
+              <Cell id="modal:all" count={scopeCoords(MODAL_SCOPE).length} />
+            </div>
           </div>
         </div>
 
         <div className="field">
           <span className="field-label">걸음 폭</span>
-          <Radio
-            options={[1, 2, 3]}
-            value={cfg.width}
-            onChange={(v) => setCfg((c) => ({ ...c, width: v }))}
-            render={(o) => `${o}축`}
-          />
+          <Radio options={[1, 2, 3]} value={width} onChange={setWidth} render={(o) => `${o}축`} />
         </div>
 
         <div className="field">
           <span className="field-label">반복 노출</span>
           <Radio
             options={[false, true]}
-            value={cfg.repeat}
-            onChange={(v) => setCfg((c) => ({ ...c, repeat: v }))}
+            value={repeat}
+            onChange={setRepeat}
             render={(o) => (o ? "켬 · 같은 문장 다시 나올 수 있음" : "끔 · 모든 문장 한 번씩")}
           />
         </div>
 
-        <button className="primary-btn" onClick={() => onStartWalk(cfg)}>
+        <button className="primary-btn" onClick={() => onStartWalk({ selected, width, repeat })}>
           산책 시작 · {count}문장
         </button>
       </section>
@@ -349,16 +368,16 @@ export default function App() {
   return (
     <HomeScreen
       onTable={() => setRoute({ name: "table" })}
-      onStartWalk={(cfg) => {
-        const scopes = buildScopes(cfg.groups);
+      onStartWalk={({ selected, width, repeat }) => {
+        const scopes = buildScopes(selected);
         const coords = scopeCoords(scopes);
         // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
         const firstForms = coords.filter((c) => c.form === SET_BY_ID[c.series].forms[0]);
         const start = pickRandom(firstForms.length ? firstForms : coords);
         const visited = new Set([keyOf(start)]);
-        const ecfg = { scopes, width: cfg.width };
+        const ecfg = { scopes, width };
         const getSteps = (i, coord, history) => {
-          const steps = cfg.repeat
+          const steps = repeat
             ? randomSteps(coord, ecfg, history)
             : coverageSteps(coord, ecfg, history, visited);
           if (steps) visited.add(keyOf(applySteps(coord, steps)));
