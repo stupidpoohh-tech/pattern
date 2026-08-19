@@ -130,16 +130,17 @@ code {
   font-size: clamp(1.1rem, 4.5vw, 1.4rem);
 }
 
-/* ---------- 문법 슬롯 색상 (be/do/will/have/can/의문사) ----------
-   같은 슬롯의 긍정·부정형(is/isn't, do/don't …)은 같은 색으로 묶어
-   "슬롯 값이 바뀌었을 뿐 슬롯 자체는 같다"는 걸 시각적으로 보여준다. */
+/* ---------- 문법 슬롯 색상 (be/do/will/have/can/의문사/부정) ----------
+   어간은 슬롯색, 부정 표지(n't/not)는 빨강으로 분리해
+   "슬롯은 그대로, 부정 조작이 더해졌다"는 구조를 보여준다: is|n't, can|'t. */
 :root {
   --gram-be: #1d5fbf;
   --gram-do: #b1560c;
   --gram-future: #6d28d9;
   --gram-perfect: #0f766e;
-  --gram-modal: #be123c;
+  --gram-modal: #c026d3;
   --gram-wh: #15803d;
+  --gram-neg: #dc2626;
 }
 .gram { font-weight: 800; }
 .gram-be { color: var(--gram-be); }
@@ -148,6 +149,7 @@ code {
 .gram-perfect { color: var(--gram-perfect); }
 .gram-modal { color: var(--gram-modal); }
 .gram-wh { color: var(--gram-wh); }
+.gram-neg { color: var(--gram-neg); text-decoration: underline; text-underline-offset: 0.15em; }
 
 .gram-legend {
   display: flex;
@@ -169,6 +171,7 @@ code {
 .gram-dot-perfect { background: var(--gram-perfect); }
 .gram-dot-modal { background: var(--gram-modal); }
 .gram-dot-wh { background: var(--gram-wh); }
+.gram-dot-neg { background: var(--gram-neg); }
 
 .stage-hint {
   padding: 1rem;

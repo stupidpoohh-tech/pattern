@@ -27,7 +27,7 @@ function GrammarText({ text }) {
   );
 }
 
-const GRAM_LABELS = { be: "be", do: "do", future: "will·going to", perfect: "have·has", modal: "can·should", wh: "의문사" };
+const GRAM_LABELS = { be: "be", do: "do", future: "will·going to", perfect: "have·has", modal: "can·should", wh: "의문사", neg: "부정 (not·n't)" };
 
 function GrammarLegend() {
   return (
