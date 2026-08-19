@@ -130,7 +130,7 @@ function DoneScreen({ count, onHome }) {
     <div className="stage" onClick={onHome}>
       <main className="stage-center">
         <div className="done-mark fade-in">✓</div>
-        <p className="done-text fade-in">산책 완료 · {count}문장</p>
+        <p className="done-text fade-in">학습 완료 · {count}문장</p>
       </main>
     </div>
   );
@@ -239,10 +239,10 @@ function TableScreen({ onHome, onWalk }) {
 
       <div className="table-walk-row">
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
-          이 범위로 짧게 산책 · {Math.min(15, tabCount)}문장
+          이 범위로 짧게 학습 · {Math.min(15, tabCount)}문장
         </button>
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "full")}>
-          전체 산책 · {tabCount}문장
+          전체 학습 · {tabCount}문장
         </button>
       </div>
 
@@ -267,9 +267,62 @@ function TableScreen({ onHome, onWalk }) {
   );
 }
 
+// ---------- 공용 아이콘 · 푸터 ----------
+
+const IconSwap = () => (
+  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 8h13" /><path d="M14 4.5 17.5 8 14 11.5" />
+    <path d="M20 16H7" /><path d="M10 12.5 6.5 16 10 19.5" />
+  </svg>
+);
+
+const IconHome = () => (
+  <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3.5 10.5 12 4l8.5 6.5" />
+    <path d="M5.5 9.8V19a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.8" />
+    <path d="M9.8 20v-5.5h4.4V20" />
+  </svg>
+);
+
+function SiteFooter() {
+  return (
+    <footer className="site-footer">
+      <span className="credit">제작자 DADA</span>
+      <a
+        className="icon-btn icon-btn-sm"
+        href="https://dada-portfolio.stupidpoohh.workers.dev/"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="제작자 홈페이지"
+        aria-label="제작자 홈페이지"
+      >
+        <IconHome />
+      </a>
+    </footer>
+  );
+}
+
 // ---------- 홈 (범위 매트릭스 + 시작) ----------
 
 const DEFAULT_SELECTED = ["present:be", "past:be"];
+
+function Segmented({ options, value, onChange }) {
+  return (
+    <div className="seg" role="group">
+      {options.map((o, i) => (
+        <button
+          key={i}
+          className={`seg-btn ${value === o.v ? "seg-on" : ""}`}
+          onClick={() => onChange(o.v)}
+        >
+          {o.t}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [selected, setSelected] = useState(() => new Set(DEFAULT_SELECTED));
@@ -296,20 +349,6 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
 
   const count = scopeCoords(buildScopes(selected)).length;
 
-  const Radio = ({ options, value, onChange, render }) => (
-    <div className="opt-row">
-      {options.map((o) => (
-        <button
-          key={String(o)}
-          className={`opt ${value === o ? "opt-on" : ""}`}
-          onClick={() => onChange(o)}
-        >
-          {render ? render(o) : o}
-        </button>
-      ))}
-    </div>
-  );
-
   const Cell = ({ id, count }) => {
     const on = selected.has(id);
     return (
@@ -322,11 +361,16 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
 
   return (
     <div className="page">
-      <h1 className="app-title">한 걸음 산책</h1>
+      <h1 className="app-title">문장 패턴 학습</h1>
       <p className="app-sub">문장을 입으로 옮기고, 탭해서 확인하세요.</p>
 
       <section className="card">
-        <h2>자동 산책</h2>
+        <div className="card-head">
+          <h2>자동 학습</h2>
+          <button className="icon-btn" onClick={onVocab} title="어휘 바꾸기" aria-label="어휘 바꾸기">
+            <IconSwap />
+          </button>
+        </div>
 
         <div className="field">
           <span className="field-label">범위 — 칸·행·열을 탭해서 고르세요 (숫자는 문장 수)</span>
@@ -360,51 +404,79 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
           </div>
         </div>
 
-        <div className="field">
-          <span className="field-label">세션</span>
-          <Radio
-            options={["short", "full"]}
-            value={length}
-            onChange={setLength}
-            render={(o) => (o === "short" ? "짧게 · 랜덤 15문장" : `전체 · ${count}문장`)}
-          />
-        </div>
+        <div className="settings">
+          <div className="set-row">
+            <span className="set-label">세션</span>
+            <Segmented
+              options={[
+                { v: "short", t: `짧게 · ${Math.min(15, count)}` },
+                { v: "full", t: `전체 · ${count}` },
+              ]}
+              value={length}
+              onChange={setLength}
+            />
+          </div>
 
-        <div className="field">
-          <span className="field-label">걸음 폭</span>
-          <Radio options={[1, 2, 3]} value={width} onChange={setWidth} render={(o) => `${o}축`} />
-        </div>
+          <div className="set-row">
+            <span className="set-label">걸음 폭</span>
+            <div className="stepper">
+              <span className="stepper-val">{width}축</span>
+              <span className="stepper-arrows">
+                <button
+                  className="stepper-btn"
+                  onClick={() => setWidth((w) => Math.min(3, w + 1))}
+                  disabled={width >= 3}
+                  aria-label="걸음 폭 올리기"
+                >
+                  ▲
+                </button>
+                <button
+                  className="stepper-btn"
+                  onClick={() => setWidth((w) => Math.max(1, w - 1))}
+                  disabled={width <= 1}
+                  aria-label="걸음 폭 내리기"
+                >
+                  ▼
+                </button>
+              </span>
+            </div>
+          </div>
 
-        <div className="field">
-          <span className="field-label">반복 노출</span>
-          <Radio
-            options={[false, true]}
-            value={repeat}
-            onChange={setRepeat}
-            render={(o) => (o ? "켬 · 같은 문장 다시 나올 수 있음" : "끔 · 모든 문장 한 번씩")}
-          />
-        </div>
+          <div className="set-row">
+            <span className="set-label">반복 노출</span>
+            <button
+              className={`switch ${repeat ? "switch-on" : ""}`}
+              onClick={() => setRepeat((r) => !r)}
+              aria-pressed={repeat}
+            >
+              <span className="switch-track"><span className="switch-knob" /></span>
+              <span className="switch-text">{repeat ? "ON" : "OFF"}</span>
+            </button>
+          </div>
 
-        <div className="field">
-          <span className="field-label">지시 표시</span>
-          <Radio
-            options={[false, true]}
-            value={koMode}
-            onChange={setKoMode}
-            render={(o) => (o ? "한국어 해석 · (그녀는 아름답지 않다)" : "토큰 · (not)")}
-          />
+          <div className="set-row">
+            <span className="set-label">지시</span>
+            <Segmented
+              options={[
+                { v: false, t: "토큰" },
+                { v: true, t: "한국어" },
+              ]}
+              value={koMode}
+              onChange={setKoMode}
+            />
+          </div>
         </div>
 
         <button
           className="primary-btn"
           onClick={() => onStartWalk({ scopes: buildScopes(selected), width, repeat, length, koMode })}
         >
-          산책 시작 · {length === "short" ? Math.min(15, count) : count}문장
+          학습 시작 · {length === "short" ? Math.min(15, count) : count}문장
         </button>
       </section>
 
       <button className="ghost-btn wide" onClick={onTable}>전체 문장표 보기</button>
-      <button className="ghost-btn wide" onClick={onVocab}>어휘 바꾸기 (be동사 형용사)</button>
+      <SiteFooter />
     </div>
   );
 }
@@ -465,6 +537,7 @@ function VocabScreen({ onHome }) {
         <button className="primary-btn" onClick={save}>저장</button>
         <button className="ghost-btn" onClick={reset}>기본값 복원</button>
       </div>
+      <SiteFooter />
     </div>
   );
 }

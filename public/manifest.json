@@ -1,12 +1,12 @@
 {
-  "name": "한 걸음 산책",
-  "short_name": "한 걸음 산책",
-  "description": "영어 문장 변형 드릴 — 발화와 탭만으로 걷는 문장 산책",
+  "name": "문장 패턴 학습",
+  "short_name": "문장 패턴 학습",
+  "description": "영어 문장 변형 드릴 — 발화와 탭만으로 하는 문장 패턴 학습",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#fbfaf7",
-  "theme_color": "#fbfaf7",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "lang": "ko",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
