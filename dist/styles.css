@@ -152,6 +152,63 @@ code { background: #f0eee7; padding: 0.1em 0.35em; border-radius: 4px; font-size
   background: #fff;
 }
 .empty-note { color: var(--muted); }
+.ghost-btn.wide { width: 100%; padding: 0.8rem; }
+
+/* ---------- 전체 문장표 ---------- */
+
+.page-wide { max-width: 44rem; }
+
+.table-header { display: flex; align-items: center; gap: 0.8rem; }
+.table-header .page-title { font-size: 1.3rem; }
+
+.tab-row {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+  -webkit-overflow-scrolling: touch;
+}
+.tab {
+  flex-shrink: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--muted);
+}
+.tab-on { border-color: var(--accent); color: var(--accent); font-weight: 700; background: #f0f6f4; }
+
+.table-section { display: flex; flex-direction: column; gap: 0.5rem; }
+.table-section h2 { font-size: 1.05rem; }
+.table-note { color: var(--muted); font-size: 0.85rem; margin-top: -0.5rem; }
+
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.sentence-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 30rem;
+  background: #fff;
+  font-size: 0.95rem;
+}
+.sentence-table th,
+.sentence-table td {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  white-space: nowrap;
+}
+.sentence-table thead th {
+  background: #f0eee7;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+.sentence-table tbody th {
+  background: #f7f5ef;
+  font-weight: 700;
+  width: 3rem;
+}
 .error-note {
   border: 1px solid #ecc8c3;
   background: #fdf3f2;

@@ -1,16 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { SUBJECTS, TENSES } from "./data.js";
+import React, { useMemo, useRef, useState } from "react";
+import { SUBJECTS, FORMS, RANGE_TENSES, SETS, SENTENCES, WH } from "./data.js";
 import {
+  SET_BY_ID,
   keyOf,
   sentenceOf,
   applySteps,
   randomSteps,
+  allowedTenses,
   parsePath,
   tokenLabel,
+  TENSE_LABELS,
 } from "./engine.js";
 
-const TENSE_KO = { present: "현재", past: "과거", will: "will", goingto: "going to" };
-const SET_KO = { be: "be동사", verb: "일반동사", mixed: "혼합" };
+const FORM_HEAD = { aff: "긍정", neg: "부정", q: "의문" };
 
 function TokenChips({ steps }) {
   return (
@@ -31,11 +33,13 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   const [coord, setCoord] = useState(initialCoord);
   const [phase, setPhase] = useState("instruction"); // instruction | revealed
   const [stepIdx, setStepIdx] = useState(0);
-  const [steps, setSteps] = useState(() => getSteps(0, initialCoord, null));
+  const [steps, setSteps] = useState(() => getSteps(0, initialCoord, []));
+  const historyRef = useRef([]);
 
   const onTapStage = () => {
     if (phase === "instruction") {
       // 정답 공개 — 이 문장이 새로운 현재 문장이 된다
+      historyRef.current.push(steps);
       setCoord(applySteps(coord, steps));
       setPhase("revealed");
       return;
@@ -43,7 +47,7 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
     // 다음 걸음으로
     const nextIdx = stepIdx + 1;
     if (nextIdx >= totalSteps) return onEnd();
-    const next = getSteps(nextIdx, coord, steps);
+    const next = getSteps(nextIdx, coord, historyRef.current);
     if (!next || next.length === 0) return onEnd();
     setStepIdx(nextIdx);
     setSteps(next);
@@ -70,18 +74,131 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   );
 }
 
+// ---------- 전체 문장표 (수업용 열람 화면) ----------
+
+const TABLE_TABS = [
+  { id: "be", title: "be동사", sections: [{ set: "be" }] },
+  { id: "verb", title: "일반동사", sections: [{ set: "verb" }] },
+  { id: "prog", title: "진행", sections: [{ set: "prog" }] },
+  { id: "pass", title: "수동", sections: [{ set: "pass" }] },
+  {
+    id: "perf",
+    title: "완료",
+    sections: [{ set: "perfbe", heading: "be동사" }, { set: "perfverb", heading: "일반동사" }],
+  },
+  {
+    id: "modal",
+    title: "조동사",
+    sections: [{ set: "can", heading: "can" }, { set: "should", heading: "should" }],
+  },
+  { id: "wh", title: "의문사" },
+];
+
+function SentenceTable({ cols, colLabels, cellOf }) {
+  return (
+    <div className="table-wrap">
+      <table className="sentence-table">
+        <thead>
+          <tr>
+            <th />
+            {cols.map((c, i) => <th key={c}>{colLabels[i]}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {SUBJECTS.map((s) => (
+            <tr key={s}>
+              <th>{s}</th>
+              {cols.map((c) => <td key={c}>{cellOf(s, c)}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function TableScreen({ onHome }) {
+  const [tabId, setTabId] = useState("be");
+  const tab = TABLE_TABS.find((t) => t.id === tabId);
+
+  return (
+    <div className="page page-wide">
+      <header className="table-header">
+        <button className="ghost-btn" onClick={onHome}>← 처음으로</button>
+        <h1 className="page-title">전체 문장표</h1>
+      </header>
+
+      <nav className="tab-row">
+        {TABLE_TABS.map((t) => (
+          <button
+            key={t.id}
+            className={`tab ${t.id === tabId ? "tab-on" : ""}`}
+            onClick={() => setTabId(t.id)}
+          >
+            {t.title}
+          </button>
+        ))}
+      </nav>
+
+      {tab.id === "wh" ? (
+        <>
+          <p className="table-note">긍정/부정/의문 축과 별개 세트 · 36문장</p>
+          {WH.map((w) => (
+            <section className="table-section" key={w.id}>
+              <h2>{w.label}</h2>
+              <SentenceTable
+                cols={w.cols.map((_, i) => i)}
+                colLabels={w.cols}
+                cellOf={(s, i) => w.rows[s][i]}
+              />
+            </section>
+          ))}
+        </>
+      ) : (
+        tab.sections.map(({ set: setId, heading }) => {
+          const set = SET_BY_ID[setId];
+          return set.tenses.map((tense) => (
+            <section className="table-section" key={setId + tense}>
+              <h2>
+                {heading || TENSE_LABELS[tense]}
+                {heading && set.tenses.length > 1 ? ` · ${TENSE_LABELS[tense]}` : ""}
+              </h2>
+              <SentenceTable
+                cols={FORMS}
+                colLabels={FORMS.map((f) => FORM_HEAD[f])}
+                cellOf={(s, f) => SENTENCES[`${setId}-${s}-${tense}-${f}`]}
+              />
+            </section>
+          ));
+        })
+      )}
+    </div>
+  );
+}
+
 // ---------- 홈 (설정 + 시작) ----------
 
 const DEFAULT_WALK = {
-  set: "be",
+  sets: ["be"],
   tenses: ["present", "past"],
   width: 1,
   weights: { subject: 2, tense: 2, form: 2 },
   length: 10,
 };
 
-function HomeScreen({ onStartWalk }) {
+const TENSE_KO = { present: "현재", past: "과거", will: "will", goingto: "going to" };
+const WEIGHT_KO = { 1: "적게", 2: "보통", 3: "많이" };
+const AXIS_KO = { subject: "주어", tense: "시제", form: "형태" };
+
+function HomeScreen({ onStartWalk, onTable }) {
   const [cfg, setCfg] = useState(DEFAULT_WALK);
+
+  const toggleSet = (id) =>
+    setCfg((c) => {
+      const has = c.sets.includes(id);
+      if (has && c.sets.length === 1) return c; // 최소 1개
+      return { ...c, sets: has ? c.sets.filter((x) => x !== id) : [...c.sets, id] };
+    });
 
   const toggleTense = (t) =>
     setCfg((c) => {
@@ -104,8 +221,8 @@ function HomeScreen({ onStartWalk }) {
     </div>
   );
 
-  const WEIGHT_KO = { 1: "적게", 2: "보통", 3: "많이" };
-  const AXIS_KO = { subject: "주어", tense: "시제", form: "형태" };
+  // 선택한 세트 중 시제 축이 여러 개인 세트가 있을 때만 시제 범위가 의미 있다
+  const tenseRangeRelevant = cfg.sets.some((id) => SET_BY_ID[id].tenses.length > 1);
 
   return (
     <div className="page">
@@ -115,28 +232,35 @@ function HomeScreen({ onStartWalk }) {
       <section className="card">
         <h2>자동 산책</h2>
         <div className="field">
-          <span className="field-label">세트</span>
-          <Radio
-            options={["be", "verb", "mixed"]}
-            value={cfg.set}
-            onChange={(v) => setCfg((c) => ({ ...c, set: v }))}
-            render={(o) => SET_KO[o]}
-          />
-        </div>
-        <div className="field">
-          <span className="field-label">시제 범위</span>
+          <span className="field-label">세트 (여러 개 선택하면 산책 중 세트 이동도 섞인다)</span>
           <div className="opt-row">
-            {TENSES.map((t) => (
+            {SETS.map((s) => (
               <button
-                key={t}
-                className={`opt ${cfg.tenses.includes(t) ? "opt-on" : ""}`}
-                onClick={() => toggleTense(t)}
+                key={s.id}
+                className={`opt ${cfg.sets.includes(s.id) ? "opt-on" : ""}`}
+                onClick={() => toggleSet(s.id)}
               >
-                {TENSE_KO[t]}
+                {s.label}
               </button>
             ))}
           </div>
         </div>
+        {tenseRangeRelevant && (
+          <div className="field">
+            <span className="field-label">시제 범위 (진행·수동은 현재/과거만 해당)</span>
+            <div className="opt-row">
+              {RANGE_TENSES.map((t) => (
+                <button
+                  key={t}
+                  className={`opt ${cfg.tenses.includes(t) ? "opt-on" : ""}`}
+                  onClick={() => toggleTense(t)}
+                >
+                  {TENSE_KO[t]}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="field">
           <span className="field-label">걸음 폭</span>
           <Radio
@@ -173,6 +297,8 @@ function HomeScreen({ onStartWalk }) {
         </div>
         <button className="primary-btn" onClick={() => onStartWalk(cfg)}>산책 시작</button>
       </section>
+
+      <button className="ghost-btn wide" onClick={onTable}>전체 문장표 보기</button>
     </div>
   );
 }
@@ -226,20 +352,24 @@ export default function App() {
       <DrillSession
         initialCoord={route.start}
         totalSteps={cfg.length}
-        getSteps={(i, coord, prevSteps) => randomSteps(coord, cfg, prevSteps)}
+        getSteps={(i, coord, history) => randomSteps(coord, cfg, history)}
         onEnd={goHome}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
     );
   }
 
+  if (route.name === "table") return <TableScreen onHome={goHome} />;
+
   return (
     <HomeScreen
+      onTable={() => setRoute({ name: "table" })}
       onStartWalk={(cfg) => {
+        const series = pickRandom(cfg.sets);
         const start = {
-          series: cfg.set === "mixed" ? pickRandom(["be", "verb"]) : cfg.set,
+          series,
           subject: pickRandom(SUBJECTS),
-          tense: pickRandom(cfg.tenses),
+          tense: pickRandom(allowedTenses(series, cfg.tenses)),
           form: "aff",
         };
         setRoute({ name: "walk", cfg, start });
