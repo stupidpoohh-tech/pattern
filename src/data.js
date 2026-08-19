@@ -1,9 +1,6 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 드릴 288문장 + 의문사 36문장.
+// 키: `${series}-${subject}-${tense}-${form}` — 총 324문장.
 export const SUBJECTS = ["I","she","he","it","we","they"];
-export const FORMS = ["aff","neg","q"];
-// 시제 범위 설정 UI에서 고를 수 있는 시제 (perf·modal은 세트 고유 시제라 항상 포함)
-export const RANGE_TENSES = ["present","past","will","goingto"];
 export const SETS = [
   {
     "id": "be",
@@ -13,6 +10,16 @@ export const SETS = [
       "past",
       "will",
       "goingto"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
     ],
     "pred": {
       "I": "late",
@@ -32,6 +39,16 @@ export const SETS = [
       "will",
       "goingto"
     ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
     "pred": {
       "I": "know you",
       "she": "like it",
@@ -47,6 +64,16 @@ export const SETS = [
     "tenses": [
       "present",
       "past"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
     ],
     "pred": {
       "I": "working",
@@ -64,6 +91,16 @@ export const SETS = [
       "present",
       "past"
     ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
     "pred": {
       "I": "invited",
       "she": "invited",
@@ -78,6 +115,16 @@ export const SETS = [
     "label": "완료 be",
     "tenses": [
       "perf"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
     ],
     "pred": {
       "I": "busy",
@@ -94,6 +141,16 @@ export const SETS = [
     "tenses": [
       "perf"
     ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
     "pred": {
       "I": "seen it",
       "she": "seen it",
@@ -108,6 +165,16 @@ export const SETS = [
     "label": "can",
     "tenses": [
       "modal"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
     ],
     "pred": {
       "I": "do it",
@@ -124,6 +191,16 @@ export const SETS = [
     "tenses": [
       "modal"
     ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
     "pred": {
       "I": "go",
       "she": "come",
@@ -131,6 +208,56 @@ export const SETS = [
       "it": "be ready",
       "we": "go",
       "they": "come"
+    }
+  },
+  {
+    "id": "whbe",
+    "label": "의문사 be",
+    "tenses": [
+      "wh"
+    ],
+    "forms": [
+      "where",
+      "when",
+      "why"
+    ],
+    "formHeads": [
+      "Where",
+      "When",
+      "Why"
+    ],
+    "pred": {
+      "I": "I",
+      "she": "she",
+      "he": "he",
+      "it": "it",
+      "we": "we",
+      "they": "they"
+    }
+  },
+  {
+    "id": "whdo",
+    "label": "의문사 do",
+    "tenses": [
+      "wh"
+    ],
+    "forms": [
+      "what",
+      "how",
+      "why"
+    ],
+    "formHeads": [
+      "What",
+      "How",
+      "Why"
+    ],
+    "pred": {
+      "I": "I",
+      "she": "she",
+      "he": "he",
+      "it": "it",
+      "we": "we",
+      "they": "they"
     }
   }
 ];
@@ -422,89 +549,41 @@ export const SENTENCES = {
   "should-we-modal-q": "Should we go?",
   "should-they-modal-aff": "They should come.",
   "should-they-modal-neg": "They shouldn't come.",
-  "should-they-modal-q": "Should they come?"
+  "should-they-modal-q": "Should they come?",
+  "whbe-I-wh-where": "Where am I?",
+  "whbe-I-wh-when": "When am I free?",
+  "whbe-I-wh-why": "Why am I here?",
+  "whbe-she-wh-where": "Where is she?",
+  "whbe-she-wh-when": "When is she coming?",
+  "whbe-she-wh-why": "Why is she late?",
+  "whbe-he-wh-where": "Where is he?",
+  "whbe-he-wh-when": "When is he coming?",
+  "whbe-he-wh-why": "Why is he angry?",
+  "whbe-it-wh-where": "Where is it?",
+  "whbe-it-wh-when": "When is it?",
+  "whbe-it-wh-why": "Why is it cold?",
+  "whbe-we-wh-where": "Where are we?",
+  "whbe-we-wh-when": "When are we leaving?",
+  "whbe-we-wh-why": "Why are we here?",
+  "whbe-they-wh-where": "Where are they?",
+  "whbe-they-wh-when": "When are they coming?",
+  "whbe-they-wh-why": "Why are they here?",
+  "whdo-I-wh-what": "What do I do?",
+  "whdo-I-wh-how": "How do I know?",
+  "whdo-I-wh-why": "Why do I need it?",
+  "whdo-she-wh-what": "What does she want?",
+  "whdo-she-wh-how": "How does she know?",
+  "whdo-she-wh-why": "Why does she like it?",
+  "whdo-he-wh-what": "What does he want?",
+  "whdo-he-wh-how": "How does he do it?",
+  "whdo-he-wh-why": "Why does he need it?",
+  "whdo-it-wh-what": "What does it mean?",
+  "whdo-it-wh-how": "How does it work?",
+  "whdo-it-wh-why": "Why does it matter?",
+  "whdo-we-wh-what": "What do we need?",
+  "whdo-we-wh-how": "How do we get there?",
+  "whdo-we-wh-why": "Why do we need it?",
+  "whdo-they-wh-what": "What do they want?",
+  "whdo-they-wh-how": "How do they know?",
+  "whdo-they-wh-why": "Why do they like it?"
 };
-export const WH = [
-  {
-    "id": "whbe",
-    "label": "be동사",
-    "cols": [
-      "Where",
-      "When",
-      "Why"
-    ],
-    "rows": {
-      "I": [
-        "Where am I?",
-        "When am I free?",
-        "Why am I here?"
-      ],
-      "she": [
-        "Where is she?",
-        "When is she coming?",
-        "Why is she late?"
-      ],
-      "he": [
-        "Where is he?",
-        "When is he coming?",
-        "Why is he angry?"
-      ],
-      "it": [
-        "Where is it?",
-        "When is it?",
-        "Why is it cold?"
-      ],
-      "we": [
-        "Where are we?",
-        "When are we leaving?",
-        "Why are we here?"
-      ],
-      "they": [
-        "Where are they?",
-        "When are they coming?",
-        "Why are they here?"
-      ]
-    }
-  },
-  {
-    "id": "whdo",
-    "label": "do / does",
-    "cols": [
-      "What",
-      "How",
-      "Why"
-    ],
-    "rows": {
-      "I": [
-        "What do I do?",
-        "How do I know?",
-        "Why do I need it?"
-      ],
-      "she": [
-        "What does she want?",
-        "How does she know?",
-        "Why does she like it?"
-      ],
-      "he": [
-        "What does he want?",
-        "How does he do it?",
-        "Why does he need it?"
-      ],
-      "it": [
-        "What does it mean?",
-        "How does it work?",
-        "Why does it matter?"
-      ],
-      "we": [
-        "What do we need?",
-        "How do we get there?",
-        "Why do we need it?"
-      ],
-      "they": [
-        "What do they want?",
-        "How do they know?",
-        "Why do they like it?"
-      ]
-    }
-  }
-];

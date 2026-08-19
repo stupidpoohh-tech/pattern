@@ -7,11 +7,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const SUBJECTS = ["I", "she", "he", "it", "we", "they"];
-export const FORMS = ["aff", "neg", "q"];
+const STD_FORMS = ["aff", "neg", "q"];
+const STD_FORM_HEADS = ["긍정", "부정", "의문"];
 
 // 각 세트: label(지시 토큰·탭 표기), tenses(이 세트가 가진 시제 축),
+// forms(형태 축 — 기본은 긍정/부정/의문, 의문사 세트는 의문사 3개),
 // pred(주어→술부 묶음 — 같은 값이면 주어 이동 시 술부가 유지되는 "다리"),
-// rows[tense][subject] = [긍정, 부정, 의문]
+// rows[tense][subject] = forms 순서의 문장 배열
 const TABLE = {
   be: {
     label: "be동사",
@@ -197,47 +199,60 @@ const TABLE = {
       },
     },
   },
+  // 의문사 의문문 — 형태 축이 긍정/부정/의문이 아니라 의문사(Where/When/Why…)다.
+  whbe: {
+    label: "의문사 be",
+    tenses: ["wh"],
+    forms: ["where", "when", "why"],
+    formHeads: ["Where", "When", "Why"],
+    pred: { I: "I", she: "she", he: "he", it: "it", we: "we", they: "they" },
+    rows: {
+      wh: {
+        I: ["Where am I?", "When am I free?", "Why am I here?"],
+        she: ["Where is she?", "When is she coming?", "Why is she late?"],
+        he: ["Where is he?", "When is he coming?", "Why is he angry?"],
+        it: ["Where is it?", "When is it?", "Why is it cold?"],
+        we: ["Where are we?", "When are we leaving?", "Why are we here?"],
+        they: ["Where are they?", "When are they coming?", "Why are they here?"],
+      },
+    },
+  },
+  whdo: {
+    label: "의문사 do",
+    tenses: ["wh"],
+    forms: ["what", "how", "why"],
+    formHeads: ["What", "How", "Why"],
+    pred: { I: "I", she: "she", he: "he", it: "it", we: "we", they: "they" },
+    rows: {
+      wh: {
+        I: ["What do I do?", "How do I know?", "Why do I need it?"],
+        she: ["What does she want?", "How does she know?", "Why does she like it?"],
+        he: ["What does he want?", "How does he do it?", "Why does he need it?"],
+        it: ["What does it mean?", "How does it work?", "Why does it matter?"],
+        we: ["What do we need?", "How do we get there?", "Why do we need it?"],
+        they: ["What do they want?", "How do they know?", "Why do they like it?"],
+      },
+    },
+  },
 };
-
-// 의문사 의문문 — 긍정/부정/의문 축과 별개 세트. 드릴이 아니라 문장표 열람 전용.
-const WH = [
-  {
-    id: "whbe",
-    label: "be동사",
-    cols: ["Where", "When", "Why"],
-    rows: {
-      I: ["Where am I?", "When am I free?", "Why am I here?"],
-      she: ["Where is she?", "When is she coming?", "Why is she late?"],
-      he: ["Where is he?", "When is he coming?", "Why is he angry?"],
-      it: ["Where is it?", "When is it?", "Why is it cold?"],
-      we: ["Where are we?", "When are we leaving?", "Why are we here?"],
-      they: ["Where are they?", "When are they coming?", "Why are they here?"],
-    },
-  },
-  {
-    id: "whdo",
-    label: "do / does",
-    cols: ["What", "How", "Why"],
-    rows: {
-      I: ["What do I do?", "How do I know?", "Why do I need it?"],
-      she: ["What does she want?", "How does she know?", "Why does she like it?"],
-      he: ["What does he want?", "How does he do it?", "Why does he need it?"],
-      it: ["What does it mean?", "How does it work?", "Why does it matter?"],
-      we: ["What do we need?", "How do we get there?", "Why do we need it?"],
-      they: ["What do they want?", "How do they know?", "Why do they like it?"],
-    },
-  },
-];
 
 function build() {
   const sentences = {};
   const sets = [];
   for (const [id, set] of Object.entries(TABLE)) {
-    sets.push({ id, label: set.label, tenses: set.tenses, pred: set.pred });
+    const forms = set.forms || STD_FORMS;
+    sets.push({
+      id,
+      label: set.label,
+      tenses: set.tenses,
+      forms,
+      formHeads: set.formHeads || STD_FORM_HEADS,
+      pred: set.pred,
+    });
     for (const tense of set.tenses)
       for (const subject of SUBJECTS) {
         const row = set.rows[tense][subject];
-        FORMS.forEach((form, i) => {
+        forms.forEach((form, i) => {
           sentences[`${id}-${subject}-${tense}-${form}`] = row[i];
         });
       }
@@ -246,20 +261,15 @@ function build() {
 }
 
 const { sets, sentences } = build();
-const whCount = WH.reduce((a, t) => a + Object.keys(t.rows).length * t.cols.length, 0);
 const header = `// 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: \`\${series}-\${subject}-\${tense}-\${form}\` — 드릴 ${Object.keys(sentences).length}문장 + 의문사 ${whCount}문장.
+// 키: \`\${series}-\${subject}-\${tense}-\${form}\` — 총 ${Object.keys(sentences).length}문장.
 `;
 const body =
   header +
   `export const SUBJECTS = ${JSON.stringify(SUBJECTS)};\n` +
-  `export const FORMS = ${JSON.stringify(FORMS)};\n` +
-  `// 시제 범위 설정 UI에서 고를 수 있는 시제 (perf·modal은 세트 고유 시제라 항상 포함)\n` +
-  `export const RANGE_TENSES = ${JSON.stringify(["present", "past", "will", "goingto"])};\n` +
   `export const SETS = ${JSON.stringify(sets, null, 2)};\n` +
-  `export const SENTENCES = ${JSON.stringify(sentences, null, 2)};\n` +
-  `export const WH = ${JSON.stringify(WH, null, 2)};\n`;
+  `export const SENTENCES = ${JSON.stringify(sentences, null, 2)};\n`;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 fs.writeFileSync(path.join(__dirname, "..", "src", "data.js"), body);
-console.log(`src/data.js 생성 완료 — 드릴 ${Object.keys(sentences).length}문장 + 의문사 ${whCount}문장`);
+console.log(`src/data.js 생성 완료 — 총 ${Object.keys(sentences).length}문장`);

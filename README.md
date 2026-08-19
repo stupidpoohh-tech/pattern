@@ -17,7 +17,7 @@
 | `pass` 수동 | 현재/과거 | 36 |
 | `perfbe` 완료 be / `perfverb` 완료 일반 | 완료(`perf`) | 18 + 18 |
 | `can` / `should` | 조동사(`modal`) | 18 + 18 |
-| 의문사 의문문 (열람 전용, 드릴 제외) | — | 36 |
+| `whbe` / `whdo` 의문사 의문문 | 의문사(`wh`) — 형태 축이 의문사(Where/When/Why, What/How/Why) | 18 + 18 |
 
 ## 로컬 실행
 
@@ -38,8 +38,11 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
 
 ## 화면
 
-- **자동 산책** — 앱이 무작위 지시를 생성. 세트(다중 선택 — 여러 개 고르면 산책 중 세트 이동도 섞임),
-  시제 범위, 걸음 폭(1~3축), 축 가중치, 세션 길이를 홈에서 설정. 마지막 걸음 후 홈으로 복귀.
+- **자동 산책** — 범위를 갈래 카드(be동사/일반동사/진행/수동/완료/조동사/의문사, 복수 선택)로 고르고,
+  카드 안에서 시제를 좁힐 수 있다. **세션 길이 = 선택한 범위의 문장 전체**이며 시작 버튼에 문장 수가 표시된다.
+  - 반복 노출 **끔**: 모든 문장이 정확히 한 번씩 나온 뒤 세션이 끝난다.
+  - 반복 노출 **켬**: 같은 문장이 다시 나올 수 있는 무작위 산책 (걸음 수는 동일).
+  - 걸음 폭(1~3축)만 남기고 세션 길이·축 가중치 설정은 없다. 마지막 걸음 후 홈으로 복귀.
 - **전체 문장표** — 수업용 열람 화면. 탭: be동사 / 일반동사 / 진행 / 수동 / 완료 / 조동사 / 의문사.
 - **지정 경로** — URL 파라미터로 교사가 경로를 사전 지정 (아래 참고).
 
@@ -58,12 +61,12 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
 index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ```
 
-- `start`: `${series}-${subject}-${tense}-${form}` 좌표 키. 예: `be-she-present-aff`, `prog-they-past-q`, `can-I-modal-aff`
+- `start`: `${series}-${subject}-${tense}-${form}` 좌표 키. 예: `be-she-present-aff`, `prog-they-past-q`, `can-I-modal-aff`, `whbe-she-wh-where`
 - `steps`: 쉼표로 구분된 걸음 목록. 각 걸음은 축의 **목표값** 하나:
   - 주어: `I` `she` `he` `it` `we` `they`
   - 시제: `present`/`현재`, `past`/`과거`, `will`, `goingto`, `perf`/`완료`, `modal`/`조동사`
-  - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`
-  - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`
+  - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`, 의문사 세트는 `where` `when` `why` `what` `how`
+  - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`
 - 한 걸음에 두 축 이상을 바꾸려면 `+`로 묶는다: `they+?`.
   세트를 옮길 때 시제가 안 맞으면 함께 지정한다: `can+조동사`
 - 불가능한 걸음이 있으면 첫 화면에 몇 번째 걸음이 왜 잘못됐는지 표시한다.

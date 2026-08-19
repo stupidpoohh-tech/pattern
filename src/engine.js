@@ -1,5 +1,5 @@
 // 좌표 이동·지시 생성·경로 파싱 로직. React에 의존하지 않는다.
-import { SENTENCES, SETS, SUBJECTS, FORMS } from "./data.js";
+import { SENTENCES, SETS, SUBJECTS } from "./data.js";
 
 export const SET_BY_ID = Object.fromEntries(SETS.map((s) => [s.id, s]));
 
@@ -11,7 +11,7 @@ export function parseKey(key) {
   if (parts.length !== 4) return null;
   const [series, subject, tense, form] = parts;
   const set = SET_BY_ID[series];
-  if (!set || !SUBJECTS.includes(subject) || !set.tenses.includes(tense) || !FORMS.includes(form))
+  if (!set || !SUBJECTS.includes(subject) || !set.tenses.includes(tense) || !set.forms.includes(form))
     return null;
   return { series, subject, tense, form };
 }
@@ -24,8 +24,18 @@ export const TENSE_LABELS = {
   goingto: "going to",
   perf: "완료",
   modal: "조동사",
+  wh: "의문사",
 };
-const FORM_LABELS = { aff: "평서", neg: "not", q: "?" };
+const FORM_LABELS = {
+  aff: "평서",
+  neg: "not",
+  q: "?",
+  where: "Where",
+  when: "When",
+  why: "Why",
+  what: "What",
+  how: "How",
+};
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
   if (step.axis === "tense") return TENSE_LABELS[step.value];
@@ -41,66 +51,94 @@ export function applySteps(coord, steps) {
 }
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const isFamilyAxis = (axis) => axis === "subject" || axis === "series";
 
-function weightedSampleAxes(pool, n) {
-  // pool: [{axis, w}] — 가중치 비복원 추출
-  const chosen = [];
-  const rest = [...pool];
-  while (chosen.length < n && rest.length > 0) {
-    const total = rest.reduce((a, e) => a + e.w, 0);
-    let r = Math.random() * total;
-    let idx = 0;
-    for (; idx < rest.length; idx++) {
-      r -= rest[idx].w;
-      if (r <= 0) break;
-    }
-    idx = Math.min(idx, rest.length - 1);
-    chosen.push(rest[idx].axis);
-    rest.splice(idx, 1);
+// ---- 산책 범위 (cfg.scopes = { 세트id: [시제...] }) ----
+
+export function scopeCoords(scopes) {
+  const coords = [];
+  for (const [series, tenses] of Object.entries(scopes)) {
+    const set = SET_BY_ID[series];
+    for (const tense of tenses)
+      for (const subject of SUBJECTS)
+        for (const form of set.forms) coords.push({ series, subject, tense, form });
   }
-  return chosen;
+  return coords;
 }
 
-// 세트의 시제 축 중 세션 시제 범위에 드는 것. 단일 시제 세트(완료·조동사)는 범위와 무관.
-// 교집합이 비면(예: will만 선택 + 진행 세트) 세트 고유 시제 전체로 되돌린다.
-export function allowedTenses(setId, rangeTenses) {
-  const set = SET_BY_ID[setId];
-  if (set.tenses.length === 1) return set.tenses;
-  const inRange = set.tenses.filter((t) => rangeTenses.includes(t));
-  return inRange.length > 0 ? inRange : set.tenses;
-}
+export const scopeSize = (scopes) => scopeCoords(scopes).length;
 
 // 문장 가족(주어·세트) 이동 후 지나온 걸음 수. 시작 직후는 충분히 지난 것으로 본다.
 function stepsSinceFamilyMove(history) {
   let n = 0;
   for (let i = history.length - 1; i >= 0; i--) {
-    if (history[i].some((s) => s.axis === "subject" || s.axis === "series")) return n;
+    if (history[i].some((s) => isFamilyAxis(s.axis))) return n;
     n++;
   }
   return Infinity;
 }
 
-// 무작위 걸음 생성.
-// cfg: { sets: [세트 id...], tenses: [시제 범위], width: 1|2|3, weights: {subject,tense,form} }
-// history: 지금까지의 걸음(steps 배열의 배열).
-// 짜임새 규칙:
-//  - 핑퐁 방지: 직전 걸음과 같은 축으로 직전 값에 되돌아가는 이동 금지.
-//  - 가족 이동 간격: 주어·세트를 바꾼 뒤 최소 2걸음은 같은 문장 안에서 시제·형태만 변형한다.
-//  - 술부 다리: 주어를 바꿀 때 술부가 같은 주어(she↔they 등)가 있으면 그쪽을 우선한다.
+// 두 좌표 사이의 걸음(달라지는 축들)
+function diffSteps(from, to) {
+  return ["series", "subject", "tense", "form"]
+    .filter((axis) => from[axis] !== to[axis])
+    .map((axis) => ({ axis, value: to[axis], prevValue: from[axis] }));
+}
+
+const sameFamily = (steps) => !steps.some((s) => isFamilyAxis(s.axis));
+
+function isBridgedSubjectMove(steps, coord) {
+  const su = steps.find((s) => s.axis === "subject");
+  if (!su || steps.some((s) => s.axis === "series")) return false;
+  const pred = SET_BY_ID[coord.series].pred;
+  return pred[su.value] === pred[coord.subject];
+}
+
+// 반복 없음 모드: 아직 안 나온 문장 중에서 다음 걸음을 고른다. 모두 소진되면 null.
+// 짜임새: ①가족 이동 뒤 2걸음은 같은 문장 안 변형 우선 ②술부 다리 우선 ③걸음 폭 이내 우선.
+export function coverageSteps(coord, cfg, history, visited) {
+  const pool = scopeCoords(cfg.scopes)
+    .filter((c) => !visited.has(keyOf(c)))
+    .map((c) => diffSteps(coord, c))
+    .filter((steps) => steps.length > 0);
+  if (pool.length === 0) return null;
+
+  const near = pool.filter((steps) => steps.length <= cfg.width);
+  const familyReady = stepsSinceFamilyMove(history) >= 2;
+
+  const inFamily = near.filter(sameFamily);
+  if (inFamily.length > 0 && (!familyReady || Math.random() < 0.5)) return pick(inFamily);
+
+  if (near.length > 0) {
+    const bridged = near.filter((steps) => isBridgedSubjectMove(steps, coord));
+    if (bridged.length > 0 && Math.random() < 0.6) return pick(bridged);
+    return pick(near);
+  }
+
+  // 걸음 폭 안에 남은 문장이 없으면 가장 가까운 문장으로 점프 (축 여러 개가 나란히 표시된다)
+  const min = Math.min(...pool.map((s) => s.length));
+  return pick(pool.filter((s) => s.length === min));
+}
+
+// 반복 허용 모드: 방문 여부와 무관한 무작위 걸음.
+// 짜임새: 같은 값 이동 금지·핑퐁 방지·가족 이동 간격·술부 다리는 동일하게 적용.
 export function randomSteps(coord, cfg, history = []) {
   const set = SET_BY_ID[coord.series];
-  const tenses = allowedTenses(coord.series, cfg.tenses);
+  const setIds = Object.keys(cfg.scopes);
   const familyReady = stepsSinceFamilyMove(history) >= 2;
   const lastSteps = history[history.length - 1] || [];
 
   const altValues = (axis) => {
     let values;
     if (axis === "subject") values = SUBJECTS.filter((v) => v !== coord.subject);
-    else if (axis === "tense") values = tenses.filter((v) => v !== coord.tense);
-    else if (axis === "form") values = FORMS.filter((v) => v !== coord.form);
+    else if (axis === "tense") values = cfg.scopes[coord.series].filter((v) => v !== coord.tense);
+    else if (axis === "form") values = set.forms.filter((v) => v !== coord.form);
     else
-      values = cfg.sets.filter(
-        (id) => id !== coord.series && SET_BY_ID[id].tenses.includes(coord.tense)
+      values = setIds.filter(
+        (id) =>
+          id !== coord.series &&
+          SENTENCES[`${id}-${coord.subject}-${coord.tense}-${coord.form}`] !== undefined &&
+          cfg.scopes[id].includes(coord.tense)
       );
     // 핑퐁 방지
     const prev = lastSteps.find((p) => p.axis === axis);
@@ -109,21 +147,26 @@ export function randomSteps(coord, cfg, history = []) {
   };
 
   const pool = [];
-  const add = (axis, w) => {
-    if (w > 0 && altValues(axis).length > 0) pool.push({ axis, w });
+  const add = (axis) => {
+    if (altValues(axis).length > 0) pool.push({ axis, w: 1 });
   };
-  if (familyReady) add("subject", cfg.weights.subject);
-  add("tense", cfg.weights.tense);
-  add("form", cfg.weights.form);
-  if (familyReady && cfg.sets.length > 1) add("series", 1.5);
+  if (familyReady) add("subject");
+  add("tense");
+  add("form");
+  if (familyReady && setIds.length > 1) add("series");
 
   // 가족 이동 대기 중이라 남은 축이 없으면(단일 시제 세트 등) 가족 이동을 허용한다.
   if (pool.length === 0) {
-    add("subject", Math.max(cfg.weights.subject, 1));
-    if (cfg.sets.length > 1) add("series", 1.5);
+    add("subject");
+    if (setIds.length > 1) add("series");
+    if (pool.length === 0) return null;
   }
 
-  const axes = weightedSampleAxes(pool, Math.min(cfg.width, pool.length));
+  const width = Math.min(cfg.width, pool.length);
+  const axes = [];
+  const rest = [...pool.map((p) => p.axis)];
+  while (axes.length < width) axes.push(...rest.splice(Math.floor(Math.random() * rest.length), 1));
+
   return axes.map((axis) => {
     let values = altValues(axis);
     if (axis === "subject") {
@@ -163,6 +206,11 @@ const STEP_ALIASES = (() => {
     not: { axis: "form", value: "neg" },
     q: { axis: "form", value: "q" },
     "?": { axis: "form", value: "q" },
+    where: { axis: "form", value: "where" },
+    when: { axis: "form", value: "when" },
+    why: { axis: "form", value: "why" },
+    what: { axis: "form", value: "what" },
+    how: { axis: "form", value: "how" },
   });
   return m;
 })();

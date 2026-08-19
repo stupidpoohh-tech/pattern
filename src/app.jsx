@@ -1,18 +1,17 @@
 import React, { useMemo, useRef, useState } from "react";
-import { SUBJECTS, FORMS, RANGE_TENSES, SETS, SENTENCES, WH } from "./data.js";
+import { SUBJECTS, SETS, SENTENCES } from "./data.js";
 import {
   SET_BY_ID,
   keyOf,
   sentenceOf,
   applySteps,
   randomSteps,
-  allowedTenses,
+  coverageSteps,
+  scopeCoords,
   parsePath,
   tokenLabel,
   TENSE_LABELS,
 } from "./engine.js";
-
-const FORM_HEAD = { aff: "긍정", neg: "부정", q: "의문" };
 
 function TokenChips({ steps }) {
   return (
@@ -74,25 +73,36 @@ function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   );
 }
 
-// ---------- 전체 문장표 (수업용 열람 화면) ----------
+// ---------- 갈래 (홈 카드와 문장표 탭이 공유) ----------
 
-const TABLE_TABS = [
-  { id: "be", title: "be동사", sections: [{ set: "be" }] },
-  { id: "verb", title: "일반동사", sections: [{ set: "verb" }] },
-  { id: "prog", title: "진행", sections: [{ set: "prog" }] },
-  { id: "pass", title: "수동", sections: [{ set: "pass" }] },
-  {
-    id: "perf",
-    title: "완료",
-    sections: [{ set: "perfbe", heading: "be동사" }, { set: "perfverb", heading: "일반동사" }],
-  },
-  {
-    id: "modal",
-    title: "조동사",
-    sections: [{ set: "can", heading: "can" }, { set: "should", heading: "should" }],
-  },
-  { id: "wh", title: "의문사" },
+const GROUPS = [
+  { id: "be", title: "be동사", sets: ["be"] },
+  { id: "verb", title: "일반동사", sets: ["verb"] },
+  { id: "prog", title: "진행", sets: ["prog"] },
+  { id: "pass", title: "수동", sets: ["pass"] },
+  { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
+  { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
+  { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
 ];
+
+// 갈래의 시제 선택지 (여러 시제를 가진 세트만 해당)
+const groupTenses = (g) => {
+  const t = SET_BY_ID[g.sets[0]].tenses;
+  return t.length > 1 ? t : null;
+};
+
+// 갈래별 선택(그룹 id → 시제 배열) → 엔진 scopes(세트 id → 시제 배열)
+function buildScopes(groupSel) {
+  const scopes = {};
+  for (const [gid, tenses] of Object.entries(groupSel)) {
+    const g = GROUPS.find((x) => x.id === gid);
+    for (const setId of g.sets)
+      scopes[setId] = groupTenses(g) ? tenses : SET_BY_ID[setId].tenses;
+  }
+  return scopes;
+}
+
+// ---------- 전체 문장표 (수업용 열람 화면) ----------
 
 function SentenceTable({ cols, colLabels, cellOf }) {
   return (
@@ -119,7 +129,7 @@ function SentenceTable({ cols, colLabels, cellOf }) {
 
 function TableScreen({ onHome }) {
   const [tabId, setTabId] = useState("be");
-  const tab = TABLE_TABS.find((t) => t.id === tabId);
+  const tab = GROUPS.find((t) => t.id === tabId);
 
   return (
     <div className="page page-wide">
@@ -129,7 +139,7 @@ function TableScreen({ onHome }) {
       </header>
 
       <nav className="tab-row">
-        {TABLE_TABS.map((t) => (
+        {GROUPS.map((t) => (
           <button
             key={t.id}
             className={`tab ${t.id === tabId ? "tab-on" : ""}`}
@@ -140,72 +150,62 @@ function TableScreen({ onHome }) {
         ))}
       </nav>
 
-      {tab.id === "wh" ? (
-        <>
-          <p className="table-note">긍정/부정/의문 축과 별개 세트 · 36문장</p>
-          {WH.map((w) => (
-            <section className="table-section" key={w.id}>
-              <h2>{w.label}</h2>
-              <SentenceTable
-                cols={w.cols.map((_, i) => i)}
-                colLabels={w.cols}
-                cellOf={(s, i) => w.rows[s][i]}
-              />
-            </section>
-          ))}
-        </>
-      ) : (
-        tab.sections.map(({ set: setId, heading }) => {
-          const set = SET_BY_ID[setId];
-          return set.tenses.map((tense) => (
-            <section className="table-section" key={setId + tense}>
-              <h2>
-                {heading || TENSE_LABELS[tense]}
-                {heading && set.tenses.length > 1 ? ` · ${TENSE_LABELS[tense]}` : ""}
-              </h2>
-              <SentenceTable
-                cols={FORMS}
-                colLabels={FORMS.map((f) => FORM_HEAD[f])}
-                cellOf={(s, f) => SENTENCES[`${setId}-${s}-${tense}-${f}`]}
-              />
-            </section>
-          ));
-        })
-      )}
+      {tab.sets.map((setId, si) => {
+        const set = SET_BY_ID[setId];
+        const heading = tab.headings ? tab.headings[si] : null;
+        return set.tenses.map((tense) => (
+          <section className="table-section" key={setId + tense}>
+            <h2>
+              {heading || TENSE_LABELS[tense]}
+              {heading && set.tenses.length > 1 ? ` · ${TENSE_LABELS[tense]}` : ""}
+            </h2>
+            <SentenceTable
+              cols={set.forms}
+              colLabels={set.formHeads}
+              cellOf={(s, f) => SENTENCES[`${setId}-${s}-${tense}-${f}`]}
+            />
+          </section>
+        ));
+      })}
     </div>
   );
 }
 
 // ---------- 홈 (설정 + 시작) ----------
 
-const DEFAULT_WALK = {
-  sets: ["be"],
-  tenses: ["present", "past"],
+const DEFAULT_CFG = {
+  groups: { be: ["present", "past"] }, // 그룹 id → 시제 선택
   width: 1,
-  weights: { subject: 2, tense: 2, form: 2 },
-  length: 10,
+  repeat: false,
 };
 
-const TENSE_KO = { present: "현재", past: "과거", will: "will", goingto: "going to" };
-const WEIGHT_KO = { 1: "적게", 2: "보통", 3: "많이" };
-const AXIS_KO = { subject: "주어", tense: "시제", form: "형태" };
-
 function HomeScreen({ onStartWalk, onTable }) {
-  const [cfg, setCfg] = useState(DEFAULT_WALK);
+  const [cfg, setCfg] = useState(DEFAULT_CFG);
 
-  const toggleSet = (id) =>
+  const toggleGroup = (g) =>
     setCfg((c) => {
-      const has = c.sets.includes(id);
-      if (has && c.sets.length === 1) return c; // 최소 1개
-      return { ...c, sets: has ? c.sets.filter((x) => x !== id) : [...c.sets, id] };
+      const groups = { ...c.groups };
+      if (groups[g.id]) {
+        if (Object.keys(groups).length === 1) return c; // 최소 1개
+        delete groups[g.id];
+      } else {
+        groups[g.id] = groupTenses(g) || [];
+      }
+      return { ...c, groups };
     });
 
-  const toggleTense = (t) =>
+  const toggleTense = (g, t) =>
     setCfg((c) => {
-      const has = c.tenses.includes(t);
-      if (has && c.tenses.length === 1) return c; // 최소 1개
-      return { ...c, tenses: has ? c.tenses.filter((x) => x !== t) : [...c.tenses, t] };
+      const cur = c.groups[g.id];
+      const has = cur.includes(t);
+      if (has && cur.length === 1) return c; // 최소 1개
+      return {
+        ...c,
+        groups: { ...c.groups, [g.id]: has ? cur.filter((x) => x !== t) : [...cur, t] },
+      };
     });
+
+  const count = scopeCoords(buildScopes(cfg.groups)).length;
 
   const Radio = ({ options, value, onChange, render }) => (
     <div className="opt-row">
@@ -221,9 +221,6 @@ function HomeScreen({ onStartWalk, onTable }) {
     </div>
   );
 
-  // 선택한 세트 중 시제 축이 여러 개인 세트가 있을 때만 시제 범위가 의미 있다
-  const tenseRangeRelevant = cfg.sets.some((id) => SET_BY_ID[id].tenses.length > 1);
-
   return (
     <div className="page">
       <h1 className="app-title">한 걸음 산책</h1>
@@ -231,36 +228,38 @@ function HomeScreen({ onStartWalk, onTable }) {
 
       <section className="card">
         <h2>자동 산책</h2>
+
         <div className="field">
-          <span className="field-label">세트 (여러 개 선택하면 산책 중 세트 이동도 섞인다)</span>
-          <div className="opt-row">
-            {SETS.map((s) => (
-              <button
-                key={s.id}
-                className={`opt ${cfg.sets.includes(s.id) ? "opt-on" : ""}`}
-                onClick={() => toggleSet(s.id)}
-              >
-                {s.label}
-              </button>
-            ))}
+          <span className="field-label">범위 (복수 선택 — 선택한 문장 전체가 한 세션)</span>
+          <div className="group-grid">
+            {GROUPS.map((g) => {
+              const sel = cfg.groups[g.id];
+              const tenses = groupTenses(g);
+              return (
+                <div key={g.id} className={`group-card ${sel ? "group-on" : ""}`}>
+                  <button className="group-head" onClick={() => toggleGroup(g)}>
+                    <span className="group-title">{g.title}</span>
+                    <span className="group-check">{sel ? "✓" : ""}</span>
+                  </button>
+                  {sel && tenses && (
+                    <div className="group-tenses">
+                      {tenses.map((t) => (
+                        <button
+                          key={t}
+                          className={`opt opt-sm ${sel.includes(t) ? "opt-on" : ""}`}
+                          onClick={() => toggleTense(g, t)}
+                        >
+                          {TENSE_LABELS[t]}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
-        {tenseRangeRelevant && (
-          <div className="field">
-            <span className="field-label">시제 범위 (진행·수동은 현재/과거만 해당)</span>
-            <div className="opt-row">
-              {RANGE_TENSES.map((t) => (
-                <button
-                  key={t}
-                  className={`opt ${cfg.tenses.includes(t) ? "opt-on" : ""}`}
-                  onClick={() => toggleTense(t)}
-                >
-                  {TENSE_KO[t]}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+
         <div className="field">
           <span className="field-label">걸음 폭</span>
           <Radio
@@ -270,32 +269,20 @@ function HomeScreen({ onStartWalk, onTable }) {
             render={(o) => `${o}축`}
           />
         </div>
+
         <div className="field">
-          <span className="field-label">축 가중치</span>
-          {["subject", "tense", "form"].map((axis) => (
-            <div className="weight-row" key={axis}>
-              <span className="weight-axis">{AXIS_KO[axis]}</span>
-              <Radio
-                options={[1, 2, 3]}
-                value={cfg.weights[axis]}
-                onChange={(v) =>
-                  setCfg((c) => ({ ...c, weights: { ...c.weights, [axis]: v } }))
-                }
-                render={(o) => WEIGHT_KO[o]}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="field">
-          <span className="field-label">세션 길이</span>
+          <span className="field-label">반복 노출</span>
           <Radio
-            options={[10, 15, 20]}
-            value={cfg.length}
-            onChange={(v) => setCfg((c) => ({ ...c, length: v }))}
-            render={(o) => `${o}걸음`}
+            options={[false, true]}
+            value={cfg.repeat}
+            onChange={(v) => setCfg((c) => ({ ...c, repeat: v }))}
+            render={(o) => (o ? "켬 · 같은 문장 다시 나올 수 있음" : "끔 · 모든 문장 한 번씩")}
           />
         </div>
-        <button className="primary-btn" onClick={() => onStartWalk(cfg)}>산책 시작</button>
+
+        <button className="primary-btn" onClick={() => onStartWalk(cfg)}>
+          산책 시작 · {count}문장
+        </button>
       </section>
 
       <button className="ghost-btn wide" onClick={onTable}>전체 문장표 보기</button>
@@ -346,18 +333,16 @@ export default function App() {
       />
     );
 
-  if (route.name === "walk") {
-    const cfg = route.cfg;
+  if (route.name === "walk")
     return (
       <DrillSession
         initialCoord={route.start}
-        totalSteps={cfg.length}
-        getSteps={(i, coord, history) => randomSteps(coord, cfg, history)}
+        totalSteps={route.total}
+        getSteps={route.getSteps}
         onEnd={goHome}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
     );
-  }
 
   if (route.name === "table") return <TableScreen onHome={goHome} />;
 
@@ -365,14 +350,21 @@ export default function App() {
     <HomeScreen
       onTable={() => setRoute({ name: "table" })}
       onStartWalk={(cfg) => {
-        const series = pickRandom(cfg.sets);
-        const start = {
-          series,
-          subject: pickRandom(SUBJECTS),
-          tense: pickRandom(allowedTenses(series, cfg.tenses)),
-          form: "aff",
+        const scopes = buildScopes(cfg.groups);
+        const coords = scopeCoords(scopes);
+        // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
+        const firstForms = coords.filter((c) => c.form === SET_BY_ID[c.series].forms[0]);
+        const start = pickRandom(firstForms.length ? firstForms : coords);
+        const visited = new Set([keyOf(start)]);
+        const ecfg = { scopes, width: cfg.width };
+        const getSteps = (i, coord, history) => {
+          const steps = cfg.repeat
+            ? randomSteps(coord, ecfg, history)
+            : coverageSteps(coord, ecfg, history, visited);
+          if (steps) visited.add(keyOf(applySteps(coord, steps)));
+          return steps;
         };
-        setRoute({ name: "walk", cfg, start });
+        setRoute({ name: "walk", start, total: coords.length - 1, getSteps });
       }}
     />
   );
