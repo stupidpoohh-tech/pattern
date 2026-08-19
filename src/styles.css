@@ -287,9 +287,10 @@ code {
 .matrix-rowhead { text-align: left; padding-left: 0.35rem; }
 .matrix-cell {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0 0.3rem;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
@@ -299,6 +300,15 @@ code {
   font-variant-numeric: tabular-nums;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
+.cell-stage {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  letter-spacing: 0;
+}
+.cell-on .cell-stage { font-weight: 700; }
 .matrix-cell:hover { border-color: var(--line-strong); }
 .cell-on {
   border-color: var(--accent);

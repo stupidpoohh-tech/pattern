@@ -172,30 +172,38 @@ const MATRIX_COLS = [
   { id: "verb", title: "일반동사" },
 ];
 
-// 각 칸(cell) = { 세트id: [시제...] }
+// 각 칸(cell)은 단계(stage) 배열 — 탭할 때마다 다음 단계로 넘어가고, 마지막 단계에서
+// 한 번 더 탭하면 꺼진다. 대부분 1단계지만 미래 칸은 2단계다:
+// 1탭 = will만(18문장), 2탭 = will + going to(36문장).
+const futureStages = (setId) => [
+  { scope: { [setId]: ["will"] }, label: "will" },
+  { scope: { [setId]: ["will", "goingto"] }, label: "will + going to" },
+];
+
 const MATRIX_ROWS = [
-  { id: "present", title: "현재", cells: { be: { be: ["present"] }, verb: { verb: ["present"] } } },
-  { id: "past", title: "과거", cells: { be: { be: ["past"] }, verb: { verb: ["past"] } } },
-  { id: "future", title: "미래", cells: { be: { be: ["will", "goingto"] }, verb: { verb: ["will", "goingto"] } } },
-  { id: "pass", title: "수동", cells: { be: { pass: ["present", "past"] }, verb: { passget: ["present", "past"] } } },
-  { id: "prog", title: "진행", cells: { be: { prog: ["present", "past"] }, verb: { keep: ["present", "past"] } } },
-  { id: "perf", title: "완료", cells: { be: { perfbe: ["perf"] }, verb: { perfverb: ["perf"] } } },
-  { id: "wh", title: "의문사", cells: { be: { whbe: ["wh"] }, verb: { whdo: ["wh"] } } },
+  { id: "present", title: "현재", cells: { be: [{ scope: { be: ["present"] } }], verb: [{ scope: { verb: ["present"] } }] } },
+  { id: "past", title: "과거", cells: { be: [{ scope: { be: ["past"] } }], verb: [{ scope: { verb: ["past"] } }] } },
+  { id: "future", title: "미래", cells: { be: futureStages("be"), verb: futureStages("verb") } },
+  { id: "pass", title: "수동", cells: { be: [{ scope: { pass: ["present", "past"] } }], verb: [{ scope: { passget: ["present", "past"] } }] } },
+  { id: "prog", title: "진행", cells: { be: [{ scope: { prog: ["present", "past"] } }], verb: [{ scope: { keep: ["present", "past"] } }] } },
+  { id: "perf", title: "완료", cells: { be: [{ scope: { perfbe: ["perf"] } }], verb: [{ scope: { perfverb: ["perf"] } }] } },
+  { id: "wh", title: "의문사", cells: { be: [{ scope: { whbe: ["wh"] } }], verb: [{ scope: { whdo: ["wh"] } }] } },
 ];
 
 // 조동사(can·should)는 be/일반 열 구분이 없어 전폭 칸으로 둔다
-const MODAL_SCOPE = { can: ["modal"], should: ["modal"] };
+const MODAL_STAGES = [{ scope: { can: ["modal"], should: ["modal"] } }];
 
 const cellId = (rowId, colId) => `${rowId}:${colId}`;
-const cellScope = (rowId, colId) =>
-  rowId === "modal" ? MODAL_SCOPE : MATRIX_ROWS.find((r) => r.id === rowId).cells[colId];
+const cellStages = (rowId, colId) =>
+  rowId === "modal" ? MODAL_STAGES : MATRIX_ROWS.find((r) => r.id === rowId).cells[colId];
 
-// 선택된 칸들 → 엔진 scopes(세트 id → 시제 배열, 합집합)
+// 선택된 칸들(칸 id → 단계 1~n) → 엔진 scopes(세트 id → 시제 배열, 합집합)
 function buildScopes(selected) {
   const scopes = {};
-  for (const id of selected) {
+  for (const [id, stage] of Object.entries(selected)) {
+    if (!stage) continue;
     const [rowId, colId] = id.split(":");
-    for (const [setId, tenses] of Object.entries(cellScope(rowId, colId))) {
+    for (const [setId, tenses] of Object.entries(cellStages(rowId, colId)[stage - 1].scope)) {
       const cur = scopes[setId] || [];
       scopes[setId] = [...new Set([...cur, ...tenses])];
     }
@@ -337,7 +345,7 @@ function SiteFooter() {
 
 // ---------- 홈 (범위 매트릭스 + 시작) ----------
 
-const DEFAULT_SELECTED = ["present:be", "past:be"];
+const DEFAULT_SELECTED = { "present:be": 1, "past:be": 1 };
 
 function Segmented({ options, value, onChange }) {
   return (
@@ -356,23 +364,34 @@ function Segmented({ options, value, onChange }) {
 }
 
 function HomeScreen({ onStartWalk, onTable, onVocab }) {
-  const [selected, setSelected] = useState(() => new Set(DEFAULT_SELECTED));
+  const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
   const [length, setLength] = useState("short");
   const [koMode, setKoMode] = useState(false);
 
-  const toggleCells = (ids) =>
+  const stagesOf = (id) => {
+    const [rowId, colId] = id.split(":");
+    return cellStages(rowId, colId);
+  };
+  const anyOn = (sel) => Object.values(sel).some((v) => v > 0);
+
+  // 칸 탭: 다음 단계로 (마지막 단계에서 한 번 더 탭하면 꺼짐)
+  const tapCell = (id) =>
     setSelected((prev) => {
-      const next = new Set(prev);
-      const allOn = ids.every((id) => next.has(id));
-      if (allOn) {
-        ids.forEach((id) => next.delete(id));
-        if (next.size === 0) return prev; // 최소 1칸
-      } else {
-        ids.forEach((id) => next.add(id));
-      }
-      return next;
+      const next = { ...prev, [id]: ((prev[id] || 0) + 1) % (stagesOf(id).length + 1) };
+      return anyOn(next) ? next : prev; // 최소 1칸
+    });
+
+  // 행·열 탭: 전부 최대 단계로 켜기 ↔ 전부 끄기
+  const toggleGroup = (ids) =>
+    setSelected((prev) => {
+      const allMax = ids.every((id) => (prev[id] || 0) === stagesOf(id).length);
+      const next = { ...prev };
+      ids.forEach((id) => {
+        next[id] = allMax ? 0 : stagesOf(id).length;
+      });
+      return anyOn(next) ? next : prev; // 최소 1칸
     });
 
   const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
@@ -380,12 +399,17 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
 
   const count = scopeCoords(buildScopes(selected)).length;
 
-  const Cell = ({ id, count }) => {
-    const on = selected.has(id);
+  const Cell = ({ id }) => {
+    const stages = stagesOf(id);
+    const stage = selected[id] || 0;
+    const on = stage > 0;
+    // 꺼져 있으면 최대 단계 기준(전체 문장 수·전체 라벨)을 보여준다
+    const shown = stages[(on ? stage : stages.length) - 1];
     return (
-      <button className={`matrix-cell ${on ? "cell-on" : ""}`} onClick={() => toggleCells([id])}>
+      <button className={`matrix-cell ${on ? "cell-on" : ""}`} onClick={() => tapCell(id)}>
         <span className="cell-check">{on ? "✓" : ""}</span>
-        <span className="cell-count">{count}</span>
+        <span className="cell-count">{scopeCoords(shown.scope).length}</span>
+        {shown.label && <span className="cell-stage">{shown.label}</span>}
       </button>
     );
   };
@@ -406,29 +430,25 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
           <div className="matrix">
             <span className="matrix-corner" />
             {MATRIX_COLS.map((c) => (
-              <button key={c.id} className="matrix-head" onClick={() => toggleCells(colIds(c.id))}>
+              <button key={c.id} className="matrix-head" onClick={() => toggleGroup(colIds(c.id))}>
                 {c.title}
               </button>
             ))}
             {MATRIX_ROWS.map((r) => (
               <React.Fragment key={r.id}>
-                <button className="matrix-head matrix-rowhead" onClick={() => toggleCells(rowIds(r.id))}>
+                <button className="matrix-head matrix-rowhead" onClick={() => toggleGroup(rowIds(r.id))}>
                   {r.title}
                 </button>
                 {MATRIX_COLS.map((c) => (
-                  <Cell
-                    key={c.id}
-                    id={cellId(r.id, c.id)}
-                    count={scopeCoords(cellScope(r.id, c.id)).length}
-                  />
+                  <Cell key={c.id} id={cellId(r.id, c.id)} />
                 ))}
               </React.Fragment>
             ))}
-            <button className="matrix-head matrix-rowhead" onClick={() => toggleCells(["modal:all"])}>
+            <button className="matrix-head matrix-rowhead" onClick={() => toggleGroup(["modal:all"])}>
               조동사
             </button>
             <div className="cell-span">
-              <Cell id="modal:all" count={scopeCoords(MODAL_SCOPE).length} />
+              <Cell id="modal:all" />
             </div>
           </div>
         </div>
