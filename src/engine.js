@@ -140,6 +140,25 @@ export function coverageSteps(coord, cfg, history, visited) {
   return pick(pool.filter((s) => s.length === min));
 }
 
+// 짧은 세션용 표집 걸음: 아직 안 나온 이웃 문장 중에서 균등하게 뽑는다.
+// 커버리지 걸음의 "가족 이동 간격"(주어를 바꾼 뒤 2걸음은 같은 주어에 머무름)은
+// 전체 세션에서는 짜임새를 만들지만, 15문장짜리 짧은 세션에서는 서너 주어에
+// 갇히게 만든다. 짧은 세션은 범위를 넓게 훑는 게 목적이라 그 편향을 뺀다.
+// 걸음 폭 안에 남은 문장이 없을 때만 가장 가까운 문장으로 건너뛴다.
+export function sampleSteps(coord, cfg, history, visited) {
+  const pool = scopeCoords(cfg.scopes)
+    .filter((c) => !visited.has(keyOf(c)))
+    .map((c) => diffSteps(coord, c))
+    .filter((steps) => steps.length > 0);
+  if (pool.length === 0) return null;
+
+  const near = pool.filter((steps) => steps.length <= cfg.width);
+  if (near.length > 0) return pick(near);
+
+  const min = Math.min(...pool.map((s) => s.length));
+  return pick(pool.filter((s) => s.length === min));
+}
+
 // 반복 허용 모드: 방문 여부와 무관한 무작위 걸음.
 // 짜임새: 같은 값 이동 금지·핑퐁 방지·가족 이동 간격·술부 다리는 동일하게 적용.
 // 세트 이동은 "점프"로 처리한다: 목표 세트에 현재 시제·형태가 없으면

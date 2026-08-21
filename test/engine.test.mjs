@@ -6,6 +6,7 @@ import {
   applySteps,
   randomSteps,
   coverageSteps,
+  sampleSteps,
   scopeCoords,
   parsePath,
   displayTokens,
@@ -58,6 +59,42 @@ test("반복 허용 모드: 걸음이 항상 유효한 좌표로 이동한다", 
     coord = next;
     history.push(steps);
   }
+});
+
+test("짧은 세션 표집: 15문장이 중복 없이 나오고, 커버리지보다 다양하게 흩어진다", () => {
+  const scopes = { be: ["present", "past"] };
+  const cfg = { scopes, width: 1 };
+  const coords = scopeCoords(scopes);
+
+  const run = (stepFn) => {
+    let coord = coords[0];
+    const visited = new Set([keyOf(coord)]);
+    const history = [];
+    for (let i = 0; i < 14; i++) {
+      const steps = stepFn(coord, cfg, history, visited);
+      if (!steps) break;
+      coord = applySteps(coord, steps);
+      assert.ok(sentenceOf(coord), keyOf(coord));
+      assert.ok(!visited.has(keyOf(coord)), `중복 문장: ${keyOf(coord)}`);
+      visited.add(keyOf(coord));
+      history.push(steps);
+    }
+    return visited;
+  };
+
+  // 여러 번 돌려도 항상 15문장·중복 없음
+  for (let t = 0; t < 20; t++) assert.equal(run(sampleSteps).size, 15);
+
+  // 범위를 넓게 훑어야 한다 — 등장 주어 수가 커버리지 걸음보다 뚜렷이 많아야 한다
+  const subjects = (visited) => new Set([...visited].map((k) => k.split("-")[1])).size;
+  const avgSubjects = (fn) => {
+    let sum = 0;
+    for (let t = 0; t < 50; t++) sum += subjects(run(fn));
+    return sum / 50;
+  };
+  const sampled = avgSubjects(sampleSteps);
+  assert.ok(sampled > avgSubjects(coverageSteps), "표집이 더 많은 주어를 훑어야 한다");
+  assert.ok(sampled > 5, `주어 다양성이 낮다: ${sampled}/6`);
 });
 
 test("반복 허용: 시제가 안 겹치는 범위도 세트 점프로 오간다", () => {

@@ -9,6 +9,7 @@ import {
   applySteps,
   randomSteps,
   coverageSteps,
+  sampleSteps,
   scopeCoords,
   parsePath,
   tokenLabel,
@@ -725,9 +726,12 @@ export default function App() {
     const total =
       length === "short" ? Math.min(14, coords.length - 1) : coords.length - 1;
     const getSteps = (i, coord, history) => {
+      // 짧게 = 범위 전체에서 흩어지게 표집 / 전체 = 빠짐없이 도는 커버리지 / 반복 켬 = 무작위
       const steps = repeat
         ? randomSteps(coord, ecfg, history)
-        : coverageSteps(coord, ecfg, history, visited);
+        : length === "short"
+          ? sampleSteps(coord, ecfg, history, visited)
+          : coverageSteps(coord, ecfg, history, visited);
       if (steps) visited.add(keyOf(applySteps(coord, steps)));
       return steps;
     };
