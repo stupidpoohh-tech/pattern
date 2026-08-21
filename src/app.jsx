@@ -182,10 +182,11 @@ const MATRIX_COLS = [
 ];
 
 // 각 칸(cell)은 단계(stage) 배열 — 탭할 때마다 다음 단계로 넘어가고, 마지막 단계에서
-// 한 번 더 탭하면 꺼진다. 대부분 1단계지만 미래 칸은 2단계다:
-// 1탭 = will만(18문장), 2탭 = will + going to(36문장).
+// 한 번 더 탭하면 꺼진다. 대부분 1단계지만 미래 칸은 3단계다:
+// 1탭 = will만(18), 2탭 = be going to만(18), 3탭 = 둘 다(36), 4탭 = 해제.
 const futureStages = (setId) => [
   { scope: { [setId]: ["will"] }, label: "will" },
+  { scope: { [setId]: ["goingto"] }, label: "be going to" },
   { scope: { [setId]: ["will", "goingto"] }, label: "will + going to" },
 ];
 
