@@ -29,7 +29,8 @@ function writeServiceWorker() {
     .update(fs.readFileSync("dist/styles.css"))
     .digest("hex")
     .slice(0, 10);
-  const sw = fs.readFileSync("src/sw.js", "utf8").replace("__VERSION__", hash);
+  const sw = fs.readFileSync("src/sw.js", "utf8").replaceAll("__VERSION__", hash);
+  if (sw.includes("__VERSION__")) throw new Error("sw.js 캐시 버전 치환 실패");
   fs.writeFileSync("dist/sw.js", sw);
 }
 

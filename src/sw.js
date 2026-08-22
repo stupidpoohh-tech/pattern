@@ -1,4 +1,4 @@
-// 오프라인 지원 service worker. 빌드 시 __VERSION__이 앱 해시로 치환된다.
+// 오프라인 지원 service worker. 아래 캐시 이름의 자리표시자는 빌드 시 앱 해시로 치환된다.
 const CACHE = "han-georeum-__VERSION__";
 const ASSETS = [
   "./",
