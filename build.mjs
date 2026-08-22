@@ -21,7 +21,27 @@ const options = {
   logLevel: "info",
 };
 
+// 개발 모드에서는 캐시하는 service worker가 방금 고친 코드를 가려버린다.
+// 그래서 스스로 등록을 해제하고 남은 캐시까지 지우는 SW를 내보낸다
+// (앞서 설치돼 있던 배포판 SW도 개발 중에는 이 파일로 교체되며 정리된다).
+const DEV_SW = `// 개발용 — 캐시하지 않고 스스로 등록을 해제한다.
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (e) =>
+  e.waitUntil(
+    self.registration
+      .unregister()
+      .then(() => caches.keys())
+      .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  )
+);
+`;
+
 function writeServiceWorker() {
+  if (serve) {
+    fs.writeFileSync("dist/sw.js", DEV_SW);
+    return;
+  }
   // 캐시 이름에 앱 해시를 넣어 배포마다 캐시가 갱신되게 한다
   const hash = crypto
     .createHash("md5")
@@ -38,8 +58,10 @@ if (serve) {
   const ctx = await esbuild.context(options);
   await ctx.watch();
   writeServiceWorker();
-  const { hosts, port } = await ctx.serve({ servedir: "dist", port: 8000 });
-  console.log(`개발 서버: http://${hosts[0] ?? "localhost"}:${port}`);
+  // esbuild 0.24의 serve()는 { host, port }를 준다. 0.0.0.0은 브라우저 주소로 못 쓰므로 바꿔 준다.
+  const { host, port } = await ctx.serve({ servedir: "dist", port: 8000 });
+  const shown = !host || host === "0.0.0.0" || host === "::" ? "localhost" : host;
+  console.log(`개발 서버: http://${shown}:${port}`);
 } else {
   await esbuild.build(options);
   writeServiceWorker();

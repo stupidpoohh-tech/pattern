@@ -1,2 +1,4 @@
 node_modules/
 *.log
+# 개발 서버(npm run dev)가 만드는 소스맵 — 배포본에는 포함되지 않는다
+dist/*.map
