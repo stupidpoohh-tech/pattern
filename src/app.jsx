@@ -341,7 +341,7 @@ function SiteFooter() {
       <span className="credit">제작자 DADA</span>
       <a
         className="icon-btn icon-btn-sm"
-        href="https://dada-portfolio.stupidpoohh.workers.dev/"
+        href="https://dada-town.com/"
         target="_blank"
         rel="noopener noreferrer"
         title="제작자 홈페이지"
