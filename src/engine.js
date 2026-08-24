@@ -115,7 +115,12 @@ function isBridgedSubjectMove(steps, coord) {
 }
 
 // 반복 없음 모드: 아직 안 나온 문장 중에서 다음 걸음을 고른다. 모두 소진되면 null.
-// 짜임새: ①가족 이동 뒤 2걸음은 같은 문장 안 변형 우선 ②술부 다리 우선 ③걸음 폭 이내 우선.
+// 짜임새: ①같은 문장 안 변형(시제/형태)을 선호하되 강제하지 않는다 — 한 주어를 다
+// 소진한 뒤 다음 주어로 넘어가는 뻔한 순서를 피하고, 자연스럽게 다른 주어로 갔다가
+// 돌아오기도 하도록. ②주어를 바꿀 때는 술부가 같은 주어(다리)를 우선한다. ③걸음
+// 폭 이내에 남은 문장이 없을 때만 가장 가까운 문장으로 점프한다.
+// familyReady(주어를 안 바꾼 지 2걸음 이상)에서는 같은 주어에 머무를 확률을 낮춰,
+// "걸음 연관은 유지되지만 순서는 예측 불가"한 흐름이 되도록 한다.
 export function coverageSteps(coord, cfg, history, visited) {
   const pool = scopeCoords(cfg.scopes)
     .filter((c) => !visited.has(keyOf(c)))
@@ -127,7 +132,9 @@ export function coverageSteps(coord, cfg, history, visited) {
   const familyReady = stepsSinceFamilyMove(history) >= 2;
 
   const inFamily = near.filter(sameFamily);
-  if (inFamily.length > 0 && (!familyReady || Math.random() < 0.5)) return pick(inFamily);
+  // 가족 이동 직후엔 같은 주어에 머무를 확률이 높지만(85%) 항상 강제하지는 않는다
+  const stayProb = familyReady ? 0.4 : 0.85;
+  if (inFamily.length > 0 && Math.random() < stayProb) return pick(inFamily);
 
   if (near.length > 0) {
     const bridged = near.filter((steps) => isBridgedSubjectMove(steps, coord));
