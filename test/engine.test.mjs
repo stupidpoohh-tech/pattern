@@ -7,6 +7,9 @@ import {
   randomSteps,
   coverageSteps,
   sampleSteps,
+  chainSteps,
+  isChainScope,
+  CHAIN_ORDER,
   scopeCoords,
   parsePath,
   displayTokens,
@@ -95,6 +98,63 @@ test("짧은 세션 표집: 15문장이 중복 없이 나오고, 커버리지보
   const sampled = avgSubjects(sampleSteps);
   assert.ok(sampled > avgSubjects(coverageSteps), "표집이 더 많은 주어를 훑어야 한다");
   assert.ok(sampled > 5, `주어 다양성이 낮다: ${sampled}/6`);
+});
+
+test("비교 체인: 기본 → 원급 → 비교급 → 최상급 순서로 진행하고 전수 방문한다", () => {
+  const scopes = { cmpadj: CHAIN_ORDER, cmpadv: CHAIN_ORDER };
+  assert.ok(isChainScope(scopes));
+  assert.ok(!isChainScope({ quant: ["many"] }), "체인이 아닌 범위를 체인으로 보면 안 된다");
+
+  const cfg = { scopes, width: 1 };
+  const coords = scopeCoords(scopes);
+  // 체인 첫 단계에서 시작 (앱의 startWalk와 동일한 규칙)
+  let coord = coords.find((c) => c.tense === "base");
+  const visited = new Set([keyOf(coord)]);
+  const history = [];
+  const seq = [coord];
+  for (let i = 0; i < coords.length; i++) {
+    const steps = chainSteps(coord, cfg, history, visited);
+    if (!steps) break;
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), keyOf(coord));
+    assert.ok(!visited.has(keyOf(coord)), `중복: ${keyOf(coord)}`);
+    visited.add(keyOf(coord));
+    history.push(steps);
+    seq.push(coord);
+  }
+  assert.equal(visited.size, coords.length, "전수 방문 실패");
+
+  // 같은 문장(세트+주어)이 이어지는 구간은 반드시 체인 순서를 지켜야 한다
+  for (let i = 1; i < seq.length; i++) {
+    const a = seq[i - 1], b = seq[i];
+    if (a.series === b.series && a.subject === b.subject) {
+      assert.equal(
+        CHAIN_ORDER.indexOf(b.tense),
+        CHAIN_ORDER.indexOf(a.tense) + 1,
+        `체인 순서 위반: ${keyOf(a)} → ${keyOf(b)}`
+      );
+    } else {
+      assert.equal(b.tense, "base", `새 문장은 기본 단계에서 시작해야 한다: ${keyOf(b)}`);
+    }
+  }
+});
+
+test("비교 체인이 아닌 세트가 섞이면 커버리지 걸음으로 처리한다", () => {
+  const scopes = { cmpadj: CHAIN_ORDER, quant: ["many", "afew"] };
+  const cfg = { scopes, width: 1 };
+  const coords = scopeCoords(scopes);
+  let coord = coords.find((c) => c.series === "quant");
+  const visited = new Set([keyOf(coord)]);
+  const history = [];
+  for (let i = 0; i < coords.length; i++) {
+    const steps = chainSteps(coord, cfg, history, visited);
+    if (!steps) break;
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), keyOf(coord));
+    visited.add(keyOf(coord));
+    history.push(steps);
+  }
+  assert.equal(visited.size, coords.length, "혼합 범위 전수 방문 실패");
 });
 
 test("반복 허용: 시제가 안 겹치는 범위도 세트 점프로 오간다", () => {

@@ -45,6 +45,29 @@ test("본동사 do('하다')는 do-지원과 구분해 색이 붙지 않는다",
   assert.deepEqual(cats("Why do they like it?"), ["Why:wh", "do:do"]);
 });
 
+test("꾸미기·비교: 비교·수량·빈도 표지에 색이 붙는다", () => {
+  assert.deepEqual(cats("I am as tall as Mina."), ["am:be", "as:cmp", "as:cmp"]);
+  assert.deepEqual(cats("I am taller than Mina."), ["am:be", "taller:cmp", "than:cmp"]);
+  assert.deepEqual(cats("She works more carefully than Mina."), ["more:cmp", "than:cmp"]);
+  assert.deepEqual(cats("I am the tallest in my class."), ["am:be", "tallest:cmp"]);
+  assert.deepEqual(cats("It moves the most quickly of the three."), ["most:cmp"]);
+  assert.deepEqual(cats("I have many books."), ["many:qty"]);
+  assert.deepEqual(cats("I have a little time."), ["little:qty"]);
+  assert.deepEqual(cats("I often play soccer."), ["often:freq"]);
+  assert.deepEqual(cats("He is never late."), ["is:be", "never:freq"]);
+  assert.deepEqual(cats("She can usually come early."), ["can:modal", "usually:freq"]);
+});
+
+test("소유 have는 완료 조동사와 구분해 색이 붙지 않는다", () => {
+  // 완료: have/has = 조동사
+  assert.deepEqual(cats("I have seen it."), ["have:perfect"]);
+  assert.deepEqual(cats("It has worked."), ["has:perfect"]);
+  // 소유: have/has = 본동사 → 색 없음
+  assert.deepEqual(cats("She has much money."), ["much:qty"]);
+  assert.deepEqual(cats("They have few questions."), ["few:qty"]);
+  assert.deepEqual(cats("He has a few pens."), ["few:qty"]);
+});
+
 test("내용어(get/keep/know 등)는 색이 붙지 않는다", () => {
   assert.deepEqual(cats("It got broken."), []);
   assert.deepEqual(cats("She keeps coming."), []);

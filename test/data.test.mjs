@@ -21,6 +21,23 @@ const SNAPSHOTS = {
   "whbe-she-wh-when": "When is she coming?",
   "whdo-it-wh-how": "How does it work?",
   "passget-it-past-aff": "It got broken.",
+  // 꾸미기 · 비교
+  "adjpos-she-pos-comp": "She is kind.",
+  "adjpos-she-pos-attr": "She is a kind girl.",
+  "quant-I-many-cnt": "I have many books.",
+  "quant-I-many-unc": "I have much time.",
+  "quant-she-afew-cnt": "She has a few friends.",
+  "quant-she-few-unc": "She has little money.",
+  "freq-I-often-gen": "I often play soccer.",
+  "freq-I-often-be": "I am often tired.",
+  "freq-I-often-modal": "I can often help you.",
+  "freq-he-never-gen": "He never eats breakfast.",
+  "cmpadj-I-base-aff": "I am tall.",
+  "cmpadj-I-equality-aff": "I am as tall as Mina.",
+  "cmpadj-I-comparative-aff": "I am taller than Mina.",
+  "cmpadj-I-superlative-aff": "I am the tallest in my class.",
+  "cmpadv-he-comparative-aff": "He runs faster than Jack.",
+  "cmpadv-it-superlative-aff": "It moves the most quickly of the three.",
   "passget-she-present-q": "Does she get invited?",
   "keep-it-present-aff": "It keeps raining.",
   "keep-she-past-neg": "She didn't keep coming.",
@@ -32,8 +49,13 @@ test("문장표 스냅샷 문장", () => {
   }
 });
 
-test("좌표 공간 전체(396문장)가 채워져 있다", () => {
-  assert.equal(Object.keys(SENTENCES).length, 396);
+test("좌표 공간 전체가 빠짐없이 채워져 있다", () => {
+  // 세트별 (시제 × 주어 × 형태)의 총합과 실제 문장 수가 같아야 한다
+  const expected = SETS.reduce(
+    (n, s) => n + s.tenses.length * SUBJECTS.length * s.forms.length,
+    0
+  );
+  assert.equal(Object.keys(SENTENCES).length, expected);
   for (const set of SETS)
     for (const su of SUBJECTS)
       for (const t of set.tenses)
@@ -60,6 +82,55 @@ test("한국어 해석: 모든 문장에 있고, 같은 시제·형태 안에서
           seen.set(KO[key], key);
         }
   }
+});
+
+test("수량: 셀 수 있는/없는 명사에 맞는 수량 표현이 쓰인다", () => {
+  const WORDS = { many: ["many", "much"], afew: ["a few", "a little"], few: ["few", "little"] };
+  for (const [tense, [cntWord, uncWord]] of Object.entries(WORDS)) {
+    for (const su of SUBJECTS) {
+      const cnt = SENTENCES[`quant-${su}-${tense}-cnt`];
+      const unc = SENTENCES[`quant-${su}-${tense}-unc`];
+      assert.ok(cnt.includes(` ${cntWord} `), `셀 수 있는 명사에 ${cntWord} 없음: ${cnt}`);
+      assert.ok(unc.includes(` ${uncWord} `), `셀 수 없는 명사에 ${uncWord} 없음: ${unc}`);
+      // 반대쪽 표현이 섞이면 안 된다 (a few ⊃ few 이므로 앞뒤 공백으로 비교)
+      if (cntWord !== uncWord) assert.ok(!cnt.includes(` ${uncWord} `), `혼용: ${cnt}`);
+      // 명사는 수량 단계가 바뀌어도 그대로여야 한다 (의미쌍 유지)
+      const noun = (s) => s.split(" ").slice(-1)[0];
+      assert.equal(noun(cnt), noun(SENTENCES[`quant-${su}-many-cnt`]), `명사 불일치: ${cnt}`);
+      assert.equal(noun(unc), noun(SENTENCES[`quant-${su}-many-unc`]), `명사 불일치: ${unc}`);
+    }
+  }
+});
+
+test("빈도부사: 일반동사 앞 / be동사 뒤 / 조동사 뒤 위치가 맞다", () => {
+  const BE = /\b(am|is|are)\b/;
+  for (const adv of ["often", "usually", "never"])
+    for (const su of SUBJECTS) {
+      const gen = SENTENCES[`freq-${su}-${adv}-gen`];
+      const be = SENTENCES[`freq-${su}-${adv}-be`];
+      const modal = SENTENCES[`freq-${su}-${adv}-modal`];
+      // 일반동사: 주어 바로 뒤 = 부사, 그 뒤에 동사
+      const g = gen.replace(/[.?]$/, "").split(" ");
+      assert.equal(g[1], adv, `일반동사 앞이 아님: ${gen}`);
+      assert.ok(g.length > 2, `동사가 없음: ${gen}`);
+      // be동사: be 뒤에 부사
+      assert.ok(BE.test(be), `be동사가 없음: ${be}`);
+      assert.match(be, new RegExp(`\\b(am|is|are) ${adv}\\b`), `be동사 뒤가 아님: ${be}`);
+      // 조동사: can 뒤에 부사
+      assert.match(modal, new RegExp(`\\bcan ${adv}\\b`), `조동사 뒤가 아님: ${modal}`);
+    }
+});
+
+test("비교: 원급/비교급/최상급 표지가 각 단계에 정확히 있다", () => {
+  for (const setId of ["cmpadj", "cmpadv"])
+    for (const su of SUBJECTS) {
+      const s = (t) => SENTENCES[`${setId}-${su}-${t}-aff`];
+      assert.ok(!/\b(as|than|more|most)\b/.test(s("base")), `기본에 비교 표지: ${s("base")}`);
+      assert.match(s("equality"), /\bas .+ as \b/, `as ~ as 아님: ${s("equality")}`);
+      assert.match(s("comparative"), /\bthan\b/, `than 없음: ${s("comparative")}`);
+      assert.match(s("superlative"), /\bthe (\w+est|most \w+)\b/, `the+최상급 아님: ${s("superlative")}`);
+      assert.match(s("superlative"), /\b(in|of)\b/, `in/of 범위 없음: ${s("superlative")}`);
+    }
 });
 
 test("구두점: 의문(q·의문사)은 ?, 평서·부정은 .", () => {

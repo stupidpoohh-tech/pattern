@@ -157,6 +157,9 @@ code {
   --gram-modal: #c026d3;
   --gram-wh: #15803d;
   --gram-neg: #dc2626;
+  --gram-cmp: #0891b2;
+  --gram-qty: #7c2d12;
+  --gram-freq: #4d7c0f;
 }
 .gram { font-weight: 800; }
 .gram-be { color: var(--gram-be); }
@@ -166,6 +169,9 @@ code {
 .gram-modal { color: var(--gram-modal); }
 .gram-wh { color: var(--gram-wh); }
 .gram-neg { color: var(--gram-neg); text-decoration: underline; text-underline-offset: 0.15em; }
+.gram-cmp { color: var(--gram-cmp); }
+.gram-qty { color: var(--gram-qty); }
+.gram-freq { color: var(--gram-freq); }
 
 .gram-legend {
   display: flex;
@@ -188,6 +194,9 @@ code {
 .gram-dot-modal { background: var(--gram-modal); }
 .gram-dot-wh { background: var(--gram-wh); }
 .gram-dot-neg { background: var(--gram-neg); }
+.gram-dot-cmp { background: var(--gram-cmp); }
+.gram-dot-qty { background: var(--gram-qty); }
+.gram-dot-freq { background: var(--gram-freq); }
 
 .stage-hint {
   padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
@@ -347,6 +356,25 @@ code {
 .cell-check { width: 0.85rem; text-align: center; font-size: 0.78rem; }
 .cell-span { grid-column: span 2; display: flex; }
 .cell-span .matrix-cell { flex: 1; }
+
+/* ---------- 학습 영역 스위치 ---------- */
+
+.area-switch { display: flex; }
+.area-switch .seg { flex: 1; }
+.area-switch .seg-btn { flex: 1; padding: 0.55rem 0.6rem; font-size: 0.9rem; }
+
+/* ---------- 꾸미기 · 비교 메뉴 ---------- */
+
+.decor-menu { display: flex; flex-direction: column; gap: 0.75rem; }
+.decor-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.decor-title { font-size: 0.76rem; color: var(--muted); }
+.decor-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.3rem;
+}
+.decor-cell { justify-content: flex-start; gap: 0.4rem; padding: 0.55rem 0.6rem; }
+.decor-label { flex: 1; text-align: left; font-size: 0.88rem; }
 
 /* ---------- 설정 행 (세션·걸음 폭·반복·지시) ---------- */
 

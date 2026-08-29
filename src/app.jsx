@@ -10,6 +10,9 @@ import {
   randomSteps,
   coverageSteps,
   sampleSteps,
+  chainSteps,
+  isChainScope,
+  CHAIN_ORDER,
   scopeCoords,
   parsePath,
   tokenLabel,
@@ -28,7 +31,11 @@ function GrammarText({ text }) {
   );
 }
 
-const GRAM_LABELS = { be: "be", do: "do", future: "will·going to", perfect: "have·has", modal: "can·should", wh: "의문사", neg: "부정 (not·n't)" };
+const GRAM_LABELS = {
+  be: "be", do: "do", future: "will·going to", perfect: "have·has",
+  modal: "can·should", wh: "의문사", neg: "부정 (not·n't)",
+  cmp: "비교 (as·than·-er)", qty: "수량", freq: "빈도부사",
+};
 
 function GrammarLegend() {
   return (
@@ -221,6 +228,56 @@ function buildScopes(selected) {
   return scopes;
 }
 
+// ---------- 꾸미기 · 비교 메뉴 ----------
+// 각 항목이 곧 scope 하나. 기존 매트릭스와 달리 단계 순환 없이 켜고 끄기만 한다.
+
+const DECOR_GROUPS = [
+  {
+    title: "형용사",
+    items: [{ id: "adjpos", label: "형용사 위치", scope: { adjpos: ["pos"] } }],
+  },
+  {
+    title: "수량 표현",
+    items: [
+      { id: "many", label: "many / much", scope: { quant: ["many"] } },
+      { id: "afew", label: "a few / a little", scope: { quant: ["afew"] } },
+      { id: "few", label: "few / little", scope: { quant: ["few"] } },
+    ],
+  },
+  {
+    title: "빈도부사",
+    items: [
+      { id: "often", label: "often", scope: { freq: ["often"] } },
+      { id: "usually", label: "usually", scope: { freq: ["usually"] } },
+      { id: "never", label: "never", scope: { freq: ["never"] } },
+    ],
+  },
+  {
+    title: "비교",
+    items: [
+      { id: "equality", label: "as ~ as", scope: { cmpadj: ["equality"], cmpadv: ["equality"] } },
+      { id: "comparative", label: "비교급", scope: { cmpadj: ["comparative"], cmpadv: ["comparative"] } },
+      { id: "superlative", label: "최상급", scope: { cmpadj: ["superlative"], cmpadv: ["superlative"] } },
+      { id: "chain", label: "비교 체인", scope: { cmpadj: CHAIN_ORDER, cmpadv: CHAIN_ORDER } },
+    ],
+  },
+];
+
+const DECOR_ITEMS = Object.fromEntries(
+  DECOR_GROUPS.flatMap((g) => g.items.map((it) => [it.id, it]))
+);
+
+// 선택된 항목들 → 엔진 scopes (세트별 시제 합집합)
+function buildDecorScopes(selected) {
+  const scopes = {};
+  for (const id of selected) {
+    for (const [setId, tenses] of Object.entries(DECOR_ITEMS[id].scope)) {
+      scopes[setId] = [...new Set([...(scopes[setId] || []), ...tenses])];
+    }
+  }
+  return scopes;
+}
+
 // ---------- 전체 문장표 (수업용 열람 화면) ----------
 
 const TABLE_TABS = [
@@ -231,6 +288,10 @@ const TABLE_TABS = [
   { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
   { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
   { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
+  { id: "adjpos", title: "형용사 위치", sets: ["adjpos"] },
+  { id: "quant", title: "수량", sets: ["quant"] },
+  { id: "freq", title: "빈도부사", sets: ["freq"] },
+  { id: "cmp", title: "비교", sets: ["cmpadj", "cmpadv"], headings: ["형용사", "부사"] },
 ];
 
 function SentenceTable({ cols, colLabels, cellOf }) {
@@ -298,6 +359,18 @@ function TableScreen({ onHome, onWalk }) {
       {tab.sets.map((setId, si) => {
         const set = SET_BY_ID[setId];
         const heading = tab.headings ? tab.headings[si] : null;
+        // 형태 축이 하나뿐인 세트(비교)는 시제를 열로 놓아야 표가 읽힌다
+        if (set.forms.length === 1)
+          return (
+            <section className="table-section" key={setId}>
+              <h2>{heading || set.label}</h2>
+              <SentenceTable
+                cols={set.tenses}
+                colLabels={set.tenses.map((t) => TENSE_LABELS[t])}
+                cellOf={(s, t) => SENTENCES[`${setId}-${s}-${t}-${set.forms[0]}`]}
+              />
+            </section>
+          );
         return set.tenses.map((tense) => (
           <section className="table-section" key={setId + tense}>
             <h2>
@@ -400,6 +473,8 @@ function MatrixCell({ id, stage, onPointerDown, onPointerUp, onClick }) {
 }
 
 function HomeScreen({ onStartWalk, onTable, onVocab }) {
+  const [area, setArea] = useState("sentence"); // sentence | decor
+  const [decorSel, setDecorSel] = useState(() => new Set(["adjpos"]));
   const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
@@ -506,7 +581,16 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
   const colIds = (colId) => MATRIX_ROWS.map((r) => cellId(r.id, colId));
 
-  const count = scopeCoords(buildScopes(selected)).length;
+  const toggleDecor = (id) =>
+    setDecorSel((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const scopes = area === "sentence" ? buildScopes(selected) : buildDecorScopes(decorSel);
+  const count = scopeCoords(scopes).length;
   const cellProps = (id) => ({
     id,
     stage: selected[id] || 0,
@@ -519,6 +603,17 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
     <div className="page">
       <h1 className="app-title">문장 패턴 학습</h1>
 
+      <div className="area-switch">
+        <Segmented
+          options={[
+            { v: "sentence", t: "문장 변형" },
+            { v: "decor", t: "꾸미기 · 비교" },
+          ]}
+          value={area}
+          onChange={setArea}
+        />
+      </div>
+
       <section className="card">
         <div className="card-head">
           <h2>자동 학습</h2>
@@ -527,6 +622,34 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
           </button>
         </div>
 
+        {area === "decor" ? (
+          <div className="field">
+            <div className="decor-menu">
+              {DECOR_GROUPS.map((g) => (
+                <div className="decor-group" key={g.title}>
+                  <span className="decor-title">{g.title}</span>
+                  <div className="decor-items">
+                    {g.items.map((it) => {
+                      const on = decorSel.has(it.id);
+                      return (
+                        <button
+                          key={it.id}
+                          className={`matrix-cell decor-cell ${on ? "cell-on" : ""}`}
+                          aria-pressed={on}
+                          onClick={() => toggleDecor(it.id)}
+                        >
+                          <span className="cell-check">{on ? "✓" : ""}</span>
+                          <span className="decor-label">{it.label}</span>
+                          <span className="cell-count">{scopeCoords(it.scope).length}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
         <div className="field">
           <div className="matrix" onPointerMove={onMatrixPointerMove}>
             <span className="matrix-corner" />
@@ -553,6 +676,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
             </div>
           </div>
         </div>
+        )}
 
         <div className="settings">
           <div className="set-row">
@@ -621,9 +745,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
         <button
           className="primary-btn"
           disabled={count < 2}
-          onClick={() =>
-            onStartWalk({ scopes: buildScopes(selected), width, repeat, length, instrMode })
-          }
+          onClick={() => onStartWalk({ scopes, width, repeat, length, instrMode })}
         >
           {count < 2 ? "범위를 선택하세요" : `학습 시작 · ${length === "short" ? Math.min(15, count) : count}문장`}
         </button>
@@ -719,20 +841,33 @@ export default function App() {
   const startWalk = ({ scopes, width = 1, repeat = false, length = "full", instrMode = "token" }) => {
     const coords = scopeCoords(scopes);
     if (coords.length < 2) return;
-    // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다
+    const chain = isChainScope(scopes);
+    // 시작 문장은 각 세트의 첫 형태(평서 등)에서 고른다.
+    // 비교 체인이면 체인의 첫 단계(기본)에서 시작해야 순서가 맞다.
     const firstForms = coords.filter((c) => c.form === SET_BY_ID[c.series].forms[0]);
-    const start = pickRandom(firstForms.length ? firstForms : coords);
+    const chainStarts = chain
+      ? firstForms.filter((c) => {
+          const ch = CHAIN_ORDER.filter((t) => (scopes[c.series] || []).includes(t));
+          return ch.length <= 1 || c.tense === ch[0];
+        })
+      : [];
+    const start = pickRandom(
+      chainStarts.length ? chainStarts : firstForms.length ? firstForms : coords
+    );
     const visited = new Set([keyOf(start)]);
     const ecfg = { scopes, width };
     const total =
       length === "short" ? Math.min(14, coords.length - 1) : coords.length - 1;
     const getSteps = (i, coord, history) => {
-      // 짧게 = 범위 전체에서 흩어지게 표집 / 전체 = 빠짐없이 도는 커버리지 / 반복 켬 = 무작위
+      // 비교 체인 = 기본→원급→비교급→최상급 순서 / 짧게 = 흩어지게 표집 /
+      // 전체 = 빠짐없이 도는 커버리지 / 반복 켬 = 무작위(체인도 역순·랜덤 허용)
       const steps = repeat
         ? randomSteps(coord, ecfg, history)
-        : length === "short"
-          ? sampleSteps(coord, ecfg, history, visited)
-          : coverageSteps(coord, ecfg, history, visited);
+        : chain
+          ? chainSteps(coord, ecfg, history, visited)
+          : length === "short"
+            ? sampleSteps(coord, ecfg, history, visited)
+            : coverageSteps(coord, ecfg, history, visited);
       if (steps) visited.add(keyOf(applySteps(coord, steps)));
       return steps;
     };

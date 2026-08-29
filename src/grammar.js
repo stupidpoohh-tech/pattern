@@ -3,7 +3,7 @@
 // "슬롯(어간)은 그대로, 부정 조작(n't/not)이 더해졌다"는 구조를 색으로 보여주기 위해서다.
 // React에 의존하지 않는 순수 함수라 노드 테스트로 검증할 수 있다.
 
-export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg"];
+export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg", "cmp", "qty", "freq"];
 
 const WORD_CATS = {
   // be동사 슬롯
@@ -20,6 +20,16 @@ const WORD_CATS = {
   where: "wh", when: "wh", why: "wh", what: "wh", how: "wh",
   // 부정 표지
   not: "neg",
+  // 비교 표지 — as/than/more/most + 데이터에 쓰인 -er/-est 형태
+  as: "cmp", than: "cmp", more: "cmp", most: "cmp",
+  taller: "cmp", tallest: "cmp", smarter: "cmp", smartest: "cmp",
+  busier: "cmp", busiest: "cmp", happier: "cmp", happiest: "cmp",
+  harder: "cmp", hardest: "cmp", faster: "cmp", fastest: "cmp",
+  earlier: "cmp", earliest: "cmp",
+  // 수량 표현
+  many: "qty", much: "qty", few: "qty", little: "qty", some: "qty", any: "qty",
+  // 빈도부사
+  often: "freq", usually: "freq", never: "freq", always: "freq", sometimes: "freq",
 };
 
 // 부정 축약형 → [어간, 부정 표지]. 어간은 원형의 카테고리를 물려받는다.
@@ -59,6 +69,13 @@ function isContentDo(after) {
   return /^\s+it\b/i.test(after) || /^[.?]/.test(after);
 }
 
+// have/has도 두 가지다: 완료 조동사("I have seen it") 또는 "가지다"라는 본동사
+// ("I have many books"). 완료 조동사 뒤에는 과거분사가 오므로, 수량 표현이나
+// 관사가 뒤따르면 본동사로 보고 색을 칠하지 않는다.
+function isContentHave(after) {
+  return /^\s+(many|much|few|little|some|any|a|an|the)\b/i.test(after);
+}
+
 // "She isn't lovely." → [{text:"She "}, {text:"is",cat:"be"}, {text:"n't",cat:"neg"}, {text:" lovely."}]
 export function tokenizeGrammar(text) {
   if (!text) return [{ text: text || "" }];
@@ -77,8 +94,10 @@ export function tokenizeGrammar(text) {
       parts.push({ text: matched.slice(0, stem.length), cat: NEG_STEM_CATS[stem] || WORD_CATS[stem] });
       parts.push({ text: matched.slice(stem.length), cat: "neg" });
     } else {
+      const after = text.slice(m.index + matched.length);
       let cat = WORD_CATS[lower] || CONTRACTIONS[lower];
-      if (lower === "do" && isContentDo(text.slice(m.index + matched.length))) cat = undefined;
+      if (lower === "do" && isContentDo(after)) cat = undefined;
+      if ((lower === "have" || lower === "has") && isContentHave(after)) cat = undefined;
       parts.push({ text: matched, cat });
     }
     last = m.index + matched.length;

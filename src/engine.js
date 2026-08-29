@@ -25,6 +25,18 @@ export const TENSE_LABELS = {
   perf: "완료",
   modal: "조동사",
   wh: "의문사",
+  // 꾸미기 · 비교
+  pos: "위치",
+  many: "many / much",
+  afew: "a few / a little",
+  few: "few / little",
+  often: "often",
+  usually: "usually",
+  never: "never",
+  base: "기본",
+  equality: "as ~ as",
+  comparative: "비교급",
+  superlative: "최상급",
 };
 const FORM_LABELS = {
   aff: "평서",
@@ -35,6 +47,14 @@ const FORM_LABELS = {
   why: "Why",
   what: "What",
   how: "How",
+  // 꾸미기 · 비교
+  comp: "보어",
+  attr: "명사 앞",
+  cnt: "셀 수 있는",
+  unc: "셀 수 없는",
+  gen: "일반동사 앞",
+  be: "be동사 뒤",
+  modal: "조동사 뒤",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -44,9 +64,11 @@ export const tokenLabel = (step) => {
   return SET_BY_ID[step.value].label; // series
 };
 
-// 이 좌표에서 실제로 쓰이는 술부 (will/goingto 교체·의문사 세트의 형태별 술부 반영)
+// 이 좌표에서 실제로 쓰이는 술부 (will/goingto 교체·형태별/시제별 술부 반영)
 function predOf(coord) {
   const set = SET_BY_ID[coord.series];
+  // 비교 세트는 시제 축이 비교 단계라, 힌트에 "형용사 · 비교 대상"을 시제별로 준다
+  if (set.predByTense) return (set.predByTense[coord.tense] || {})[coord.subject] || "";
   if (set.predByForm) return (set.predByForm[coord.form] || {})[coord.subject] || "";
   if ((coord.tense === "will" || coord.tense === "goingto") && set.futurePred[coord.subject])
     return set.futurePred[coord.subject];
@@ -143,6 +165,42 @@ export function coverageSteps(coord, cfg, history, visited) {
   }
 
   // 걸음 폭 안에 남은 문장이 없으면 가장 가까운 문장으로 점프 (축 여러 개가 나란히 표시된다)
+  const min = Math.min(...pool.map((s) => s.length));
+  return pick(pool.filter((s) => s.length === min));
+}
+
+// ---- 비교 체인 ----
+// 비교 세트의 시제 축은 순서가 있는 단계다: 기본 → 원급 → 비교급 → 최상급.
+export const CHAIN_ORDER = ["base", "equality", "comparative", "superlative"];
+
+// 선택 범위에 2단계 이상 이어지는 비교 체인이 있는가
+export const isChainScope = (scopes) =>
+  Object.values(scopes).some((tenses) => CHAIN_ORDER.filter((t) => tenses.includes(t)).length > 1);
+
+// 비교 체인 걸음: 같은 문장을 체인 순서대로 끝까지 올린 뒤, 다음 문장의 첫 단계로 넘어간다.
+// 체인이 없는 세트(수량·빈도 등)를 섞어 선택한 경우 그 좌표에서는 커버리지 걸음에 맡긴다.
+export function chainSteps(coord, cfg, history, visited) {
+  const chain = CHAIN_ORDER.filter((t) => (cfg.scopes[coord.series] || []).includes(t));
+  if (chain.length <= 1) return coverageSteps(coord, cfg, history, visited);
+
+  // 체인 다음 단계가 아직 안 나왔으면 그리로
+  const i = chain.indexOf(coord.tense);
+  if (i >= 0 && i < chain.length - 1) {
+    const next = { ...coord, tense: chain[i + 1] };
+    if (!visited.has(keyOf(next))) return diffSteps(coord, next);
+  }
+
+  // 체인 끝 — 아직 안 나온 문장의 체인 첫 단계로 (없으면 남은 문장 아무거나)
+  const remaining = scopeCoords(cfg.scopes).filter((c) => !visited.has(keyOf(c)));
+  if (remaining.length === 0) return null;
+  const starts = remaining.filter((c) => {
+    const ch = CHAIN_ORDER.filter((t) => (cfg.scopes[c.series] || []).includes(t));
+    return ch.length <= 1 || c.tense === ch[0];
+  });
+  const pool = (starts.length ? starts : remaining)
+    .map((c) => diffSteps(coord, c))
+    .filter((steps) => steps.length > 0);
+  if (pool.length === 0) return null;
   const min = Math.min(...pool.map((s) => s.length));
   return pick(pool.filter((s) => s.length === min));
 }
@@ -274,6 +332,26 @@ const STEP_ALIASES = (() => {
     why: { axis: "form", value: "why" },
     what: { axis: "form", value: "what" },
     how: { axis: "form", value: "how" },
+    // 꾸미기 · 비교
+    pos: { axis: "tense", value: "pos" },
+    many: { axis: "tense", value: "many" },
+    afew: { axis: "tense", value: "afew" },
+    few: { axis: "tense", value: "few" },
+    often: { axis: "tense", value: "often" },
+    usually: { axis: "tense", value: "usually" },
+    never: { axis: "tense", value: "never" },
+    base: { axis: "tense", value: "base" },
+    "기본": { axis: "tense", value: "base" },
+    equality: { axis: "tense", value: "equality" },
+    comparative: { axis: "tense", value: "comparative" },
+    "비교급": { axis: "tense", value: "comparative" },
+    superlative: { axis: "tense", value: "superlative" },
+    "최상급": { axis: "tense", value: "superlative" },
+    comp: { axis: "form", value: "comp" },
+    attr: { axis: "form", value: "attr" },
+    cnt: { axis: "form", value: "cnt" },
+    unc: { axis: "form", value: "unc" },
+    gen: { axis: "form", value: "gen" },
   });
   return m;
 })();

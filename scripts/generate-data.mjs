@@ -495,6 +495,315 @@ const TABLE = {
       },
     },
   },
+
+  // ===== 꾸미기 · 비교 =====
+  // 메뉴에서 개별 선택하는 단위는 tense 축에, 드릴로 굴리는 변형은 form 축에 싣는다
+  // (범위 선택이 (세트, 시제) 단위이므로).
+
+  // 형용사 위치 — 보어(be동사 뒤) ↔ 한정(명사 앞)
+  adjpos: {
+    label: "형용사 위치",
+    tenses: ["pos"],
+    forms: ["comp", "attr"],
+    formHeads: ["보어", "명사 앞"],
+    pred: { I: "busy", she: "kind", he: "tall", it: "small", we: "young", they: "famous" },
+    predByForm: {
+      comp: { I: "busy", she: "kind", he: "tall", it: "small", we: "young", they: "famous" },
+      attr: {
+        I: "busy student", she: "kind girl", he: "tall boy",
+        it: "small apple", we: "young students", they: "famous singers",
+      },
+    },
+    rows: {
+      pos: {
+        I: ["I am busy.", "I am a busy student."],
+        she: ["She is kind.", "She is a kind girl."],
+        he: ["He is tall.", "He is a tall boy."],
+        it: ["It is small.", "It is a small apple."],
+        we: ["We are young.", "We are young students."],
+        they: ["They are famous.", "They are famous singers."],
+      },
+    },
+    koRows: {
+      pos: {
+        I: ["나는 바쁘다", "나는 바쁜 학생이다"],
+        she: ["그녀는 친절하다", "그녀는 친절한 소녀다"],
+        he: ["그는 키가 크다", "그는 키 큰 소년이다"],
+        it: ["그것은 작다", "그것은 작은 사과다"],
+        we: ["우리는 어리다", "우리는 어린 학생들이다"],
+        they: ["그들은 유명하다", "그들은 유명한 가수들이다"],
+      },
+    },
+  },
+
+  // 수량 표현 — 시제 축에 수량 단계, form 축에 셀 수 있음/없음.
+  // 주어별 명사 쌍(책/시간)을 고정해 수량 단계만 바뀌게 한다.
+  quant: {
+    label: "수량 표현",
+    tenses: ["many", "afew", "few"],
+    forms: ["cnt", "unc"],
+    formHeads: ["셀 수 있는", "셀 수 없는"],
+    pred: { I: "books", she: "friends", he: "pens", it: "colors", we: "chairs", they: "questions" },
+    predByForm: {
+      cnt: { I: "books", she: "friends", he: "pens", it: "colors", we: "chairs", they: "questions" },
+      unc: { I: "time", she: "money", he: "bread", it: "space", we: "work", they: "homework" },
+    },
+    rows: {
+      many: {
+        I: ["I have many books.", "I have much time."],
+        she: ["She has many friends.", "She has much money."],
+        he: ["He has many pens.", "He has much bread."],
+        it: ["It has many colors.", "It has much space."],
+        we: ["We have many chairs.", "We have much work."],
+        they: ["They have many questions.", "They have much homework."],
+      },
+      afew: {
+        I: ["I have a few books.", "I have a little time."],
+        she: ["She has a few friends.", "She has a little money."],
+        he: ["He has a few pens.", "He has a little bread."],
+        it: ["It has a few colors.", "It has a little space."],
+        we: ["We have a few chairs.", "We have a little work."],
+        they: ["They have a few questions.", "They have a little homework."],
+      },
+      few: {
+        I: ["I have few books.", "I have little time."],
+        she: ["She has few friends.", "She has little money."],
+        he: ["He has few pens.", "He has little bread."],
+        it: ["It has few colors.", "It has little space."],
+        we: ["We have few chairs.", "We have little work."],
+        they: ["They have few questions.", "They have little homework."],
+      },
+    },
+    koRows: {
+      many: {
+        I: ["나는 책이 많다", "나는 시간이 많다"],
+        she: ["그녀는 친구가 많다", "그녀는 돈이 많다"],
+        he: ["그는 펜이 많다", "그는 빵이 많다"],
+        it: ["그것은 색깔이 많다", "그것은 공간이 많다"],
+        we: ["우리는 의자가 많다", "우리는 일이 많다"],
+        they: ["그들은 질문이 많다", "그들은 숙제가 많다"],
+      },
+      afew: {
+        I: ["나는 책이 조금 있다", "나는 시간이 조금 있다"],
+        she: ["그녀는 친구가 조금 있다", "그녀는 돈이 조금 있다"],
+        he: ["그는 펜이 조금 있다", "그는 빵이 조금 있다"],
+        it: ["그것은 색깔이 조금 있다", "그것은 공간이 조금 있다"],
+        we: ["우리는 의자가 조금 있다", "우리는 일이 조금 있다"],
+        they: ["그들은 질문이 조금 있다", "그들은 숙제가 조금 있다"],
+      },
+      few: {
+        I: ["나는 책이 거의 없다", "나는 시간이 거의 없다"],
+        she: ["그녀는 친구가 거의 없다", "그녀는 돈이 거의 없다"],
+        he: ["그는 펜이 거의 없다", "그는 빵이 거의 없다"],
+        it: ["그것은 색깔이 거의 없다", "그것은 공간이 거의 없다"],
+        we: ["우리는 의자가 거의 없다", "우리는 일이 거의 없다"],
+        they: ["그들은 질문이 거의 없다", "그들은 숙제가 거의 없다"],
+      },
+    },
+  },
+
+  // 빈도부사 — 시제 축에 빈도부사, form 축에 붙는 자리(일반동사 앞 / be 뒤 / 조동사 뒤).
+  freq: {
+    label: "빈도부사",
+    tenses: ["often", "usually", "never"],
+    forms: ["gen", "be", "modal"],
+    formHeads: ["일반동사 앞", "be동사 뒤", "조동사 뒤"],
+    pred: { I: "soccer", she: "there", he: "breakfast", it: "well", we: "here", they: "late" },
+    predByForm: {
+      gen: {
+        I: "play soccer", she: "goes there", he: "eats breakfast",
+        it: "works well", we: "meet here", they: "come late",
+      },
+      be: { I: "tired", she: "busy", he: "late", it: "cold", we: "ready", they: "happy" },
+      modal: {
+        I: "help you", she: "come early", he: "remember it",
+        it: "start early", we: "go together", they: "win the game",
+      },
+    },
+    rows: {
+      often: {
+        I: ["I often play soccer.", "I am often tired.", "I can often help you."],
+        she: ["She often goes there.", "She is often busy.", "She can often come early."],
+        he: ["He often eats breakfast.", "He is often late.", "He can often remember it."],
+        it: ["It often works well.", "It is often cold.", "It can often start early."],
+        we: ["We often meet here.", "We are often ready.", "We can often go together."],
+        they: ["They often come late.", "They are often happy.", "They can often win the game."],
+      },
+      usually: {
+        I: ["I usually play soccer.", "I am usually tired.", "I can usually help you."],
+        she: ["She usually goes there.", "She is usually busy.", "She can usually come early."],
+        he: ["He usually eats breakfast.", "He is usually late.", "He can usually remember it."],
+        it: ["It usually works well.", "It is usually cold.", "It can usually start early."],
+        we: ["We usually meet here.", "We are usually ready.", "We can usually go together."],
+        they: ["They usually come late.", "They are usually happy.", "They can usually win the game."],
+      },
+      never: {
+        I: ["I never play soccer.", "I am never tired.", "I can never help you."],
+        she: ["She never goes there.", "She is never busy.", "She can never come early."],
+        he: ["He never eats breakfast.", "He is never late.", "He can never remember it."],
+        it: ["It never works well.", "It is never cold.", "It can never start early."],
+        we: ["We never meet here.", "We are never ready.", "We can never go together."],
+        they: ["They never come late.", "They are never happy.", "They can never win the game."],
+      },
+    },
+    koRows: {
+      often: {
+        I: ["나는 자주 축구를 한다", "나는 자주 피곤하다", "나는 자주 너를 도울 수 있다"],
+        she: ["그녀는 자주 거기에 간다", "그녀는 자주 바쁘다", "그녀는 자주 일찍 올 수 있다"],
+        he: ["그는 자주 아침을 먹는다", "그는 자주 늦는다", "그는 자주 그것을 기억할 수 있다"],
+        it: ["그것은 자주 잘 작동한다", "날씨가 자주 춥다", "그것은 자주 일찍 시작할 수 있다"],
+        we: ["우리는 자주 여기서 만난다", "우리는 자주 준비돼 있다", "우리는 자주 함께 갈 수 있다"],
+        they: ["그들은 자주 늦게 온다", "그들은 자주 행복하다", "그들은 자주 경기를 이길 수 있다"],
+      },
+      usually: {
+        I: ["나는 보통 축구를 한다", "나는 보통 피곤하다", "나는 보통 너를 도울 수 있다"],
+        she: ["그녀는 보통 거기에 간다", "그녀는 보통 바쁘다", "그녀는 보통 일찍 올 수 있다"],
+        he: ["그는 보통 아침을 먹는다", "그는 보통 늦는다", "그는 보통 그것을 기억할 수 있다"],
+        it: ["그것은 보통 잘 작동한다", "날씨가 보통 춥다", "그것은 보통 일찍 시작할 수 있다"],
+        we: ["우리는 보통 여기서 만난다", "우리는 보통 준비돼 있다", "우리는 보통 함께 갈 수 있다"],
+        they: ["그들은 보통 늦게 온다", "그들은 보통 행복하다", "그들은 보통 경기를 이길 수 있다"],
+      },
+      never: {
+        I: ["나는 축구를 절대 하지 않는다", "나는 절대 피곤하지 않다", "나는 너를 절대 도울 수 없다"],
+        she: ["그녀는 거기에 절대 가지 않는다", "그녀는 절대 바쁘지 않다", "그녀는 절대 일찍 올 수 없다"],
+        he: ["그는 아침을 절대 먹지 않는다", "그는 절대 늦지 않는다", "그는 그것을 절대 기억할 수 없다"],
+        it: ["그것은 절대 잘 작동하지 않는다", "날씨가 절대 춥지 않다", "그것은 절대 일찍 시작할 수 없다"],
+        we: ["우리는 여기서 절대 만나지 않는다", "우리는 절대 준비돼 있지 않다", "우리는 절대 함께 갈 수 없다"],
+        they: ["그들은 절대 늦게 오지 않는다", "그들은 절대 행복하지 않다", "그들은 절대 경기를 이길 수 없다"],
+      },
+    },
+  },
+
+  // 형용사 비교 — 시제 축이 비교 단계(기본→원급→비교급→최상급) = 비교 체인.
+  // predByTense가 "형용사 · 비교 대상"을 힌트로 준다 (대상은 학생이 알 수 없으므로).
+  cmpadj: {
+    label: "형용사 비교",
+    tenses: ["base", "equality", "comparative", "superlative"],
+    forms: ["aff"],
+    formHeads: ["문장"],
+    pred: { I: "tall", she: "smart", he: "busy", it: "interesting", we: "happy", they: "popular" },
+    predByTense: {
+      base: { I: "tall", she: "smart", he: "busy", it: "interesting", we: "happy", they: "popular" },
+      equality: {
+        I: "tall · Mina", she: "smart · Mina", he: "busy · Jack",
+        it: "interesting · that book", we: "happy · them", they: "popular · us",
+      },
+      comparative: {
+        I: "tall · Mina", she: "smart · Mina", he: "busy · Jack",
+        it: "interesting · that book", we: "happy · them", they: "popular · us",
+      },
+      superlative: {
+        I: "tall · my class", she: "smart · her class", he: "busy · his team",
+        it: "interesting · the three", we: "happy · our school", they: "popular · our school",
+      },
+    },
+    rows: {
+      base: {
+        I: ["I am tall."], she: ["She is smart."], he: ["He is busy."],
+        it: ["It is interesting."], we: ["We are happy."], they: ["They are popular."],
+      },
+      equality: {
+        I: ["I am as tall as Mina."], she: ["She is as smart as Mina."], he: ["He is as busy as Jack."],
+        it: ["It is as interesting as that book."], we: ["We are as happy as them."],
+        they: ["They are as popular as us."],
+      },
+      comparative: {
+        I: ["I am taller than Mina."], she: ["She is smarter than Mina."], he: ["He is busier than Jack."],
+        it: ["It is more interesting than that book."], we: ["We are happier than them."],
+        they: ["They are more popular than us."],
+      },
+      superlative: {
+        I: ["I am the tallest in my class."], she: ["She is the smartest in her class."],
+        he: ["He is the busiest in his team."], it: ["It is the most interesting of the three."],
+        we: ["We are the happiest in our school."], they: ["They are the most popular in our school."],
+      },
+    },
+    koRows: {
+      base: {
+        I: ["나는 키가 크다"], she: ["그녀는 똑똑하다"], he: ["그는 바쁘다"],
+        it: ["그것은 재미있다"], we: ["우리는 행복하다"], they: ["그들은 인기가 있다"],
+      },
+      equality: {
+        I: ["나는 미나만큼 키가 크다"], she: ["그녀는 미나만큼 똑똑하다"], he: ["그는 잭만큼 바쁘다"],
+        it: ["그것은 그 책만큼 재미있다"], we: ["우리는 그들만큼 행복하다"], they: ["그들은 우리만큼 인기가 있다"],
+      },
+      comparative: {
+        I: ["나는 미나보다 키가 크다"], she: ["그녀는 미나보다 똑똑하다"], he: ["그는 잭보다 바쁘다"],
+        it: ["그것은 그 책보다 재미있다"], we: ["우리는 그들보다 행복하다"], they: ["그들은 우리보다 인기가 있다"],
+      },
+      superlative: {
+        I: ["나는 우리 반에서 키가 가장 크다"], she: ["그녀는 반에서 가장 똑똑하다"],
+        he: ["그는 팀에서 가장 바쁘다"], it: ["그것은 셋 중에서 가장 재미있다"],
+        we: ["우리는 학교에서 가장 행복하다"], they: ["그들은 학교에서 가장 인기가 있다"],
+      },
+    },
+  },
+
+  // 부사 비교 — 형용사 비교와 같은 체인을 부사로.
+  cmpadv: {
+    label: "부사 비교",
+    tenses: ["base", "equality", "comparative", "superlative"],
+    forms: ["aff"],
+    formHeads: ["문장"],
+    pred: { I: "hard", she: "carefully", he: "fast", it: "quickly", we: "early", they: "loudly" },
+    predByTense: {
+      base: { I: "hard", she: "carefully", he: "fast", it: "quickly", we: "early", they: "loudly" },
+      equality: {
+        I: "hard · Mina", she: "carefully · Mina", he: "fast · Jack",
+        it: "quickly · that one", we: "early · them", they: "loudly · us",
+      },
+      comparative: {
+        I: "hard · Mina", she: "carefully · Mina", he: "fast · Jack",
+        it: "quickly · that one", we: "early · them", they: "loudly · us",
+      },
+      superlative: {
+        I: "hard · my class", she: "carefully · her team", he: "fast · the three",
+        it: "quickly · the three", we: "early · our class", they: "loudly · the group",
+      },
+    },
+    rows: {
+      base: {
+        I: ["I study hard."], she: ["She works carefully."], he: ["He runs fast."],
+        it: ["It moves quickly."], we: ["We get up early."], they: ["They talk loudly."],
+      },
+      equality: {
+        I: ["I study as hard as Mina."], she: ["She works as carefully as Mina."],
+        he: ["He runs as fast as Jack."], it: ["It moves as quickly as that one."],
+        we: ["We get up as early as them."], they: ["They talk as loudly as us."],
+      },
+      comparative: {
+        I: ["I study harder than Mina."], she: ["She works more carefully than Mina."],
+        he: ["He runs faster than Jack."], it: ["It moves more quickly than that one."],
+        we: ["We get up earlier than them."], they: ["They talk more loudly than us."],
+      },
+      superlative: {
+        I: ["I study the hardest in my class."], she: ["She works the most carefully in her team."],
+        he: ["He runs the fastest of the three."], it: ["It moves the most quickly of the three."],
+        we: ["We get up the earliest in our class."], they: ["They talk the most loudly in the group."],
+      },
+    },
+    koRows: {
+      base: {
+        I: ["나는 열심히 공부한다"], she: ["그녀는 신중하게 일한다"], he: ["그는 빠르게 달린다"],
+        it: ["그것은 빠르게 움직인다"], we: ["우리는 일찍 일어난다"], they: ["그들은 크게 말한다"],
+      },
+      equality: {
+        I: ["나는 미나만큼 열심히 공부한다"], she: ["그녀는 미나만큼 신중하게 일한다"],
+        he: ["그는 잭만큼 빠르게 달린다"], it: ["그것은 저것만큼 빠르게 움직인다"],
+        we: ["우리는 그들만큼 일찍 일어난다"], they: ["그들은 우리만큼 크게 말한다"],
+      },
+      comparative: {
+        I: ["나는 미나보다 열심히 공부한다"], she: ["그녀는 미나보다 신중하게 일한다"],
+        he: ["그는 잭보다 빠르게 달린다"], it: ["그것은 저것보다 빠르게 움직인다"],
+        we: ["우리는 그들보다 일찍 일어난다"], they: ["그들은 우리보다 크게 말한다"],
+      },
+      superlative: {
+        I: ["나는 우리 반에서 가장 열심히 공부한다"], she: ["그녀는 팀에서 가장 신중하게 일한다"],
+        he: ["그는 셋 중에서 가장 빠르게 달린다"], it: ["그것은 셋 중에서 가장 빠르게 움직인다"],
+        we: ["우리는 반에서 가장 일찍 일어난다"], they: ["그들은 그룹에서 가장 크게 말한다"],
+      },
+    },
+  },
 };
 
 function build() {
@@ -512,6 +821,7 @@ function build() {
       pred: set.pred,
       futurePred: set.futurePred || {},
       predByForm: set.predByForm,
+      predByTense: set.predByTense,
     });
     for (const tense of set.tenses)
       for (const subject of SUBJECTS) {
