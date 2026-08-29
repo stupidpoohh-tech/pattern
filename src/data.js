@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 546문장 (한국어 해석 546개).
+// 키: `${series}-${subject}-${tense}-${form}` — 총 633문장 (한국어 해석 633개).
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -21,6 +21,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "late",
       "she": "lovely",
@@ -52,6 +61,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "know you",
       "she": "like it",
@@ -82,6 +100,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "working",
       "she": "coming",
@@ -109,6 +136,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "invited",
       "she": "invited",
@@ -136,6 +172,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "invited",
       "she": "invited",
@@ -163,6 +208,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "working",
       "she": "coming",
@@ -189,6 +243,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "busy",
       "she": "busy",
@@ -215,6 +278,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "seen it",
       "she": "seen it",
@@ -241,6 +313,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "do it",
       "she": "come",
@@ -267,6 +348,15 @@ export const SETS = [
       "부정",
       "의문"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "go",
       "she": "come",
@@ -293,6 +383,15 @@ export const SETS = [
       "When",
       "Why"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "wh",
       "she": "wh",
@@ -345,6 +444,15 @@ export const SETS = [
       "How",
       "Why"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "wh",
       "she": "wh",
@@ -395,6 +503,15 @@ export const SETS = [
       "보어",
       "명사 앞"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "busy",
       "she": "kind",
@@ -439,6 +556,15 @@ export const SETS = [
       "셀 수 있는",
       "셀 수 없는"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "books",
       "she": "friends",
@@ -485,6 +611,15 @@ export const SETS = [
       "be동사 뒤",
       "조동사 뒤"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "soccer",
       "she": "there",
@@ -536,6 +671,15 @@ export const SETS = [
     "formHeads": [
       "문장"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "tall",
       "she": "smart",
@@ -595,6 +739,15 @@ export const SETS = [
     "formHeads": [
       "문장"
     ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
     "pred": {
       "I": "hard",
       "she": "carefully",
@@ -638,6 +791,183 @@ export const SETS = [
         "they": "loudly · the group"
       }
     }
+  },
+  {
+    "id": "adjpron",
+    "label": "대명사 뒤",
+    "tenses": [
+      "pos"
+    ],
+    "forms": [
+      "np",
+      "pron"
+    ],
+    "formHeads": [
+      "명사구",
+      "대명사 뒤"
+    ],
+    "subjects": [
+      "something",
+      "somebody",
+      "someone",
+      "anything",
+      "nothing",
+      "everything"
+    ],
+    "cards": false,
+    "pred": {
+      "something": "cold",
+      "somebody": "strong",
+      "someone": "strange",
+      "anything": "expensive",
+      "nothing": "special",
+      "everything": "sweet"
+    },
+    "futurePred": {},
+    "predByForm": {
+      "np": {
+        "something": "cold drink",
+        "somebody": "strong helper",
+        "someone": "strange man",
+        "anything": "expensive bag",
+        "nothing": "special reason",
+        "everything": "sweet food"
+      },
+      "pron": {
+        "something": "cold",
+        "somebody": "strong",
+        "someone": "strange",
+        "anything": "expensive",
+        "nothing": "special",
+        "everything": "sweet"
+      }
+    }
+  },
+  {
+    "id": "quantsome",
+    "label": "some / any",
+    "tenses": [
+      "there",
+      "have"
+    ],
+    "forms": [
+      "aff",
+      "neg",
+      "q"
+    ],
+    "formHeads": [
+      "긍정",
+      "부정",
+      "의문"
+    ],
+    "subjects": [
+      "books",
+      "water",
+      "students",
+      "money",
+      "questions",
+      "time"
+    ],
+    "cards": false,
+    "pred": {
+      "books": "books",
+      "water": "water",
+      "students": "students",
+      "money": "money",
+      "questions": "questions",
+      "time": "time"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "adv",
+    "label": "일반 부사",
+    "tenses": [
+      "adv"
+    ],
+    "forms": [
+      "adj",
+      "advb"
+    ],
+    "formHeads": [
+      "형용사",
+      "부사"
+    ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
+    "pred": {
+      "I": "slow",
+      "she": "careful",
+      "he": "quick",
+      "it": "loud",
+      "we": "quiet",
+      "they": "kind"
+    },
+    "futurePred": {},
+    "predByForm": {
+      "adj": {
+        "I": "slow",
+        "she": "careful",
+        "he": "quick",
+        "it": "loud",
+        "we": "quiet",
+        "they": "kind"
+      },
+      "advb": {
+        "I": "walk slowly",
+        "she": "drives carefully",
+        "he": "runs quickly",
+        "it": "rings loudly",
+        "we": "speak quietly",
+        "they": "smile kindly"
+      }
+    }
+  },
+  {
+    "id": "warmup",
+    "label": "형태 워밍업",
+    "tenses": [
+      "base",
+      "comparative",
+      "superlative"
+    ],
+    "forms": [
+      "word"
+    ],
+    "formHeads": [
+      "형태"
+    ],
+    "subjects": [
+      "tall",
+      "nice",
+      "happy",
+      "big",
+      "beautiful",
+      "good",
+      "bad",
+      "many",
+      "little"
+    ],
+    "cards": true,
+    "pred": {
+      "tall": "",
+      "nice": "",
+      "happy": "",
+      "big": "",
+      "beautiful": "",
+      "good": "",
+      "bad": "",
+      "many": "",
+      "little": ""
+    },
+    "futurePred": {}
   }
 ];
 export const SENTENCES = {
@@ -1186,7 +1516,94 @@ export const SENTENCES = {
   "cmpadv-he-superlative-aff": "He runs the fastest of the three.",
   "cmpadv-it-superlative-aff": "It moves the most quickly of the three.",
   "cmpadv-we-superlative-aff": "We get up the earliest in our class.",
-  "cmpadv-they-superlative-aff": "They talk the most loudly in the group."
+  "cmpadv-they-superlative-aff": "They talk the most loudly in the group.",
+  "adjpron-something-pos-np": "I want a cold drink.",
+  "adjpron-something-pos-pron": "I want something cold.",
+  "adjpron-somebody-pos-np": "I need a strong helper.",
+  "adjpron-somebody-pos-pron": "I need somebody strong.",
+  "adjpron-someone-pos-np": "She met a strange man.",
+  "adjpron-someone-pos-pron": "She met someone strange.",
+  "adjpron-anything-pos-np": "I don't want an expensive bag.",
+  "adjpron-anything-pos-pron": "I don't want anything expensive.",
+  "adjpron-nothing-pos-np": "There is no special reason.",
+  "adjpron-nothing-pos-pron": "There is nothing special.",
+  "adjpron-everything-pos-np": "I like every sweet food.",
+  "adjpron-everything-pos-pron": "I like everything sweet.",
+  "quantsome-books-there-aff": "There are some books.",
+  "quantsome-books-there-neg": "There aren't any books.",
+  "quantsome-books-there-q": "Are there any books?",
+  "quantsome-water-there-aff": "There is some water.",
+  "quantsome-water-there-neg": "There isn't any water.",
+  "quantsome-water-there-q": "Is there any water?",
+  "quantsome-students-there-aff": "There are some students.",
+  "quantsome-students-there-neg": "There aren't any students.",
+  "quantsome-students-there-q": "Are there any students?",
+  "quantsome-money-there-aff": "There is some money.",
+  "quantsome-money-there-neg": "There isn't any money.",
+  "quantsome-money-there-q": "Is there any money?",
+  "quantsome-questions-there-aff": "There are some questions.",
+  "quantsome-questions-there-neg": "There aren't any questions.",
+  "quantsome-questions-there-q": "Are there any questions?",
+  "quantsome-time-there-aff": "There is some time.",
+  "quantsome-time-there-neg": "There isn't any time.",
+  "quantsome-time-there-q": "Is there any time?",
+  "quantsome-books-have-aff": "I have some books.",
+  "quantsome-books-have-neg": "I don't have any books.",
+  "quantsome-books-have-q": "Do I have any books?",
+  "quantsome-water-have-aff": "I have some water.",
+  "quantsome-water-have-neg": "I don't have any water.",
+  "quantsome-water-have-q": "Do I have any water?",
+  "quantsome-students-have-aff": "I have some students.",
+  "quantsome-students-have-neg": "I don't have any students.",
+  "quantsome-students-have-q": "Do I have any students?",
+  "quantsome-money-have-aff": "I have some money.",
+  "quantsome-money-have-neg": "I don't have any money.",
+  "quantsome-money-have-q": "Do I have any money?",
+  "quantsome-questions-have-aff": "I have some questions.",
+  "quantsome-questions-have-neg": "I don't have any questions.",
+  "quantsome-questions-have-q": "Do I have any questions?",
+  "quantsome-time-have-aff": "I have some time.",
+  "quantsome-time-have-neg": "I don't have any time.",
+  "quantsome-time-have-q": "Do I have any time?",
+  "adv-I-adv-adj": "I am slow.",
+  "adv-I-adv-advb": "I walk slowly.",
+  "adv-she-adv-adj": "She is careful.",
+  "adv-she-adv-advb": "She drives carefully.",
+  "adv-he-adv-adj": "He is quick.",
+  "adv-he-adv-advb": "He runs quickly.",
+  "adv-it-adv-adj": "It is loud.",
+  "adv-it-adv-advb": "It rings loudly.",
+  "adv-we-adv-adj": "We are quiet.",
+  "adv-we-adv-advb": "We speak quietly.",
+  "adv-they-adv-adj": "They are kind.",
+  "adv-they-adv-advb": "They smile kindly.",
+  "warmup-tall-base-word": "tall",
+  "warmup-nice-base-word": "nice",
+  "warmup-happy-base-word": "happy",
+  "warmup-big-base-word": "big",
+  "warmup-beautiful-base-word": "beautiful",
+  "warmup-good-base-word": "good",
+  "warmup-bad-base-word": "bad",
+  "warmup-many-base-word": "many / much",
+  "warmup-little-base-word": "little",
+  "warmup-tall-comparative-word": "taller",
+  "warmup-nice-comparative-word": "nicer",
+  "warmup-happy-comparative-word": "happier",
+  "warmup-big-comparative-word": "bigger",
+  "warmup-beautiful-comparative-word": "more beautiful",
+  "warmup-good-comparative-word": "better",
+  "warmup-bad-comparative-word": "worse",
+  "warmup-many-comparative-word": "more",
+  "warmup-little-comparative-word": "less",
+  "warmup-tall-superlative-word": "tallest",
+  "warmup-nice-superlative-word": "nicest",
+  "warmup-happy-superlative-word": "happiest",
+  "warmup-big-superlative-word": "biggest",
+  "warmup-beautiful-superlative-word": "most beautiful",
+  "warmup-good-superlative-word": "best",
+  "warmup-bad-superlative-word": "worst",
+  "warmup-many-superlative-word": "most",
+  "warmup-little-superlative-word": "least"
 };
 export const KO = {
   "be-I-present-aff": "나는 늦는다",
@@ -1734,5 +2151,92 @@ export const KO = {
   "cmpadv-he-superlative-aff": "그는 셋 중에서 가장 빠르게 달린다",
   "cmpadv-it-superlative-aff": "그것은 셋 중에서 가장 빠르게 움직인다",
   "cmpadv-we-superlative-aff": "우리는 반에서 가장 일찍 일어난다",
-  "cmpadv-they-superlative-aff": "그들은 그룹에서 가장 크게 말한다"
+  "cmpadv-they-superlative-aff": "그들은 그룹에서 가장 크게 말한다",
+  "adjpron-something-pos-np": "나는 차가운 음료를 원한다",
+  "adjpron-something-pos-pron": "나는 차가운 것을 원한다",
+  "adjpron-somebody-pos-np": "나는 힘센 조력자가 필요하다",
+  "adjpron-somebody-pos-pron": "나는 힘센 누군가가 필요하다",
+  "adjpron-someone-pos-np": "그녀는 이상한 남자를 만났다",
+  "adjpron-someone-pos-pron": "그녀는 이상한 누군가를 만났다",
+  "adjpron-anything-pos-np": "나는 비싼 가방을 원하지 않는다",
+  "adjpron-anything-pos-pron": "나는 비싼 것은 원하지 않는다",
+  "adjpron-nothing-pos-np": "특별한 이유가 없다",
+  "adjpron-nothing-pos-pron": "특별한 것은 아무것도 없다",
+  "adjpron-everything-pos-np": "나는 달콤한 음식을 다 좋아한다",
+  "adjpron-everything-pos-pron": "나는 달콤한 것은 다 좋아한다",
+  "quantsome-books-there-aff": "책이 좀 있다",
+  "quantsome-books-there-neg": "책이 하나도 없다",
+  "quantsome-books-there-q": "책이 좀 있니?",
+  "quantsome-water-there-aff": "물이 좀 있다",
+  "quantsome-water-there-neg": "물이 하나도 없다",
+  "quantsome-water-there-q": "물이 좀 있니?",
+  "quantsome-students-there-aff": "학생이 좀 있다",
+  "quantsome-students-there-neg": "학생이 하나도 없다",
+  "quantsome-students-there-q": "학생이 좀 있니?",
+  "quantsome-money-there-aff": "돈이 좀 있다",
+  "quantsome-money-there-neg": "돈이 하나도 없다",
+  "quantsome-money-there-q": "돈이 좀 있니?",
+  "quantsome-questions-there-aff": "질문이 좀 있다",
+  "quantsome-questions-there-neg": "질문이 하나도 없다",
+  "quantsome-questions-there-q": "질문이 좀 있니?",
+  "quantsome-time-there-aff": "시간이 좀 있다",
+  "quantsome-time-there-neg": "시간이 하나도 없다",
+  "quantsome-time-there-q": "시간이 좀 있니?",
+  "quantsome-books-have-aff": "나는 책이 좀 있다",
+  "quantsome-books-have-neg": "나는 책이 하나도 없다",
+  "quantsome-books-have-q": "내게 책이 좀 있니?",
+  "quantsome-water-have-aff": "나는 물이 좀 있다",
+  "quantsome-water-have-neg": "나는 물이 하나도 없다",
+  "quantsome-water-have-q": "내게 물이 좀 있니?",
+  "quantsome-students-have-aff": "나는 학생이 좀 있다",
+  "quantsome-students-have-neg": "나는 학생이 하나도 없다",
+  "quantsome-students-have-q": "내게 학생이 좀 있니?",
+  "quantsome-money-have-aff": "나는 돈이 좀 있다",
+  "quantsome-money-have-neg": "나는 돈이 하나도 없다",
+  "quantsome-money-have-q": "내게 돈이 좀 있니?",
+  "quantsome-questions-have-aff": "나는 질문이 좀 있다",
+  "quantsome-questions-have-neg": "나는 질문이 하나도 없다",
+  "quantsome-questions-have-q": "내게 질문이 좀 있니?",
+  "quantsome-time-have-aff": "나는 시간이 좀 있다",
+  "quantsome-time-have-neg": "나는 시간이 하나도 없다",
+  "quantsome-time-have-q": "내게 시간이 좀 있니?",
+  "adv-I-adv-adj": "나는 느리다",
+  "adv-I-adv-advb": "나는 느리게 걷는다",
+  "adv-she-adv-adj": "그녀는 신중하다",
+  "adv-she-adv-advb": "그녀는 신중하게 운전한다",
+  "adv-he-adv-adj": "그는 빠르다",
+  "adv-he-adv-advb": "그는 빠르게 달린다",
+  "adv-it-adv-adj": "그것은 시끄럽다",
+  "adv-it-adv-advb": "그것은 시끄럽게 울린다",
+  "adv-we-adv-adj": "우리는 조용하다",
+  "adv-we-adv-advb": "우리는 조용하게 말한다",
+  "adv-they-adv-adj": "그들은 친절하다",
+  "adv-they-adv-advb": "그들은 친절하게 웃는다",
+  "warmup-tall-base-word": "키가 큰",
+  "warmup-nice-base-word": "멋진",
+  "warmup-happy-base-word": "행복한",
+  "warmup-big-base-word": "큰",
+  "warmup-beautiful-base-word": "아름다운",
+  "warmup-good-base-word": "좋은",
+  "warmup-bad-base-word": "나쁜",
+  "warmup-many-base-word": "많은",
+  "warmup-little-base-word": "적은",
+  "warmup-tall-comparative-word": "더 키가 큰",
+  "warmup-nice-comparative-word": "더 멋진",
+  "warmup-happy-comparative-word": "더 행복한",
+  "warmup-big-comparative-word": "더 큰",
+  "warmup-beautiful-comparative-word": "더 아름다운",
+  "warmup-good-comparative-word": "더 좋은",
+  "warmup-bad-comparative-word": "더 나쁜",
+  "warmup-many-comparative-word": "더 많은",
+  "warmup-little-comparative-word": "더 적은",
+  "warmup-tall-superlative-word": "가장 키가 큰",
+  "warmup-nice-superlative-word": "가장 멋진",
+  "warmup-happy-superlative-word": "가장 행복한",
+  "warmup-big-superlative-word": "가장 큰",
+  "warmup-beautiful-superlative-word": "가장 아름다운",
+  "warmup-good-superlative-word": "가장 좋은",
+  "warmup-bad-superlative-word": "가장 나쁜",
+  "warmup-many-superlative-word": "가장 많은",
+  "warmup-little-superlative-word": "가장 적은"
 };

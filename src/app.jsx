@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { SUBJECTS, SENTENCES, KO } from "./data.js";
+import { SENTENCES, KO } from "./data.js";
 import { BE_DEFAULTS, loadVocab, saveVocab, applyVocab } from "./vocab.js";
 import { GRAM_CATEGORIES, tokenizeGrammar } from "./grammar.js";
 import {
@@ -34,7 +34,7 @@ function GrammarText({ text }) {
 const GRAM_LABELS = {
   be: "be", do: "do", future: "will·going to", perfect: "have·has",
   modal: "can·should", wh: "의문사", neg: "부정 (not·n't)",
-  cmp: "비교 (as·than·-er)", qty: "수량", freq: "빈도부사",
+  cmp: "비교 (as·than·-er)", qty: "수량", freq: "빈도부사", adv: "-ly 부사",
 };
 
 function GrammarLegend() {
@@ -234,7 +234,10 @@ function buildScopes(selected) {
 const DECOR_GROUPS = [
   {
     title: "형용사",
-    items: [{ id: "adjpos", label: "형용사 위치", scope: { adjpos: ["pos"] } }],
+    items: [
+      { id: "adjpos", label: "형용사 위치", scope: { adjpos: ["pos"] } },
+      { id: "adjpron", label: "대명사 뒤", scope: { adjpron: ["pos"] } },
+    ],
   },
   {
     title: "수량 표현",
@@ -242,11 +245,13 @@ const DECOR_GROUPS = [
       { id: "many", label: "many / much", scope: { quant: ["many"] } },
       { id: "afew", label: "a few / a little", scope: { quant: ["afew"] } },
       { id: "few", label: "few / little", scope: { quant: ["few"] } },
+      { id: "someany", label: "some / any", scope: { quantsome: ["there", "have"] } },
     ],
   },
   {
-    title: "빈도부사",
+    title: "부사",
     items: [
+      { id: "adv", label: "일반 부사", scope: { adv: ["adv"] } },
       { id: "often", label: "often", scope: { freq: ["often"] } },
       { id: "usually", label: "usually", scope: { freq: ["usually"] } },
       { id: "never", label: "never", scope: { freq: ["never"] } },
@@ -255,6 +260,7 @@ const DECOR_GROUPS = [
   {
     title: "비교",
     items: [
+      { id: "warmup", label: "형태 워밍업", scope: { warmup: ["base", "comparative", "superlative"] } },
       { id: "equality", label: "as ~ as", scope: { cmpadj: ["equality"], cmpadv: ["equality"] } },
       { id: "comparative", label: "비교급", scope: { cmpadj: ["comparative"], cmpadv: ["comparative"] } },
       { id: "superlative", label: "최상급", scope: { cmpadj: ["superlative"], cmpadv: ["superlative"] } },
@@ -288,13 +294,13 @@ const TABLE_TABS = [
   { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
   { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
   { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
-  { id: "adjpos", title: "형용사 위치", sets: ["adjpos"] },
-  { id: "quant", title: "수량", sets: ["quant"] },
-  { id: "freq", title: "빈도부사", sets: ["freq"] },
-  { id: "cmp", title: "비교", sets: ["cmpadj", "cmpadv"], headings: ["형용사", "부사"] },
+  { id: "adjpos", title: "형용사", sets: ["adjpos", "adjpron"], headings: ["형용사 위치", "대명사 뒤"] },
+  { id: "quant", title: "수량", sets: ["quant", "quantsome"], headings: ["수량 표현", "some / any"] },
+  { id: "adv", title: "부사", sets: ["adv", "freq"], headings: ["일반 부사", "빈도부사"] },
+  { id: "cmp", title: "비교", sets: ["cmpadj", "cmpadv", "warmup"], headings: ["형용사", "부사", "형태 워밍업"] },
 ];
 
-function SentenceTable({ cols, colLabels, cellOf }) {
+function SentenceTable({ rows, cols, colLabels, cellOf }) {
   return (
     <div className="table-wrap">
       <table className="sentence-table">
@@ -305,7 +311,7 @@ function SentenceTable({ cols, colLabels, cellOf }) {
           </tr>
         </thead>
         <tbody>
-          {SUBJECTS.map((s) => (
+          {rows.map((s) => (
             <tr key={s}>
               <th>{s}</th>
               {cols.map((c) => <td key={c}><GrammarText text={cellOf(s, c)} /></td>)}
@@ -365,6 +371,7 @@ function TableScreen({ onHome, onWalk }) {
             <section className="table-section" key={setId}>
               <h2>{heading || set.label}</h2>
               <SentenceTable
+                rows={set.subjects}
                 cols={set.tenses}
                 colLabels={set.tenses.map((t) => TENSE_LABELS[t])}
                 cellOf={(s, t) => SENTENCES[`${setId}-${s}-${t}-${set.forms[0]}`]}
@@ -378,6 +385,7 @@ function TableScreen({ onHome, onWalk }) {
               {heading && set.tenses.length > 1 ? ` · ${TENSE_LABELS[tense]}` : ""}
             </h2>
             <SentenceTable
+              rows={set.subjects}
               cols={set.forms}
               colLabels={set.formHeads}
               cellOf={(s, f) => SENTENCES[`${setId}-${s}-${tense}-${f}`]}
@@ -589,6 +597,16 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
       return next;
     });
 
+  // 그룹 제목 탭 = 그 그룹 전체 켜기 ↔ 끄기 (매트릭스의 행 머리와 같은 조작)
+  const toggleDecorGroup = (g) =>
+    setDecorSel((prev) => {
+      const ids = g.items.map((it) => it.id);
+      const allOn = ids.every((id) => prev.has(id));
+      const next = new Set(prev);
+      ids.forEach((id) => (allOn ? next.delete(id) : next.add(id)));
+      return next;
+    });
+
   const scopes = area === "sentence" ? buildScopes(selected) : buildDecorScopes(decorSel);
   const count = scopeCoords(scopes).length;
   const cellProps = (id) => ({
@@ -616,7 +634,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
 
       <section className="card">
         <div className="card-head">
-          <h2>자동 학습</h2>
+          <h2>{area === "decor" ? "꾸미기 · 비교" : "문장 변형"}</h2>
           <button className="icon-btn" onClick={onVocab} title="어휘 바꾸기" aria-label="어휘 바꾸기">
             <IconSwap />
           </button>
@@ -627,7 +645,9 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
             <div className="decor-menu">
               {DECOR_GROUPS.map((g) => (
                 <div className="decor-group" key={g.title}>
-                  <span className="decor-title">{g.title}</span>
+                  <button className="decor-title" onClick={() => toggleDecorGroup(g)}>
+                    {g.title}
+                  </button>
                   <div className="decor-items">
                     {g.items.map((it) => {
                       const on = decorSel.has(it.id);
@@ -790,7 +810,7 @@ function VocabScreen({ onHome }) {
         뜻을 비우면 영어 단어를 그대로 씁니다 (happy하다).
       </p>
       <div className="vocab-list">
-        {SUBJECTS.map((s) => (
+        {SET_BY_ID.be.subjects.map((s) => (
           <div className="vocab-row" key={s}>
             <span className="vocab-subj">{s}</span>
             <span className="vocab-default">{BE_DEFAULTS[s]}</span>

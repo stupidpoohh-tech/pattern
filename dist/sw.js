@@ -1,5 +1,5 @@
 // 오프라인 지원 service worker. 아래 캐시 이름의 자리표시자는 빌드 시 앱 해시로 치환된다.
-const CACHE = "han-georeum-9aa0076ef8";
+const CACHE = "han-georeum-dfa788a8fb";
 const ASSETS = [
   "./",
   "index.html",

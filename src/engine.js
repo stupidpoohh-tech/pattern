@@ -1,5 +1,5 @@
 // 좌표 이동·지시 생성·경로 파싱 로직. React에 의존하지 않는다.
-import { SENTENCES, SETS, SUBJECTS } from "./data.js";
+import { SENTENCES, SETS } from "./data.js";
 
 export const SET_BY_ID = Object.fromEntries(SETS.map((s) => [s.id, s]));
 
@@ -11,7 +11,7 @@ export function parseKey(key) {
   if (parts.length !== 4) return null;
   const [series, subject, tense, form] = parts;
   const set = SET_BY_ID[series];
-  if (!set || !SUBJECTS.includes(subject) || !set.tenses.includes(tense) || !set.forms.includes(form))
+  if (!set || !set.subjects.includes(subject) || !set.tenses.includes(tense) || !set.forms.includes(form))
     return null;
   return { series, subject, tense, form };
 }
@@ -37,6 +37,9 @@ export const TENSE_LABELS = {
   equality: "as ~ as",
   comparative: "비교급",
   superlative: "최상급",
+  adv: "부사",
+  there: "There is/are",
+  have: "have",
 };
 const FORM_LABELS = {
   aff: "평서",
@@ -55,6 +58,11 @@ const FORM_LABELS = {
   gen: "일반동사 앞",
   be: "be동사 뒤",
   modal: "조동사 뒤",
+  np: "명사구",
+  pron: "대명사 뒤",
+  adj: "형용사",
+  advb: "부사",
+  word: "형태",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -102,7 +110,7 @@ export function scopeCoords(scopes) {
   for (const [series, tenses] of Object.entries(scopes)) {
     const set = SET_BY_ID[series];
     for (const tense of tenses)
-      for (const subject of SUBJECTS)
+      for (const subject of set.subjects)
         for (const form of set.forms) coords.push({ series, subject, tense, form });
   }
   return coords;
@@ -236,7 +244,7 @@ export function randomSteps(coord, cfg, history = []) {
 
   const altValues = (axis) => {
     let values;
-    if (axis === "subject") values = SUBJECTS.filter((v) => v !== coord.subject);
+    if (axis === "subject") values = set.subjects.filter((v) => v !== coord.subject);
     else if (axis === "tense") values = cfg.scopes[coord.series].filter((v) => v !== coord.tense);
     else values = set.forms.filter((v) => v !== coord.form);
     // 핑퐁 방지
@@ -303,7 +311,9 @@ export function randomSteps(coord, cfg, history = []) {
 
 const STEP_ALIASES = (() => {
   const m = {};
-  for (const s of SUBJECTS) m[s.toLowerCase()] = { axis: "subject", value: s };
+  // 세트마다 주어 축의 값이 다를 수 있다 (대명사 세트, 워밍업의 형용사 등)
+  for (const s of [...new Set(SETS.flatMap((x) => x.subjects))])
+    m[s.toLowerCase()] = { axis: "subject", value: s };
   for (const set of SETS) {
     m[set.id] = { axis: "series", value: set.id };
     m[set.label.replace(/\s/g, "").toLowerCase()] = { axis: "series", value: set.id };
@@ -352,6 +362,12 @@ const STEP_ALIASES = (() => {
     cnt: { axis: "form", value: "cnt" },
     unc: { axis: "form", value: "unc" },
     gen: { axis: "form", value: "gen" },
+    np: { axis: "form", value: "np" },
+    pron: { axis: "form", value: "pron" },
+    adj: { axis: "form", value: "adj" },
+    advb: { axis: "form", value: "advb" },
+    there: { axis: "tense", value: "there" },
+    have: { axis: "tense", value: "have" },
   });
   return m;
 })();

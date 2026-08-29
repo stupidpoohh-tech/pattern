@@ -3,7 +3,7 @@
 // "슬롯(어간)은 그대로, 부정 조작(n't/not)이 더해졌다"는 구조를 색으로 보여주기 위해서다.
 // React에 의존하지 않는 순수 함수라 노드 테스트로 검증할 수 있다.
 
-export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg", "cmp", "qty", "freq"];
+export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg", "cmp", "qty", "freq", "adv"];
 
 const WORD_CATS = {
   // be동사 슬롯
@@ -26,10 +26,14 @@ const WORD_CATS = {
   busier: "cmp", busiest: "cmp", happier: "cmp", happiest: "cmp",
   harder: "cmp", hardest: "cmp", faster: "cmp", fastest: "cmp",
   earlier: "cmp", earliest: "cmp",
+  nicer: "cmp", nicest: "cmp", bigger: "cmp", biggest: "cmp",
+  better: "cmp", best: "cmp", worse: "cmp", worst: "cmp", less: "cmp", least: "cmp",
   // 수량 표현
   many: "qty", much: "qty", few: "qty", little: "qty", some: "qty", any: "qty",
   // 빈도부사
   often: "freq", usually: "freq", never: "freq", always: "freq", sometimes: "freq",
+  // -ly 부사 — 형용사에서 부사로 바뀌는 자리를 보여준다
+  slowly: "adv", carefully: "adv", quickly: "adv", loudly: "adv", quietly: "adv", kindly: "adv",
 };
 
 // 부정 축약형 → [어간, 부정 표지]. 어간은 원형의 카테고리를 물려받는다.

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { tokenizeGrammar } from "../src/grammar.js";
-import { SENTENCES } from "../src/data.js";
+import { SENTENCES, SETS } from "../src/data.js";
 
 const cats = (text) => tokenizeGrammar(text).filter((p) => p.cat).map((p) => `${p.text}:${p.cat}`);
 
@@ -48,9 +48,9 @@ test("본동사 do('하다')는 do-지원과 구분해 색이 붙지 않는다",
 test("꾸미기·비교: 비교·수량·빈도 표지에 색이 붙는다", () => {
   assert.deepEqual(cats("I am as tall as Mina."), ["am:be", "as:cmp", "as:cmp"]);
   assert.deepEqual(cats("I am taller than Mina."), ["am:be", "taller:cmp", "than:cmp"]);
-  assert.deepEqual(cats("She works more carefully than Mina."), ["more:cmp", "than:cmp"]);
+  assert.deepEqual(cats("She works more carefully than Mina."), ["more:cmp", "carefully:adv", "than:cmp"]);
   assert.deepEqual(cats("I am the tallest in my class."), ["am:be", "tallest:cmp"]);
-  assert.deepEqual(cats("It moves the most quickly of the three."), ["most:cmp"]);
+  assert.deepEqual(cats("It moves the most quickly of the three."), ["most:cmp", "quickly:adv"]);
   assert.deepEqual(cats("I have many books."), ["many:qty"]);
   assert.deepEqual(cats("I have a little time."), ["little:qty"]);
   assert.deepEqual(cats("I often play soccer."), ["often:freq"]);
@@ -73,17 +73,31 @@ test("내용어(get/keep/know 등)는 색이 붙지 않는다", () => {
   assert.deepEqual(cats("She keeps coming."), []);
 });
 
-test("전체 396문장에서 크래시 없이 원문을 그대로 복원한다", () => {
+test("전체 문장에서 크래시 없이 원문을 그대로 복원한다", () => {
   for (const [key, s] of Object.entries(SENTENCES)) {
     const parts = tokenizeGrammar(s);
     assert.equal(parts.map((p) => p.text).join(""), s, key);
   }
 });
 
-test("전체 396문장에서 모든 부정문은 neg 표지를 정확히 하나 가진다", () => {
+test("긍정·부정·의문 축을 쓰는 세트는 부정문에만 neg 표지가 하나 있다", () => {
+  // 형태 축이 극성이 아닌 세트(대명사 뒤 형용사 등)는 문장 자체에 부정이 들어갈 수 있어 제외
+  const polaritySets = new Set(SETS.filter((s) => s.forms.includes("neg")).map((s) => s.id));
   for (const [key, s] of Object.entries(SENTENCES)) {
+    if (!polaritySets.has(key.split("-")[0])) continue;
     const negs = tokenizeGrammar(s).filter((p) => p.cat === "neg");
     if (key.endsWith("-neg")) assert.equal(negs.length, 1, `${key}: ${s}`);
     else assert.equal(negs.length, 0, `${key}: ${s}`);
   }
+});
+
+test("V1.1: 대명사 뒤 형용사·some/any·일반 부사·워밍업 표지", () => {
+  assert.deepEqual(cats("I want something cold."), []);            // 대명사·형용사는 내용어
+  assert.deepEqual(cats("There are some books."), ["are:be", "some:qty"]);
+  assert.deepEqual(cats("There aren't any books."), ["are:be", "n't:neg", "any:qty"]);
+  assert.deepEqual(cats("I don't have any books."), ["do:do", "n't:neg", "any:qty"]);
+  assert.deepEqual(cats("She drives carefully."), ["carefully:adv"]);
+  assert.deepEqual(cats("She is careful."), ["is:be"]);
+  assert.deepEqual(cats("better"), ["better:cmp"]);
+  assert.deepEqual(cats("most beautiful"), ["most:cmp"]);
 });

@@ -804,6 +804,180 @@ const TABLE = {
       },
     },
   },
+
+  // 대명사 뒤 형용사 — 주어 축이 -thing/-body/-one 대명사다.
+  adjpron: {
+    label: "대명사 뒤",
+    subjects: ["something", "somebody", "someone", "anything", "nothing", "everything"],
+    tenses: ["pos"],
+    forms: ["np", "pron"],
+    formHeads: ["명사구", "대명사 뒤"],
+    pred: {
+      something: "cold", somebody: "strong", someone: "strange",
+      anything: "expensive", nothing: "special", everything: "sweet",
+    },
+    predByForm: {
+      np: {
+        something: "cold drink", somebody: "strong helper", someone: "strange man",
+        anything: "expensive bag", nothing: "special reason", everything: "sweet food",
+      },
+      pron: {
+        something: "cold", somebody: "strong", someone: "strange",
+        anything: "expensive", nothing: "special", everything: "sweet",
+      },
+    },
+    rows: {
+      pos: {
+        something: ["I want a cold drink.", "I want something cold."],
+        somebody: ["I need a strong helper.", "I need somebody strong."],
+        someone: ["She met a strange man.", "She met someone strange."],
+        anything: ["I don't want an expensive bag.", "I don't want anything expensive."],
+        nothing: ["There is no special reason.", "There is nothing special."],
+        everything: ["I like every sweet food.", "I like everything sweet."],
+      },
+    },
+    koRows: {
+      pos: {
+        something: ["나는 차가운 음료를 원한다", "나는 차가운 것을 원한다"],
+        somebody: ["나는 힘센 조력자가 필요하다", "나는 힘센 누군가가 필요하다"],
+        someone: ["그녀는 이상한 남자를 만났다", "그녀는 이상한 누군가를 만났다"],
+        anything: ["나는 비싼 가방을 원하지 않는다", "나는 비싼 것은 원하지 않는다"],
+        nothing: ["특별한 이유가 없다", "특별한 것은 아무것도 없다"],
+        everything: ["나는 달콤한 음식을 다 좋아한다", "나는 달콤한 것은 다 좋아한다"],
+      },
+    },
+  },
+
+  // some / any — 기존 긍정·부정·의문 form 축을 그대로 재사용한다.
+  // 주어 축은 명사(셀 수 있음/없음)라 there is/are 일치도 함께 익힌다.
+  quantsome: {
+    label: "some / any",
+    subjects: ["books", "water", "students", "money", "questions", "time"],
+    tenses: ["there", "have"],
+    pred: {
+      books: "books", water: "water", students: "students",
+      money: "money", questions: "questions", time: "time",
+    },
+    rows: {
+      there: {
+        books: ["There are some books.", "There aren't any books.", "Are there any books?"],
+        water: ["There is some water.", "There isn't any water.", "Is there any water?"],
+        students: ["There are some students.", "There aren't any students.", "Are there any students?"],
+        money: ["There is some money.", "There isn't any money.", "Is there any money?"],
+        questions: ["There are some questions.", "There aren't any questions.", "Are there any questions?"],
+        time: ["There is some time.", "There isn't any time.", "Is there any time?"],
+      },
+      have: {
+        books: ["I have some books.", "I don't have any books.", "Do I have any books?"],
+        water: ["I have some water.", "I don't have any water.", "Do I have any water?"],
+        students: ["I have some students.", "I don't have any students.", "Do I have any students?"],
+        money: ["I have some money.", "I don't have any money.", "Do I have any money?"],
+        questions: ["I have some questions.", "I don't have any questions.", "Do I have any questions?"],
+        time: ["I have some time.", "I don't have any time.", "Do I have any time?"],
+      },
+    },
+    koRows: {
+      there: {
+        books: ["책이 좀 있다", "책이 하나도 없다", "책이 좀 있니?"],
+        water: ["물이 좀 있다", "물이 하나도 없다", "물이 좀 있니?"],
+        students: ["학생이 좀 있다", "학생이 하나도 없다", "학생이 좀 있니?"],
+        money: ["돈이 좀 있다", "돈이 하나도 없다", "돈이 좀 있니?"],
+        questions: ["질문이 좀 있다", "질문이 하나도 없다", "질문이 좀 있니?"],
+        time: ["시간이 좀 있다", "시간이 하나도 없다", "시간이 좀 있니?"],
+      },
+      have: {
+        books: ["나는 책이 좀 있다", "나는 책이 하나도 없다", "내게 책이 좀 있니?"],
+        water: ["나는 물이 좀 있다", "나는 물이 하나도 없다", "내게 물이 좀 있니?"],
+        students: ["나는 학생이 좀 있다", "나는 학생이 하나도 없다", "내게 학생이 좀 있니?"],
+        money: ["나는 돈이 좀 있다", "나는 돈이 하나도 없다", "내게 돈이 좀 있니?"],
+        questions: ["나는 질문이 좀 있다", "나는 질문이 하나도 없다", "내게 질문이 좀 있니?"],
+        time: ["나는 시간이 좀 있다", "나는 시간이 하나도 없다", "내게 시간이 좀 있니?"],
+      },
+    },
+  },
+
+  // 일반 부사 — 형용사(be동사) ↔ 부사(일반동사)
+  adv: {
+    label: "일반 부사",
+    tenses: ["adv"],
+    forms: ["adj", "advb"],
+    formHeads: ["형용사", "부사"],
+    pred: { I: "slow", she: "careful", he: "quick", it: "loud", we: "quiet", they: "kind" },
+    predByForm: {
+      adj: { I: "slow", she: "careful", he: "quick", it: "loud", we: "quiet", they: "kind" },
+      advb: {
+        I: "walk slowly", she: "drives carefully", he: "runs quickly",
+        it: "rings loudly", we: "speak quietly", they: "smile kindly",
+      },
+    },
+    rows: {
+      adv: {
+        I: ["I am slow.", "I walk slowly."],
+        she: ["She is careful.", "She drives carefully."],
+        he: ["He is quick.", "He runs quickly."],
+        it: ["It is loud.", "It rings loudly."],
+        we: ["We are quiet.", "We speak quietly."],
+        they: ["They are kind.", "They smile kindly."],
+      },
+    },
+    koRows: {
+      adv: {
+        I: ["나는 느리다", "나는 느리게 걷는다"],
+        she: ["그녀는 신중하다", "그녀는 신중하게 운전한다"],
+        he: ["그는 빠르다", "그는 빠르게 달린다"],
+        it: ["그것은 시끄럽다", "그것은 시끄럽게 울린다"],
+        we: ["우리는 조용하다", "우리는 조용하게 말한다"],
+        they: ["그들은 친절하다", "그들은 친절하게 웃는다"],
+      },
+    },
+  },
+
+  // 비교급·최상급 형태 워밍업 — 문장이 아닌 낱말 카드. 주어 축이 형용사다.
+  warmup: {
+    label: "형태 워밍업",
+    cards: true,
+    subjects: ["tall", "nice", "happy", "big", "beautiful", "good", "bad", "many", "little"],
+    tenses: ["base", "comparative", "superlative"],
+    forms: ["word"],
+    formHeads: ["형태"],
+    // 낱말 카드라 술부 힌트를 쓰지 않는다
+    pred: {
+      tall: "", nice: "", happy: "", big: "", beautiful: "",
+      good: "", bad: "", many: "", little: "",
+    },
+    rows: {
+      base: {
+        tall: ["tall"], nice: ["nice"], happy: ["happy"], big: ["big"], beautiful: ["beautiful"],
+        good: ["good"], bad: ["bad"], many: ["many / much"], little: ["little"],
+      },
+      comparative: {
+        tall: ["taller"], nice: ["nicer"], happy: ["happier"], big: ["bigger"],
+        beautiful: ["more beautiful"], good: ["better"], bad: ["worse"],
+        many: ["more"], little: ["less"],
+      },
+      superlative: {
+        tall: ["tallest"], nice: ["nicest"], happy: ["happiest"], big: ["biggest"],
+        beautiful: ["most beautiful"], good: ["best"], bad: ["worst"],
+        many: ["most"], little: ["least"],
+      },
+    },
+    koRows: {
+      base: {
+        tall: ["키가 큰"], nice: ["멋진"], happy: ["행복한"], big: ["큰"], beautiful: ["아름다운"],
+        good: ["좋은"], bad: ["나쁜"], many: ["많은"], little: ["적은"],
+      },
+      comparative: {
+        tall: ["더 키가 큰"], nice: ["더 멋진"], happy: ["더 행복한"], big: ["더 큰"],
+        beautiful: ["더 아름다운"], good: ["더 좋은"], bad: ["더 나쁜"],
+        many: ["더 많은"], little: ["더 적은"],
+      },
+      superlative: {
+        tall: ["가장 키가 큰"], nice: ["가장 멋진"], happy: ["가장 행복한"], big: ["가장 큰"],
+        beautiful: ["가장 아름다운"], good: ["가장 좋은"], bad: ["가장 나쁜"],
+        many: ["가장 많은"], little: ["가장 적은"],
+      },
+    },
+  },
 };
 
 function build() {
@@ -818,13 +992,16 @@ function build() {
       tenses: set.tenses,
       forms,
       formHeads: set.formHeads || STD_FORM_HEADS,
+      // 주어 축은 세트마다 다를 수 있다 (대명사 세트, 워밍업의 형용사 등)
+      subjects: set.subjects || SUBJECTS,
+      cards: set.cards || false, // 문장이 아니라 낱말 카드인 세트
       pred: set.pred,
       futurePred: set.futurePred || {},
       predByForm: set.predByForm,
       predByTense: set.predByTense,
     });
     for (const tense of set.tenses)
-      for (const subject of SUBJECTS) {
+      for (const subject of set.subjects || SUBJECTS) {
         const row = set.rows[tense][subject];
         const koRow = (set.koRows[tense] || {})[subject] || [];
         forms.forEach((form, i) => {
