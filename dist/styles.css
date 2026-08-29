@@ -225,9 +225,10 @@ code {
 /* ---------- 일반 페이지 ---------- */
 
 .page {
+  --pad: 1.1rem;
   max-width: 34rem;
   margin: 0 auto;
-  padding: max(1.6rem, env(safe-area-inset-top)) 1.1rem calc(2.2rem + env(safe-area-inset-bottom));
+  padding: max(1.6rem, env(safe-area-inset-top)) var(--pad) calc(2.2rem + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
@@ -513,25 +514,43 @@ code {
 .walk-btn:hover { opacity: 0.9; }
 .walk-btn:active { transform: scale(0.98); }
 
-.tab-row {
+/* 탭 막대 — 표를 내려 봐도 따라오도록 화면 위에 고정 */
+.table-tabbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
-  gap: 0.3rem;
-  overflow-x: auto;
-  padding-bottom: 0.2rem;
-  -webkit-overflow-scrolling: touch;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 calc(-1 * var(--pad));
+  padding: 0.5rem var(--pad) 0.55rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
 }
+.table-tabbar .area-switch .seg { width: 100%; }
+
+/* 탭은 감추지 않고 줄바꿈한다 (가로 스크롤 = 안 보이는 탭) */
+.tab-row { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .tab {
-  flex-shrink: 0;
-  padding: 0.38rem 0.85rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.36rem 0.7rem;
   border-radius: 999px;
   border: 1px solid var(--line);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   background: var(--surface);
-  color: var(--muted);
+  color: var(--ink-soft);
   transition: all 0.15s;
 }
 .tab:hover { border-color: var(--line-strong); }
 .tab-on { border-color: var(--accent); color: #fff; background: var(--accent); font-weight: 600; }
+.tab-count {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tab-on .tab-count { color: rgba(255, 255, 255, 0.65); }
 
 .table-section { display: flex; flex-direction: column; gap: 0.5rem; }
 .table-section h2 { font-size: 0.98rem; font-weight: 700; }
@@ -630,11 +649,11 @@ code {
   .matrix-head { font-size: 0.8rem; }
 
   /* 문장표: 화면 폭에 맞춰 여백을 줄이고 가로 스크롤 여지를 넓힌다 */
-  .page-wide { padding-left: 0.7rem; padding-right: 0.7rem; }
+  .page-wide { --pad: 0.7rem; }
   .sentence-table { min-width: 26rem; font-size: 0.86rem; }
   .sentence-table th, .sentence-table td { padding: 0.45rem 0.5rem; }
   .table-walk-row .walk-btn { flex: 1; text-align: center; }
-  .tab { padding: 0.45rem 0.8rem; }
+  .tab { padding: 0.42rem 0.65rem; font-size: 0.84rem; }
 
   .gram-legend { gap: 0.15rem 0.7rem; }
 }

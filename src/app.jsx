@@ -287,17 +287,22 @@ function buildDecorScopes(selected) {
 // ---------- 전체 문장표 (수업용 열람 화면) ----------
 
 const TABLE_TABS = [
-  { id: "be", title: "be동사", sets: ["be"] },
-  { id: "verb", title: "일반동사", sets: ["verb"] },
-  { id: "prog", title: "진행", sets: ["prog", "keep"], headings: ["be 진행", "keep -ing"] },
-  { id: "pass", title: "수동", sets: ["pass", "passget"], headings: ["be 수동", "get 수동"] },
-  { id: "perf", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
-  { id: "modal", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
-  { id: "wh", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
-  { id: "adjpos", title: "형용사", sets: ["adjpos", "adjpron"], headings: ["형용사 위치", "대명사 뒤"] },
-  { id: "quant", title: "수량", sets: ["quant", "quantsome"], headings: ["수량 표현", "some / any"] },
-  { id: "adv", title: "부사", sets: ["adv", "freq"], headings: ["일반 부사", "빈도부사"] },
-  { id: "cmp", title: "비교", sets: ["cmpadj", "cmpadv", "warmup"], headings: ["형용사", "부사", "형태 워밍업"] },
+  { id: "be", area: "sentence", title: "be동사", sets: ["be"] },
+  { id: "verb", area: "sentence", title: "일반동사", sets: ["verb"] },
+  { id: "prog", area: "sentence", title: "진행", sets: ["prog", "keep"], headings: ["be 진행", "keep -ing"] },
+  { id: "pass", area: "sentence", title: "수동", sets: ["pass", "passget"], headings: ["be 수동", "get 수동"] },
+  { id: "perf", area: "sentence", title: "완료", sets: ["perfbe", "perfverb"], headings: ["be동사", "일반동사"] },
+  { id: "modal", area: "sentence", title: "조동사", sets: ["can", "should"], headings: ["can", "should"] },
+  { id: "wh", area: "sentence", title: "의문사", sets: ["whbe", "whdo"], headings: ["be동사", "do / does"] },
+  { id: "adjpos", area: "decor", title: "형용사", sets: ["adjpos", "adjpron"], headings: ["형용사 위치", "대명사 뒤"] },
+  { id: "quant", area: "decor", title: "수량", sets: ["quant", "quantsome"], headings: ["수량 표현", "some / any"] },
+  { id: "adv", area: "decor", title: "부사", sets: ["adv", "freq"], headings: ["일반 부사", "빈도부사"] },
+  { id: "cmp", area: "decor", title: "비교", sets: ["cmpadj", "cmpadv", "warmup"], headings: ["형용사", "부사", "형태 워밍업"] },
+];
+
+const TAB_AREAS = [
+  { v: "sentence", t: "문장 변형" },
+  { v: "decor", t: "꾸미기 · 비교" },
 ];
 
 function SentenceTable({ rows, cols, colLabels, cellOf }) {
@@ -330,7 +335,42 @@ const tabScopes = (tab) =>
 function TableScreen({ onHome, onWalk }) {
   const [tabId, setTabId] = useState("be");
   const tab = TABLE_TABS.find((t) => t.id === tabId);
-  const tabCount = scopeCoords(tabScopes(tab)).length;
+  const area = tab.area;
+  // 영역을 오갈 때 마지막으로 보던 탭으로 돌아온다
+  const lastTabRef = useRef({ sentence: "be", decor: "adjpos" });
+  const navRef = useRef(null);
+  const areaTabs = TABLE_TABS.filter((t) => t.area === area);
+
+  const counts = useMemo(
+    () => Object.fromEntries(TABLE_TABS.map((t) => [t.id, scopeCoords(tabScopes(t)).length])),
+    []
+  );
+  const tabCount = counts[tabId];
+
+  // 홈에서 내려 보던 위치가 남아 표 중간부터 보이지 않도록
+  useEffect(() => window.scrollTo({ top: 0 }), []);
+
+  const chooseTab = (id) => {
+    lastTabRef.current[TABLE_TABS.find((t) => t.id === id).area] = id;
+    setTabId(id);
+    // 표를 내려 보다 탭을 바꾸면 새 표의 처음이 보이도록
+    window.scrollTo({ top: 0 });
+  };
+
+  // ← → Home End 로 탭 이동 (탭 목록 표준 키보드 조작)
+  const onTabKey = (e) => {
+    const i = areaTabs.findIndex((t) => t.id === tabId);
+    const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    const next = d
+      ? areaTabs[(i + d + areaTabs.length) % areaTabs.length]
+      : e.key === "Home" ? areaTabs[0]
+      : e.key === "End" ? areaTabs[areaTabs.length - 1]
+      : null;
+    if (!next) return;
+    e.preventDefault();
+    chooseTab(next.id);
+    navRef.current?.querySelector(`[data-tab="${next.id}"]`)?.focus();
+  };
 
   return (
     <div className="page page-wide">
@@ -339,23 +379,38 @@ function TableScreen({ onHome, onWalk }) {
         <h1 className="page-title">전체 문장표</h1>
       </header>
 
-      <nav className="tab-row">
-        {TABLE_TABS.map((t) => (
-          <button
-            key={t.id}
-            className={`tab ${t.id === tabId ? "tab-on" : ""}`}
-            onClick={() => setTabId(t.id)}
-          >
-            {t.title}
-          </button>
-        ))}
-      </nav>
+      <div className="table-tabbar">
+        <div className="area-switch">
+          <Segmented
+            options={TAB_AREAS}
+            value={area}
+            onChange={(a) => chooseTab(lastTabRef.current[a])}
+          />
+        </div>
+
+        <nav className="tab-row" role="tablist" ref={navRef} onKeyDown={onTabKey}>
+          {areaTabs.map((t) => (
+            <button
+              key={t.id}
+              data-tab={t.id}
+              role="tab"
+              aria-selected={t.id === tabId}
+              tabIndex={t.id === tabId ? 0 : -1}
+              className={`tab ${t.id === tabId ? "tab-on" : ""}`}
+              onClick={() => chooseTab(t.id)}
+            >
+              {t.title}
+              <span className="tab-count">{counts[t.id]}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
 
       <GrammarLegend />
 
       <div className="table-walk-row">
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
-          이 범위로 짧게 학습 · {Math.min(15, tabCount)}문장
+          짧게 학습 · {Math.min(15, tabCount)}문장
         </button>
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "full")}>
           전체 학습 · {tabCount}문장
