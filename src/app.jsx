@@ -33,7 +33,7 @@ function GrammarText({ text }) {
 
 const GRAM_LABELS = {
   be: "be", do: "do", future: "will·going to", perfect: "have·has",
-  modal: "can·should", wh: "의문사", neg: "부정 (not·n't)",
+  modal: "can·should", wh: "의문사", neg: "부정 (not·n't)", imp: "명령·청유 (Let's·please)",
   cmp: "비교 (as·than·-er)", qty: "수량", freq: "빈도부사", adv: "-ly 부사",
 };
 
@@ -269,15 +269,64 @@ const DECOR_GROUPS = [
   },
 ];
 
-const DECOR_ITEMS = Object.fromEntries(
-  DECOR_GROUPS.flatMap((g) => g.items.map((it) => [it.id, it]))
-);
+// ---------- 문장 종류 메뉴 (교과서 UNIT 01~07) ----------
+// 꾸미기·비교와 같은 메뉴 방식 — 항목 하나가 곧 scope 하나다.
+
+const SCHOOL_GROUPS = [
+  {
+    title: "명령문 · 청유문",
+    items: [
+      { id: "impgen", label: "명령문 (일반동사)", scope: { impgen: ["imper"] } },
+      { id: "impbe", label: "명령문 (be동사)", scope: { impbe: ["imper"] } },
+      { id: "sugg", label: "청유문 · 제안문", scope: { sugg: ["let"] } },
+    ],
+  },
+  {
+    title: "감탄문",
+    items: [
+      { id: "exclhow", label: "How 감탄문", scope: { exclhow: ["exclm"] } },
+      { id: "exclwhat", label: "What 감탄문", scope: { exclwhat: ["exclm"] } },
+    ],
+  },
+  {
+    title: "의문사 의문문",
+    items: [
+      { id: "whqbe", label: "의문사 + be동사", scope: { whq: ["qbe"] } },
+      { id: "whqdo", label: "의문사 + do / does", scope: { whq: ["qdo"] } },
+      { id: "whatn", label: "What + 명사", scope: { whatn: ["wn"] } },
+      { id: "whichn", label: "Which + 명사", scope: { whichn: ["wn"] } },
+      { id: "whosen", label: "Whose + 명사", scope: { whosen: ["wn"] } },
+    ],
+  },
+  {
+    title: "how + 형용사 · 부사",
+    items: [
+      { id: "howadj", label: "how + 형용사", scope: { howadj: ["hw"] } },
+      { id: "howadv", label: "how + 부사", scope: { howadv: ["hw"] } },
+      { id: "howmany", label: "how many · much", scope: { howmany: ["hw"] } },
+    ],
+  },
+  {
+    title: "부가의문문",
+    items: [
+      { id: "tagbe", label: "be동사", scope: { tag: ["tbe"] } },
+      { id: "tagverb", label: "일반동사", scope: { tag: ["tverb"] } },
+      { id: "tagmodal", label: "조동사", scope: { tag: ["tmodal"] } },
+    ],
+  },
+];
+
+const itemsOf = (groups) =>
+  Object.fromEntries(groups.flatMap((g) => g.items.map((it) => [it.id, it])));
+
+const DECOR_ITEMS = itemsOf(DECOR_GROUPS);
+const SCHOOL_ITEMS = itemsOf(SCHOOL_GROUPS);
 
 // 선택된 항목들 → 엔진 scopes (세트별 시제 합집합)
-function buildDecorScopes(selected) {
+function buildMenuScopes(selected, items) {
   const scopes = {};
   for (const id of selected) {
-    for (const [setId, tenses] of Object.entries(DECOR_ITEMS[id].scope)) {
+    for (const [setId, tenses] of Object.entries(items[id].scope)) {
       scopes[setId] = [...new Set([...(scopes[setId] || []), ...tenses])];
     }
   }
@@ -298,12 +347,20 @@ const TABLE_TABS = [
   { id: "quant", area: "decor", title: "수량", sets: ["quant", "quantsome"], headings: ["수량 표현", "some / any"] },
   { id: "adv", area: "decor", title: "부사", sets: ["adv", "freq"], headings: ["일반 부사", "빈도부사"] },
   { id: "cmp", area: "decor", title: "비교", sets: ["cmpadj", "cmpadv", "warmup"], headings: ["형용사", "부사", "형태 워밍업"] },
+  { id: "imper", area: "school", title: "명령문 · 청유문", sets: ["impgen", "impbe", "sugg"], headings: ["일반동사 명령문", "be동사 명령문", "청유문 · 제안문"] },
+  { id: "excl", area: "school", title: "감탄문", sets: ["exclhow", "exclwhat"], headings: ["How 감탄문", "What 감탄문"] },
+  { id: "whq", area: "school", title: "의문사 의문문", sets: ["whq", "whatn", "whichn", "whosen"], headings: ["의문사 의문문", "What + 명사", "Which + 명사", "Whose + 명사"] },
+  { id: "howq", area: "school", title: "how + 형용사 · 부사", sets: ["howadj", "howadv", "howmany"], headings: ["how + 형용사", "how + 부사", "how many · much + 명사"] },
+  { id: "tag", area: "school", title: "부가의문문", sets: ["tag"] },
 ];
 
+// 학습 영역 — 홈과 문장표가 같은 전환을 쓴다
 const TAB_AREAS = [
   { v: "sentence", t: "문장 변형" },
   { v: "decor", t: "꾸미기 · 비교" },
+  { v: "school", t: "문장 종류" },
 ];
+const AREA_TITLE = Object.fromEntries(TAB_AREAS.map((a) => [a.v, a.t]));
 
 function SentenceTable({ rows, cols, colLabels, cellOf }) {
   return (
@@ -337,7 +394,7 @@ function TableScreen({ onHome, onWalk }) {
   const tab = TABLE_TABS.find((t) => t.id === tabId);
   const area = tab.area;
   // 영역을 오갈 때 마지막으로 보던 탭으로 돌아온다
-  const lastTabRef = useRef({ sentence: "be", decor: "adjpos" });
+  const lastTabRef = useRef({ sentence: "be", decor: "adjpos", school: "imper" });
   const navRef = useRef(null);
   const areaTabs = TABLE_TABS.filter((t) => t.area === area);
 
@@ -536,8 +593,9 @@ function MatrixCell({ id, stage, onPointerDown, onPointerUp, onClick }) {
 }
 
 function HomeScreen({ onStartWalk, onTable, onVocab }) {
-  const [area, setArea] = useState("sentence"); // sentence | decor
+  const [area, setArea] = useState("sentence"); // sentence | decor | school
   const [decorSel, setDecorSel] = useState(() => new Set(["adjpos"]));
+  const [schoolSel, setSchoolSel] = useState(() => new Set(["impgen"]));
   const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
@@ -644,8 +702,14 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
   const colIds = (colId) => MATRIX_ROWS.map((r) => cellId(r.id, colId));
 
-  const toggleDecor = (id) =>
-    setDecorSel((prev) => {
+  // 메뉴형 영역(꾸미기·비교 / 문장 종류)은 항목표와 선택 상태만 다르고 조작은 같다
+  const menu =
+    area === "school"
+      ? { groups: SCHOOL_GROUPS, items: SCHOOL_ITEMS, sel: schoolSel, setSel: setSchoolSel }
+      : { groups: DECOR_GROUPS, items: DECOR_ITEMS, sel: decorSel, setSel: setDecorSel };
+
+  const toggleMenuItem = (id) =>
+    menu.setSel((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
@@ -653,8 +717,8 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
     });
 
   // 그룹 제목 탭 = 그 그룹 전체 켜기 ↔ 끄기 (매트릭스의 행 머리와 같은 조작)
-  const toggleDecorGroup = (g) =>
-    setDecorSel((prev) => {
+  const toggleMenuGroup = (g) =>
+    menu.setSel((prev) => {
       const ids = g.items.map((it) => it.id);
       const allOn = ids.every((id) => prev.has(id));
       const next = new Set(prev);
@@ -662,7 +726,8 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
       return next;
     });
 
-  const scopes = area === "sentence" ? buildScopes(selected) : buildDecorScopes(decorSel);
+  const scopes =
+    area === "sentence" ? buildScopes(selected) : buildMenuScopes(menu.sel, menu.items);
   const count = scopeCoords(scopes).length;
   const cellProps = (id) => ({
     id,
@@ -677,41 +742,34 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
       <h1 className="app-title">문장 패턴 학습</h1>
 
       <div className="area-switch">
-        <Segmented
-          options={[
-            { v: "sentence", t: "문장 변형" },
-            { v: "decor", t: "꾸미기 · 비교" },
-          ]}
-          value={area}
-          onChange={setArea}
-        />
+        <Segmented options={TAB_AREAS} value={area} onChange={setArea} />
       </div>
 
       <section className="card">
         <div className="card-head">
-          <h2>{area === "decor" ? "꾸미기 · 비교" : "문장 변형"}</h2>
+          <h2>{AREA_TITLE[area]}</h2>
           <button className="icon-btn" onClick={onVocab} title="어휘 바꾸기" aria-label="어휘 바꾸기">
             <IconSwap />
           </button>
         </div>
 
-        {area === "decor" ? (
+        {area !== "sentence" ? (
           <div className="field">
             <div className="decor-menu">
-              {DECOR_GROUPS.map((g) => (
+              {menu.groups.map((g) => (
                 <div className="decor-group" key={g.title}>
-                  <button className="decor-title" onClick={() => toggleDecorGroup(g)}>
+                  <button className="decor-title" onClick={() => toggleMenuGroup(g)}>
                     {g.title}
                   </button>
                   <div className="decor-items">
                     {g.items.map((it) => {
-                      const on = decorSel.has(it.id);
+                      const on = menu.sel.has(it.id);
                       return (
                         <button
                           key={it.id}
                           className={`matrix-cell decor-cell ${on ? "cell-on" : ""}`}
                           aria-pressed={on}
-                          onClick={() => toggleDecor(it.id)}
+                          onClick={() => toggleMenuItem(it.id)}
                         >
                           <span className="cell-check">{on ? "✓" : ""}</span>
                           <span className="decor-label">{it.label}</span>

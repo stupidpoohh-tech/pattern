@@ -7,7 +7,7 @@
 모든 문장은 4축 좌표 위의 한 점이다:
 `series × subject(I|she|he|it|we|they) × tense × form(aff|neg|q)`.
 데이터는 **문장 패턴 문장표**를 원본으로 빌드 시 전량 사전 생성되어 `src/data.js`에 들어 있다
-(백엔드·로그인·저장 일체 없음).
+(백엔드·로그인·저장 일체 없음). 학습 영역은 **문장 변형 · 꾸미기 · 비교 · 문장 종류** 세 갈래다.
 
 | 세트(series) | 시제 축 | 문장 수 |
 |---|---|---|
@@ -37,8 +37,30 @@
 | `cmpadj` / `cmpadv` 비교 | 기본 · as~as · 비교급 · 최상급 | — | 24 + 24 |
 | `warmup` 형태 워밍업 | 기본 · 비교급 · 최상급 | 낱말 카드 | 27 |
 
+### 문장 종류 (세 번째 학습 영역 — 교과서 UNIT 01~07)
+
+명령문·감탄문·청유문·의문사 의문문·부가의문문. 여기서도 메뉴에서 고르는 단위는 **tense 축**,
+드릴로 굴리는 변형은 **form 축**이다.
+
+| 단원 | 세트 | tense (메뉴 선택 단위) | form (드릴 변형) | 문장 수 |
+|---|---|---|---|---|
+| 01 명령문 | `impgen` / `impbe` | 명령문 | 명령 / 금지 / 정중 금지 | 18 + 18 |
+| 02 감탄문 | `exclhow` / `exclwhat` | 감탄문 | 평서문 / 감탄문 / 생략형 | 18 + 18 |
+| 03 청유문·제안문 | `sugg` | 청유문 | Let's / Let's not / Why don't we / Why don't you | 24 |
+| 04 의문사 의문문 | `whq` | be동사 · do/does | 일반 의문문 / 의문사 의문문 | 24 |
+| 05 how + 형용사·부사 | `howadj` / `howadv` / `howmany` | how | 평서문 / 의문문 | 12 × 3 |
+| 06 의문사 + 명사 | `whatn` / `whichn` / `whosen` | 의문사 + 명사 | 일반 의문문 / 의문사 + 명사 | 12 × 3 |
+| 07 부가의문문 | `tag` | be동사 · 일반동사 · 조동사 | 긍정문 + 부정 꼬리 / 부정문 + 긍정 꼬리 | 36 |
+
+- 명령문은 걸음마다 요소가 하나씩 얹힌다: `Wait here.` → `Don't wait here.` → `Please don't wait here.`
+- 감탄문은 평서문에서 출발해 감탄문으로, 다시 〈주어+동사〉를 뺀 생략형으로 간다
+  (`He runs fast.` → `How fast he runs!` → `How fast!`).
+- 부가의문문은 본문과 꼬리의 극성이 반대이고, 꼬리에 쓰는 동사가 시제 축이다.
+
 주어 축은 세트마다 다를 수 있다: 대명사 세트는 something/somebody/…,
 some/any 세트는 명사(books/water/…), 워밍업은 형용사(tall/nice/…)가 주어 축이다.
+문장 종류에서는 명령문이 동사(wait/open/…), 감탄문이 형용사·명사(fast/story/…),
+의문사 의문문이 의문사(who/what/…)를 주어 축으로 쓴다.
 
 ## 로컬 실행
 
@@ -59,7 +81,7 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
 
 ## 화면
 
-- **학습 영역** — 홈 상단에서 **문장 변형** / **꾸미기 · 비교**를 고른다. 두 영역이
+- **학습 영역** — 홈 상단에서 **문장 변형** / **꾸미기 · 비교** / **문장 종류**를 고른다. 세 영역이
   같은 세션 설정(세션 길이·걸음 폭·반복 노출·지시 방식)과 같은 드릴 화면을 쓴다.
 - **자동 학습(문장 변형)** — 범위를 **매트릭스**(열: be | 일반동사 × 행: 현재/과거/미래/수동/진행/완료/의문사,
   아래 조동사 전폭 칸)에서 칸·행·열 단위로 복수 선택한다.
@@ -78,9 +100,13 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
   그룹 제목을 탭하면 그 갈래 전체가 켜지고 꺼진다.
   비교 체인을 고르면 걸음이 기본→원급→비교급→최상급 순서로 진행된다
   (반복 노출을 켜면 역순·랜덤도 허용).
-- **전체 문장표** — 수업용 열람 화면. 홈과 같은 **학습 영역 전환**(문장 변형 / 꾸미기 · 비교) 아래에
+- **문장 종류** — 명령문 · 청유문 / 감탄문 / 의문사 의문문 / how + 형용사 · 부사 / 부가의문문
+  5갈래 메뉴. 조작은 꾸미기 · 비교와 같다.
+- **전체 문장표** — 수업용 열람 화면. 홈과 같은 **학습 영역 전환**(문장 변형 / 꾸미기 · 비교 / 문장 종류) 아래에
   그 영역의 탭만 보인다 — 문장 변형: be동사 / 일반동사 / 진행 / 수동 / 완료 / 조동사 / 의문사,
-  꾸미기 · 비교: 형용사 / 수량 / 부사 / 비교. 탭은 가로 스크롤로 감추지 않고 줄바꿈해 전부 보이며,
+  꾸미기 · 비교: 형용사 / 수량 / 부사 / 비교,
+  문장 종류: 명령문 · 청유문 / 감탄문 / 의문사 의문문 / how + 형용사 · 부사 / 부가의문문.
+  탭은 가로 스크롤로 감추지 않고 줄바꿈해 전부 보이며,
   각 탭에 그 범위의 문장 수가 붙는다. 탭 막대는 화면 위에 고정되어 표를 내려 봐도 다른 탭으로 바로 옮길 수 있고,
   ← → Home End 키로도 탭을 옮길 수 있다. 영역을 오가면 마지막으로 보던 탭으로 돌아온다.
   탭 아래 버튼으로 그 범위를 바로 학습할 수 있다 (짧게 15 / 전체).
@@ -100,6 +126,8 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
   술부가 유지되는 이동에는 붙지 않는다.
 - **세트 점프**: 반복 켬 모드에서 시제·형태가 겹치지 않는 세트로 옮길 때는
   세트·시제·형태를 한 걸음에 묶어 이동한다 (한 세트에 갇히지 않도록).
+  주어 축의 값이 세트마다 다를 수 있으므로(명령문은 동사, 감탄문은 형용사…)
+  목표 세트에 없는 주어면 주어도 함께 묶어 옮긴다.
 - 세트 이동은 현재 시제가 양쪽 세트에 다 있는 경우에만 일어난다 (be-will → 진행 같은 불가능한 이동 없음).
 
 ## 지정 경로 URL 파라미터
@@ -111,9 +139,14 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 - `start`: `${series}-${subject}-${tense}-${form}` 좌표 키. 예: `be-she-present-aff`, `prog-they-past-q`, `can-I-modal-aff`, `whbe-she-wh-where`
 - `steps`: 쉼표로 구분된 걸음 목록. 각 걸음은 축의 **목표값** 하나:
   - 주어: `I` `she` `he` `it` `we` `they`
-  - 시제: `present`/`현재`, `past`/`과거`, `will`, `goingto`, `perf`/`완료`, `modal`/`조동사`
-  - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`, 의문사 세트는 `where` `when` `why` `what` `how`
-  - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`
+  - 시제: `present`/`현재`, `past`/`과거`, `will`, `goingto`, `perf`/`완료`, `modal`/`조동사`,
+    문장 종류는 `imper`/`명령문`, `let`/`청유문`, `exclm`/`감탄문`, `qbe`, `qdo`, `wn`, `hw`, `tbe`, `tverb`, `tmodal`
+  - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`, 의문사 세트는 `where` `when` `why` `what` `how`,
+    문장 종류는 `cmd` `cmdneg` `cmdpol`, `lets` `letsnot` `whywe` `whyyou`,
+    `stmt`/`평서문` `excl` `short`, `yn` `wq`, `tagaff` `tagneg`
+  - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`,
+    `impgen`, `impbe`, `sugg`, `exclhow`, `exclwhat`, `whq`, `whatn`, `whichn`, `whosen`,
+    `howadj`, `howadv`, `howmany`, `tag`
 - 한 걸음에 두 축 이상을 바꾸려면 `+`로 묶는다: `they+?`.
   세트를 옮길 때 시제가 안 맞으면 함께 지정한다: `can+조동사`
 - 불가능한 걸음이 있으면 첫 화면에 몇 번째 걸음이 왜 잘못됐는지 표시한다.
@@ -123,6 +156,8 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ```
 ?mode=path&start=be-she-present-aff&steps=they,?,past,평서,she,현재
 ?mode=path&start=prog-she-present-aff&steps=they,?,past,평서
+?mode=path&start=impgen-wait-imper-cmd&steps=cmdneg,cmdpol,open,cmd
+?mode=path&start=tag-she-tbe-tagaff&steps=tagneg,tverb,he
 ```
 
 한글·`?` 토큰은 브라우저가 자동 인코딩하므로 그대로 붙여 넣어도 된다.
@@ -130,7 +165,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ## 프로젝트 구조
 
 ```
-scripts/generate-data.mjs   문장표(633문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
+scripts/generate-data.mjs   문장표(861문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
 src/data.js                 생성된 문장 데이터 (직접 수정 금지)
 src/engine.js               좌표 이동·무작위 걸음(짜임새 규칙)·경로 파싱 로직
 src/app.jsx                 화면 컴포넌트 (홈/드릴/문장표/어휘 바꾸기)

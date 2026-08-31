@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 633문장 (한국어 해석 633개).
+// 키: `${series}-${subject}-${tense}-${form}` — 총 861문장 (한국어 해석 861개).
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -968,6 +968,535 @@ export const SETS = [
       "little": ""
     },
     "futurePred": {}
+  },
+  {
+    "id": "impgen",
+    "label": "명령문 (일반동사)",
+    "tenses": [
+      "imper"
+    ],
+    "forms": [
+      "cmd",
+      "cmdneg",
+      "cmdpol"
+    ],
+    "formHeads": [
+      "명령",
+      "금지",
+      "정중 금지"
+    ],
+    "subjects": [
+      "wait",
+      "open",
+      "close",
+      "come",
+      "listen",
+      "sit"
+    ],
+    "cards": false,
+    "pred": {
+      "wait": "here",
+      "open": "the windows",
+      "close": "the door",
+      "come": "with me",
+      "listen": "to me",
+      "sit": "down"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "impbe",
+    "label": "명령문 (be동사)",
+    "tenses": [
+      "imper"
+    ],
+    "forms": [
+      "cmd",
+      "cmdneg",
+      "cmdpol"
+    ],
+    "formHeads": [
+      "명령",
+      "금지",
+      "정중 금지"
+    ],
+    "subjects": [
+      "quiet",
+      "late",
+      "angry",
+      "afraid",
+      "shy",
+      "sad"
+    ],
+    "cards": false,
+    "pred": {
+      "quiet": "quiet",
+      "late": "late",
+      "angry": "angry",
+      "afraid": "afraid",
+      "shy": "shy",
+      "sad": "sad"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "sugg",
+    "label": "청유문 · 제안문",
+    "tenses": [
+      "let"
+    ],
+    "forms": [
+      "lets",
+      "letsnot",
+      "whywe",
+      "whyyou"
+    ],
+    "formHeads": [
+      "Let's",
+      "Let's not",
+      "Why don't we",
+      "Why don't you"
+    ],
+    "subjects": [
+      "watch",
+      "go",
+      "eat",
+      "take",
+      "start",
+      "meet"
+    ],
+    "cards": false,
+    "qForms": [
+      "whywe",
+      "whyyou"
+    ],
+    "pred": {
+      "watch": "watch the game",
+      "go": "go to the park",
+      "eat": "eat out",
+      "take": "take a bus",
+      "start": "start now",
+      "meet": "meet at six"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "exclhow",
+    "label": "How 감탄문",
+    "tenses": [
+      "exclm"
+    ],
+    "forms": [
+      "stmt",
+      "excl",
+      "short"
+    ],
+    "formHeads": [
+      "평서문",
+      "감탄문",
+      "생략형"
+    ],
+    "subjects": [
+      "fast",
+      "strong",
+      "early",
+      "tall",
+      "kind",
+      "well"
+    ],
+    "cards": false,
+    "exclForms": [
+      "excl",
+      "short"
+    ],
+    "pred": {
+      "fast": "he runs fast",
+      "strong": "he is strong",
+      "early": "he gets up early",
+      "tall": "she is tall",
+      "kind": "she is kind",
+      "well": "she sings well"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "exclwhat",
+    "label": "What 감탄문",
+    "tenses": [
+      "exclm"
+    ],
+    "forms": [
+      "stmt",
+      "excl",
+      "short"
+    ],
+    "formHeads": [
+      "평서문",
+      "감탄문",
+      "생략형"
+    ],
+    "subjects": [
+      "story",
+      "day",
+      "boy",
+      "girl",
+      "movie",
+      "weather"
+    ],
+    "cards": false,
+    "exclForms": [
+      "excl",
+      "short"
+    ],
+    "pred": {
+      "story": "a great story",
+      "day": "a nice day",
+      "boy": "a smart boy",
+      "girl": "a kind girl",
+      "movie": "an exciting movie",
+      "weather": "nice weather"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "whq",
+    "label": "의문사 의문문",
+    "tenses": [
+      "qbe",
+      "qdo"
+    ],
+    "forms": [
+      "yn",
+      "wq"
+    ],
+    "formHeads": [
+      "일반 의문문",
+      "의문사 의문문"
+    ],
+    "subjects": [
+      "who",
+      "what",
+      "when",
+      "where",
+      "why",
+      "how"
+    ],
+    "cards": false,
+    "qForms": [
+      "yn",
+      "wq"
+    ],
+    "pred": {
+      "who": "your sister",
+      "what": "a book",
+      "when": "at six",
+      "where": "in the kitchen",
+      "why": "sad",
+      "how": "nice"
+    },
+    "futurePred": {},
+    "predByTense": {
+      "qbe": {
+        "who": "your sister",
+        "what": "a book",
+        "when": "at six",
+        "where": "in the kitchen",
+        "why": "sad",
+        "how": "nice"
+      },
+      "qdo": {
+        "who": "like Tom",
+        "what": "have a car",
+        "when": "leave at seven",
+        "where": "find it",
+        "why": "leave early",
+        "how": "work well"
+      }
+    }
+  },
+  {
+    "id": "whatn",
+    "label": "What + 명사",
+    "tenses": [
+      "wn"
+    ],
+    "forms": [
+      "yn",
+      "wq"
+    ],
+    "formHeads": [
+      "일반 의문문",
+      "의문사 + 명사"
+    ],
+    "subjects": [
+      "movie",
+      "kind",
+      "time",
+      "day",
+      "color",
+      "sport"
+    ],
+    "cards": false,
+    "qForms": [
+      "yn",
+      "wq"
+    ],
+    "pred": {
+      "movie": "watch a movie",
+      "kind": "like the food",
+      "time": "late",
+      "day": "Monday today",
+      "color": "like this color",
+      "sport": "play a sport"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "whichn",
+    "label": "Which + 명사",
+    "tenses": [
+      "wn"
+    ],
+    "forms": [
+      "yn",
+      "wq"
+    ],
+    "formHeads": [
+      "일반 의문문",
+      "의문사 + 명사"
+    ],
+    "subjects": [
+      "one",
+      "way",
+      "subject",
+      "class",
+      "fruit",
+      "seat"
+    ],
+    "cards": false,
+    "qForms": [
+      "yn",
+      "wq"
+    ],
+    "pred": {
+      "one": "yours",
+      "way": "go this way",
+      "subject": "like science",
+      "class": "like this class",
+      "fruit": "like apples",
+      "seat": "this seat"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "whosen",
+    "label": "Whose + 명사",
+    "tenses": [
+      "wn"
+    ],
+    "forms": [
+      "yn",
+      "wq"
+    ],
+    "formHeads": [
+      "일반 의문문",
+      "의문사 + 명사"
+    ],
+    "subjects": [
+      "bag",
+      "fault",
+      "bike",
+      "laptop",
+      "room",
+      "shirt"
+    ],
+    "cards": false,
+    "qForms": [
+      "yn",
+      "wq"
+    ],
+    "pred": {
+      "bag": "your bag",
+      "fault": "your fault",
+      "bike": "borrow her bike",
+      "laptop": "Jane's laptop",
+      "room": "your brother's room",
+      "shirt": "Jenny's T-shirt"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "howadj",
+    "label": "how + 형용사",
+    "tenses": [
+      "hw"
+    ],
+    "forms": [
+      "stmt",
+      "wq"
+    ],
+    "formHeads": [
+      "평서문",
+      "의문문"
+    ],
+    "subjects": [
+      "old",
+      "tall",
+      "much",
+      "far",
+      "long",
+      "big"
+    ],
+    "cards": false,
+    "qForms": [
+      "wq"
+    ],
+    "pred": {
+      "old": "seventeen years old",
+      "tall": "160 cm tall",
+      "much": "seven dollars",
+      "far": "two kilometers away",
+      "long": "270 kilometers long",
+      "big": "very big"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "howadv",
+    "label": "how + 부사",
+    "tenses": [
+      "hw"
+    ],
+    "forms": [
+      "stmt",
+      "wq"
+    ],
+    "formHeads": [
+      "평서문",
+      "의문문"
+    ],
+    "subjects": [
+      "often",
+      "early",
+      "fast",
+      "long",
+      "well",
+      "soon"
+    ],
+    "cards": false,
+    "qForms": [
+      "wq"
+    ],
+    "pred": {
+      "often": "sees her every weekend",
+      "early": "can come very early",
+      "fast": "ran very fast",
+      "long": "will stay for a week",
+      "well": "sings very well",
+      "soon": "will start soon"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "howmany",
+    "label": "how many · much + 명사",
+    "tenses": [
+      "hw"
+    ],
+    "forms": [
+      "stmt",
+      "wq"
+    ],
+    "formHeads": [
+      "평서문",
+      "의문문"
+    ],
+    "subjects": [
+      "eggs",
+      "books",
+      "friends",
+      "time",
+      "money",
+      "water"
+    ],
+    "cards": false,
+    "qForms": [
+      "wq"
+    ],
+    "pred": {
+      "eggs": "ten eggs",
+      "books": "twenty books",
+      "friends": "many friends",
+      "time": "an hour",
+      "money": "fifty dollars",
+      "water": "some water"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "tag",
+    "label": "부가의문문",
+    "tenses": [
+      "tbe",
+      "tverb",
+      "tmodal"
+    ],
+    "forms": [
+      "tagaff",
+      "tagneg"
+    ],
+    "formHeads": [
+      "긍정문 + 부정 꼬리",
+      "부정문 + 긍정 꼬리"
+    ],
+    "subjects": [
+      "I",
+      "she",
+      "he",
+      "it",
+      "we",
+      "they"
+    ],
+    "cards": false,
+    "qForms": [
+      "tagaff",
+      "tagneg"
+    ],
+    "pred": {
+      "I": "late",
+      "she": "lovely",
+      "he": "busy",
+      "it": "cold",
+      "we": "ready",
+      "they": "here"
+    },
+    "futurePred": {},
+    "predByTense": {
+      "tbe": {
+        "I": "late",
+        "she": "lovely",
+        "he": "busy",
+        "it": "cold",
+        "we": "ready",
+        "they": "here"
+      },
+      "tverb": {
+        "I": "know you",
+        "she": "like it",
+        "he": "know it",
+        "it": "work",
+        "we": "need it",
+        "they": "live here"
+      },
+      "tmodal": {
+        "I": "help",
+        "she": "sing well",
+        "he": "come",
+        "it": "work",
+        "we": "wait",
+        "they": "swim"
+      }
+    }
   }
 ];
 export const SENTENCES = {
@@ -1603,7 +2132,235 @@ export const SENTENCES = {
   "warmup-good-superlative-word": "best",
   "warmup-bad-superlative-word": "worst",
   "warmup-many-superlative-word": "most",
-  "warmup-little-superlative-word": "least"
+  "warmup-little-superlative-word": "least",
+  "impgen-wait-imper-cmd": "Wait here.",
+  "impgen-wait-imper-cmdneg": "Don't wait here.",
+  "impgen-wait-imper-cmdpol": "Please don't wait here.",
+  "impgen-open-imper-cmd": "Open the windows.",
+  "impgen-open-imper-cmdneg": "Don't open the windows.",
+  "impgen-open-imper-cmdpol": "Please don't open the windows.",
+  "impgen-close-imper-cmd": "Close the door.",
+  "impgen-close-imper-cmdneg": "Don't close the door.",
+  "impgen-close-imper-cmdpol": "Please don't close the door.",
+  "impgen-come-imper-cmd": "Come with me.",
+  "impgen-come-imper-cmdneg": "Don't come with me.",
+  "impgen-come-imper-cmdpol": "Please don't come with me.",
+  "impgen-listen-imper-cmd": "Listen to me.",
+  "impgen-listen-imper-cmdneg": "Don't listen to me.",
+  "impgen-listen-imper-cmdpol": "Please don't listen to me.",
+  "impgen-sit-imper-cmd": "Sit down.",
+  "impgen-sit-imper-cmdneg": "Don't sit down.",
+  "impgen-sit-imper-cmdpol": "Please don't sit down.",
+  "impbe-quiet-imper-cmd": "Be quiet.",
+  "impbe-quiet-imper-cmdneg": "Don't be quiet.",
+  "impbe-quiet-imper-cmdpol": "Please don't be quiet.",
+  "impbe-late-imper-cmd": "Be late.",
+  "impbe-late-imper-cmdneg": "Don't be late.",
+  "impbe-late-imper-cmdpol": "Please don't be late.",
+  "impbe-angry-imper-cmd": "Be angry.",
+  "impbe-angry-imper-cmdneg": "Don't be angry.",
+  "impbe-angry-imper-cmdpol": "Please don't be angry.",
+  "impbe-afraid-imper-cmd": "Be afraid.",
+  "impbe-afraid-imper-cmdneg": "Don't be afraid.",
+  "impbe-afraid-imper-cmdpol": "Please don't be afraid.",
+  "impbe-shy-imper-cmd": "Be shy.",
+  "impbe-shy-imper-cmdneg": "Don't be shy.",
+  "impbe-shy-imper-cmdpol": "Please don't be shy.",
+  "impbe-sad-imper-cmd": "Be sad.",
+  "impbe-sad-imper-cmdneg": "Don't be sad.",
+  "impbe-sad-imper-cmdpol": "Please don't be sad.",
+  "sugg-watch-let-lets": "Let's watch the game.",
+  "sugg-watch-let-letsnot": "Let's not watch the game.",
+  "sugg-watch-let-whywe": "Why don't we watch the game?",
+  "sugg-watch-let-whyyou": "Why don't you watch the game?",
+  "sugg-go-let-lets": "Let's go to the park.",
+  "sugg-go-let-letsnot": "Let's not go to the park.",
+  "sugg-go-let-whywe": "Why don't we go to the park?",
+  "sugg-go-let-whyyou": "Why don't you go to the park?",
+  "sugg-eat-let-lets": "Let's eat out.",
+  "sugg-eat-let-letsnot": "Let's not eat out.",
+  "sugg-eat-let-whywe": "Why don't we eat out?",
+  "sugg-eat-let-whyyou": "Why don't you eat out?",
+  "sugg-take-let-lets": "Let's take a bus.",
+  "sugg-take-let-letsnot": "Let's not take a bus.",
+  "sugg-take-let-whywe": "Why don't we take a bus?",
+  "sugg-take-let-whyyou": "Why don't you take a bus?",
+  "sugg-start-let-lets": "Let's start now.",
+  "sugg-start-let-letsnot": "Let's not start now.",
+  "sugg-start-let-whywe": "Why don't we start now?",
+  "sugg-start-let-whyyou": "Why don't you start now?",
+  "sugg-meet-let-lets": "Let's meet at six.",
+  "sugg-meet-let-letsnot": "Let's not meet at six.",
+  "sugg-meet-let-whywe": "Why don't we meet at six?",
+  "sugg-meet-let-whyyou": "Why don't you meet at six?",
+  "exclhow-fast-exclm-stmt": "He runs fast.",
+  "exclhow-fast-exclm-excl": "How fast he runs!",
+  "exclhow-fast-exclm-short": "How fast!",
+  "exclhow-strong-exclm-stmt": "He is strong.",
+  "exclhow-strong-exclm-excl": "How strong he is!",
+  "exclhow-strong-exclm-short": "How strong!",
+  "exclhow-early-exclm-stmt": "He gets up early.",
+  "exclhow-early-exclm-excl": "How early he gets up!",
+  "exclhow-early-exclm-short": "How early!",
+  "exclhow-tall-exclm-stmt": "She is tall.",
+  "exclhow-tall-exclm-excl": "How tall she is!",
+  "exclhow-tall-exclm-short": "How tall!",
+  "exclhow-kind-exclm-stmt": "She is kind.",
+  "exclhow-kind-exclm-excl": "How kind she is!",
+  "exclhow-kind-exclm-short": "How kind!",
+  "exclhow-well-exclm-stmt": "She sings well.",
+  "exclhow-well-exclm-excl": "How well she sings!",
+  "exclhow-well-exclm-short": "How well!",
+  "exclwhat-story-exclm-stmt": "It is a great story.",
+  "exclwhat-story-exclm-excl": "What a great story it is!",
+  "exclwhat-story-exclm-short": "What a great story!",
+  "exclwhat-day-exclm-stmt": "It is a nice day.",
+  "exclwhat-day-exclm-excl": "What a nice day it is!",
+  "exclwhat-day-exclm-short": "What a nice day!",
+  "exclwhat-boy-exclm-stmt": "He is a smart boy.",
+  "exclwhat-boy-exclm-excl": "What a smart boy he is!",
+  "exclwhat-boy-exclm-short": "What a smart boy!",
+  "exclwhat-girl-exclm-stmt": "She is a kind girl.",
+  "exclwhat-girl-exclm-excl": "What a kind girl she is!",
+  "exclwhat-girl-exclm-short": "What a kind girl!",
+  "exclwhat-movie-exclm-stmt": "It is an exciting movie.",
+  "exclwhat-movie-exclm-excl": "What an exciting movie it is!",
+  "exclwhat-movie-exclm-short": "What an exciting movie!",
+  "exclwhat-weather-exclm-stmt": "It is nice weather.",
+  "exclwhat-weather-exclm-excl": "What nice weather it is!",
+  "exclwhat-weather-exclm-short": "What nice weather!",
+  "whq-who-qbe-yn": "Is she your sister?",
+  "whq-who-qbe-wq": "Who is she?",
+  "whq-what-qbe-yn": "Is it a book?",
+  "whq-what-qbe-wq": "What is it?",
+  "whq-when-qbe-yn": "Is the party at six?",
+  "whq-when-qbe-wq": "When is the party?",
+  "whq-where-qbe-yn": "Is he in the kitchen?",
+  "whq-where-qbe-wq": "Where is he?",
+  "whq-why-qbe-yn": "Is she sad?",
+  "whq-why-qbe-wq": "Why is she sad?",
+  "whq-how-qbe-yn": "Is the weather nice?",
+  "whq-how-qbe-wq": "How is the weather?",
+  "whq-who-qdo-yn": "Does she like Tom?",
+  "whq-who-qdo-wq": "Who does she like?",
+  "whq-what-qdo-yn": "Does she have a car?",
+  "whq-what-qdo-wq": "What does she have?",
+  "whq-when-qdo-yn": "Does he leave at seven?",
+  "whq-when-qdo-wq": "When does he leave?",
+  "whq-where-qdo-yn": "Did you find it in the kitchen?",
+  "whq-where-qdo-wq": "Where did you find it?",
+  "whq-why-qdo-yn": "Did you leave early?",
+  "whq-why-qdo-wq": "Why did you leave early?",
+  "whq-how-qdo-yn": "Does it work well?",
+  "whq-how-qdo-wq": "How does it work?",
+  "whatn-movie-wn-yn": "Will you watch a movie?",
+  "whatn-movie-wn-wq": "What movie will you watch?",
+  "whatn-kind-wn-yn": "Do you like the food?",
+  "whatn-kind-wn-wq": "What kind of food do you like?",
+  "whatn-time-wn-yn": "Is it late?",
+  "whatn-time-wn-wq": "What time is it?",
+  "whatn-day-wn-yn": "Is it Monday today?",
+  "whatn-day-wn-wq": "What day is it today?",
+  "whatn-color-wn-yn": "Do you like this color?",
+  "whatn-color-wn-wq": "What color do you like?",
+  "whatn-sport-wn-yn": "Does he play a sport?",
+  "whatn-sport-wn-wq": "What sport does he play?",
+  "whichn-one-wn-yn": "Is this yours?",
+  "whichn-one-wn-wq": "Which one is yours?",
+  "whichn-way-wn-yn": "Should I go this way?",
+  "whichn-way-wn-wq": "Which way should I go?",
+  "whichn-subject-wn-yn": "Do you like science?",
+  "whichn-subject-wn-wq": "Which subject do you like?",
+  "whichn-class-wn-yn": "Do you like this class?",
+  "whichn-class-wn-wq": "Which class do you like?",
+  "whichn-fruit-wn-yn": "Do you like apples?",
+  "whichn-fruit-wn-wq": "Which fruit do you like?",
+  "whichn-seat-wn-yn": "Is this seat yours?",
+  "whichn-seat-wn-wq": "Which seat is yours?",
+  "whosen-bag-wn-yn": "Is this your bag?",
+  "whosen-bag-wn-wq": "Whose bag is this?",
+  "whosen-fault-wn-yn": "Was it your fault?",
+  "whosen-fault-wn-wq": "Whose fault was it?",
+  "whosen-bike-wn-yn": "Did you borrow her bike?",
+  "whosen-bike-wn-wq": "Whose bike did you borrow?",
+  "whosen-laptop-wn-yn": "Is it Jane's laptop?",
+  "whosen-laptop-wn-wq": "Whose laptop is it?",
+  "whosen-room-wn-yn": "Is it your brother's room?",
+  "whosen-room-wn-wq": "Whose room is it?",
+  "whosen-shirt-wn-yn": "Is it Jenny's T-shirt?",
+  "whosen-shirt-wn-wq": "Whose T-shirt is it?",
+  "howadj-old-hw-stmt": "He is seventeen years old.",
+  "howadj-old-hw-wq": "How old is he?",
+  "howadj-tall-hw-stmt": "She is 160 cm tall.",
+  "howadj-tall-hw-wq": "How tall is she?",
+  "howadj-much-hw-stmt": "The ticket was seven dollars.",
+  "howadj-much-hw-wq": "How much was the ticket?",
+  "howadj-far-hw-stmt": "The store is two kilometers away.",
+  "howadj-far-hw-wq": "How far is the store?",
+  "howadj-long-hw-stmt": "The river is 270 kilometers long.",
+  "howadj-long-hw-wq": "How long is the river?",
+  "howadj-big-hw-stmt": "The room is very big.",
+  "howadj-big-hw-wq": "How big is the room?",
+  "howadv-often-hw-stmt": "He sees her every weekend.",
+  "howadv-often-hw-wq": "How often does he see her?",
+  "howadv-early-hw-stmt": "He can come very early.",
+  "howadv-early-hw-wq": "How early can he come?",
+  "howadv-fast-hw-stmt": "He ran very fast.",
+  "howadv-fast-hw-wq": "How fast did he run?",
+  "howadv-long-hw-stmt": "They will stay for a week.",
+  "howadv-long-hw-wq": "How long will they stay?",
+  "howadv-well-hw-stmt": "She sings very well.",
+  "howadv-well-hw-wq": "How well does she sing?",
+  "howadv-soon-hw-stmt": "It will start soon.",
+  "howadv-soon-hw-wq": "How soon will it start?",
+  "howmany-eggs-hw-stmt": "We have ten eggs.",
+  "howmany-eggs-hw-wq": "How many eggs do we have?",
+  "howmany-books-hw-stmt": "He has twenty books.",
+  "howmany-books-hw-wq": "How many books does he have?",
+  "howmany-friends-hw-stmt": "She has many friends.",
+  "howmany-friends-hw-wq": "How many friends does she have?",
+  "howmany-time-hw-stmt": "We have an hour.",
+  "howmany-time-hw-wq": "How much time do we have?",
+  "howmany-money-hw-stmt": "She has fifty dollars.",
+  "howmany-money-hw-wq": "How much money does she have?",
+  "howmany-water-hw-stmt": "They have some water.",
+  "howmany-water-hw-wq": "How much water do they have?",
+  "tag-I-tbe-tagaff": "I am late, aren't I?",
+  "tag-I-tbe-tagneg": "I'm not late, am I?",
+  "tag-she-tbe-tagaff": "She is lovely, isn't she?",
+  "tag-she-tbe-tagneg": "She isn't lovely, is she?",
+  "tag-he-tbe-tagaff": "He is busy, isn't he?",
+  "tag-he-tbe-tagneg": "He isn't busy, is he?",
+  "tag-it-tbe-tagaff": "It is cold, isn't it?",
+  "tag-it-tbe-tagneg": "It isn't cold, is it?",
+  "tag-we-tbe-tagaff": "We are ready, aren't we?",
+  "tag-we-tbe-tagneg": "We aren't ready, are we?",
+  "tag-they-tbe-tagaff": "They are here, aren't they?",
+  "tag-they-tbe-tagneg": "They aren't here, are they?",
+  "tag-I-tverb-tagaff": "I know you, don't I?",
+  "tag-I-tverb-tagneg": "I don't know you, do I?",
+  "tag-she-tverb-tagaff": "She likes it, doesn't she?",
+  "tag-she-tverb-tagneg": "She doesn't like it, does she?",
+  "tag-he-tverb-tagaff": "He knows it, doesn't he?",
+  "tag-he-tverb-tagneg": "He doesn't know it, does he?",
+  "tag-it-tverb-tagaff": "It works, doesn't it?",
+  "tag-it-tverb-tagneg": "It doesn't work, does it?",
+  "tag-we-tverb-tagaff": "We need it, don't we?",
+  "tag-we-tverb-tagneg": "We don't need it, do we?",
+  "tag-they-tverb-tagaff": "They live here, don't they?",
+  "tag-they-tverb-tagneg": "They don't live here, do they?",
+  "tag-I-tmodal-tagaff": "I can help, can't I?",
+  "tag-I-tmodal-tagneg": "I can't help, can I?",
+  "tag-she-tmodal-tagaff": "She can sing well, can't she?",
+  "tag-she-tmodal-tagneg": "She can't sing well, can she?",
+  "tag-he-tmodal-tagaff": "He can come, can't he?",
+  "tag-he-tmodal-tagneg": "He can't come, can he?",
+  "tag-it-tmodal-tagaff": "It can work, can't it?",
+  "tag-it-tmodal-tagneg": "It can't work, can it?",
+  "tag-we-tmodal-tagaff": "We can wait, can't we?",
+  "tag-we-tmodal-tagneg": "We can't wait, can we?",
+  "tag-they-tmodal-tagaff": "They can swim, can't they?",
+  "tag-they-tmodal-tagneg": "They can't swim, can they?"
 };
 export const KO = {
   "be-I-present-aff": "나는 늦는다",
@@ -2238,5 +2995,233 @@ export const KO = {
   "warmup-good-superlative-word": "가장 좋은",
   "warmup-bad-superlative-word": "가장 나쁜",
   "warmup-many-superlative-word": "가장 많은",
-  "warmup-little-superlative-word": "가장 적은"
+  "warmup-little-superlative-word": "가장 적은",
+  "impgen-wait-imper-cmd": "여기서 기다려",
+  "impgen-wait-imper-cmdneg": "여기서 기다리지 마",
+  "impgen-wait-imper-cmdpol": "여기서 기다리지 말아 주세요",
+  "impgen-open-imper-cmd": "창문을 열어",
+  "impgen-open-imper-cmdneg": "창문을 열지 마",
+  "impgen-open-imper-cmdpol": "창문을 열지 말아 주세요",
+  "impgen-close-imper-cmd": "문을 닫아",
+  "impgen-close-imper-cmdneg": "문을 닫지 마",
+  "impgen-close-imper-cmdpol": "문을 닫지 말아 주세요",
+  "impgen-come-imper-cmd": "나와 함께 가",
+  "impgen-come-imper-cmdneg": "나와 함께 가지 마",
+  "impgen-come-imper-cmdpol": "나와 함께 가지 말아 주세요",
+  "impgen-listen-imper-cmd": "내 말을 들어",
+  "impgen-listen-imper-cmdneg": "내 말을 듣지 마",
+  "impgen-listen-imper-cmdpol": "내 말을 듣지 말아 주세요",
+  "impgen-sit-imper-cmd": "앉아",
+  "impgen-sit-imper-cmdneg": "앉지 마",
+  "impgen-sit-imper-cmdpol": "앉지 말아 주세요",
+  "impbe-quiet-imper-cmd": "조용히 해",
+  "impbe-quiet-imper-cmdneg": "조용히 하지 마",
+  "impbe-quiet-imper-cmdpol": "조용히 하지 말아 주세요",
+  "impbe-late-imper-cmd": "늦어라",
+  "impbe-late-imper-cmdneg": "늦지 마",
+  "impbe-late-imper-cmdpol": "늦지 말아 주세요",
+  "impbe-angry-imper-cmd": "화내라",
+  "impbe-angry-imper-cmdneg": "화내지 마",
+  "impbe-angry-imper-cmdpol": "화내지 말아 주세요",
+  "impbe-afraid-imper-cmd": "무서워해라",
+  "impbe-afraid-imper-cmdneg": "무서워하지 마",
+  "impbe-afraid-imper-cmdpol": "무서워하지 말아 주세요",
+  "impbe-shy-imper-cmd": "부끄러워해라",
+  "impbe-shy-imper-cmdneg": "부끄러워하지 마",
+  "impbe-shy-imper-cmdpol": "부끄러워하지 말아 주세요",
+  "impbe-sad-imper-cmd": "슬퍼해라",
+  "impbe-sad-imper-cmdneg": "슬퍼하지 마",
+  "impbe-sad-imper-cmdpol": "슬퍼하지 말아 주세요",
+  "sugg-watch-let-lets": "그 경기를 보자",
+  "sugg-watch-let-letsnot": "그 경기를 보지 말자",
+  "sugg-watch-let-whywe": "우리 그 경기를 보는 게 어때?",
+  "sugg-watch-let-whyyou": "네가 그 경기를 보는 게 어때?",
+  "sugg-go-let-lets": "공원에 가자",
+  "sugg-go-let-letsnot": "공원에 가지 말자",
+  "sugg-go-let-whywe": "우리 공원에 가는 게 어때?",
+  "sugg-go-let-whyyou": "네가 공원에 가는 게 어때?",
+  "sugg-eat-let-lets": "외식하자",
+  "sugg-eat-let-letsnot": "외식하지 말자",
+  "sugg-eat-let-whywe": "우리 외식하는 게 어때?",
+  "sugg-eat-let-whyyou": "네가 외식하는 게 어때?",
+  "sugg-take-let-lets": "버스를 타자",
+  "sugg-take-let-letsnot": "버스를 타지 말자",
+  "sugg-take-let-whywe": "우리 버스를 타는 게 어때?",
+  "sugg-take-let-whyyou": "네가 버스를 타는 게 어때?",
+  "sugg-start-let-lets": "지금 시작하자",
+  "sugg-start-let-letsnot": "지금 시작하지 말자",
+  "sugg-start-let-whywe": "우리 지금 시작하는 게 어때?",
+  "sugg-start-let-whyyou": "네가 지금 시작하는 게 어때?",
+  "sugg-meet-let-lets": "여섯 시에 만나자",
+  "sugg-meet-let-letsnot": "여섯 시에 만나지 말자",
+  "sugg-meet-let-whywe": "우리 여섯 시에 만나는 게 어때?",
+  "sugg-meet-let-whyyou": "네가 여섯 시에 만나는 게 어때?",
+  "exclhow-fast-exclm-stmt": "그는 빨리 달린다",
+  "exclhow-fast-exclm-excl": "그는 정말 빨리 달리는구나!",
+  "exclhow-fast-exclm-short": "정말 빠르구나!",
+  "exclhow-strong-exclm-stmt": "그는 강하다",
+  "exclhow-strong-exclm-excl": "그는 정말 강하구나!",
+  "exclhow-strong-exclm-short": "정말 강하구나!",
+  "exclhow-early-exclm-stmt": "그는 일찍 일어난다",
+  "exclhow-early-exclm-excl": "그는 정말 일찍 일어나는구나!",
+  "exclhow-early-exclm-short": "정말 이르구나!",
+  "exclhow-tall-exclm-stmt": "그녀는 키가 크다",
+  "exclhow-tall-exclm-excl": "그녀는 정말 키가 크구나!",
+  "exclhow-tall-exclm-short": "정말 키가 크구나!",
+  "exclhow-kind-exclm-stmt": "그녀는 친절하다",
+  "exclhow-kind-exclm-excl": "그녀는 정말 친절하구나!",
+  "exclhow-kind-exclm-short": "정말 친절하구나!",
+  "exclhow-well-exclm-stmt": "그녀는 노래를 잘한다",
+  "exclhow-well-exclm-excl": "그녀는 정말 노래를 잘하는구나!",
+  "exclhow-well-exclm-short": "정말 잘하는구나!",
+  "exclwhat-story-exclm-stmt": "그것은 훌륭한 이야기다",
+  "exclwhat-story-exclm-excl": "그것은 정말 훌륭한 이야기구나!",
+  "exclwhat-story-exclm-short": "정말 훌륭한 이야기구나!",
+  "exclwhat-day-exclm-stmt": "오늘은 좋은 날이다",
+  "exclwhat-day-exclm-excl": "오늘은 정말 좋은 날이구나!",
+  "exclwhat-day-exclm-short": "정말 좋은 날이구나!",
+  "exclwhat-boy-exclm-stmt": "그는 똑똑한 소년이다",
+  "exclwhat-boy-exclm-excl": "그는 정말 똑똑한 소년이구나!",
+  "exclwhat-boy-exclm-short": "정말 똑똑한 소년이구나!",
+  "exclwhat-girl-exclm-stmt": "그녀는 친절한 소녀다",
+  "exclwhat-girl-exclm-excl": "그녀는 정말 친절한 소녀구나!",
+  "exclwhat-girl-exclm-short": "정말 친절한 소녀구나!",
+  "exclwhat-movie-exclm-stmt": "그것은 재미있는 영화다",
+  "exclwhat-movie-exclm-excl": "그것은 정말 재미있는 영화구나!",
+  "exclwhat-movie-exclm-short": "정말 재미있는 영화구나!",
+  "exclwhat-weather-exclm-stmt": "날씨가 좋다",
+  "exclwhat-weather-exclm-excl": "날씨가 정말 좋구나!",
+  "exclwhat-weather-exclm-short": "정말 좋은 날씨구나!",
+  "whq-who-qbe-yn": "그녀는 네 여동생이니?",
+  "whq-who-qbe-wq": "그녀는 누구니?",
+  "whq-what-qbe-yn": "그것은 책이니?",
+  "whq-what-qbe-wq": "그것은 무엇이니?",
+  "whq-when-qbe-yn": "파티는 여섯 시니?",
+  "whq-when-qbe-wq": "파티는 언제니?",
+  "whq-where-qbe-yn": "그는 부엌에 있니?",
+  "whq-where-qbe-wq": "그는 어디에 있니?",
+  "whq-why-qbe-yn": "그녀는 슬프니?",
+  "whq-why-qbe-wq": "그녀는 왜 슬프니?",
+  "whq-how-qbe-yn": "날씨가 좋니?",
+  "whq-how-qbe-wq": "날씨가 어떠니?",
+  "whq-who-qdo-yn": "그녀는 Tom을 좋아하니?",
+  "whq-who-qdo-wq": "그녀는 누구를 좋아하니?",
+  "whq-what-qdo-yn": "그녀는 차를 가지고 있니?",
+  "whq-what-qdo-wq": "그녀는 무엇을 가지고 있니?",
+  "whq-when-qdo-yn": "그는 일곱 시에 떠나니?",
+  "whq-when-qdo-wq": "그는 언제 떠나니?",
+  "whq-where-qdo-yn": "너는 그것을 부엌에서 발견했니?",
+  "whq-where-qdo-wq": "너는 그것을 어디에서 발견했니?",
+  "whq-why-qdo-yn": "너는 일찍 떠났니?",
+  "whq-why-qdo-wq": "너는 왜 일찍 떠났니?",
+  "whq-how-qdo-yn": "그것은 잘 작동하니?",
+  "whq-how-qdo-wq": "그것은 어떻게 작동하니?",
+  "whatn-movie-wn-yn": "너는 영화를 볼 거니?",
+  "whatn-movie-wn-wq": "너는 무슨 영화를 볼 거니?",
+  "whatn-kind-wn-yn": "너는 그 음식을 좋아하니?",
+  "whatn-kind-wn-wq": "너는 무슨 종류의 음식을 좋아하니?",
+  "whatn-time-wn-yn": "늦었니?",
+  "whatn-time-wn-wq": "몇 시니?",
+  "whatn-day-wn-yn": "오늘 월요일이니?",
+  "whatn-day-wn-wq": "오늘 무슨 요일이니?",
+  "whatn-color-wn-yn": "너는 이 색을 좋아하니?",
+  "whatn-color-wn-wq": "너는 무슨 색을 좋아하니?",
+  "whatn-sport-wn-yn": "그는 운동을 하니?",
+  "whatn-sport-wn-wq": "그는 무슨 운동을 하니?",
+  "whichn-one-wn-yn": "이것이 네 것이니?",
+  "whichn-one-wn-wq": "어느 것이 네 것이니?",
+  "whichn-way-wn-yn": "내가 이쪽으로 가야 하니?",
+  "whichn-way-wn-wq": "내가 어느 쪽으로 가야 하니?",
+  "whichn-subject-wn-yn": "너는 과학을 좋아하니?",
+  "whichn-subject-wn-wq": "너는 어느 과목을 좋아하니?",
+  "whichn-class-wn-yn": "너는 이 수업을 좋아하니?",
+  "whichn-class-wn-wq": "너는 어느 수업을 좋아하니?",
+  "whichn-fruit-wn-yn": "너는 사과를 좋아하니?",
+  "whichn-fruit-wn-wq": "너는 어느 과일을 좋아하니?",
+  "whichn-seat-wn-yn": "이 자리가 네 자리니?",
+  "whichn-seat-wn-wq": "어느 자리가 네 자리니?",
+  "whosen-bag-wn-yn": "이것은 네 가방이니?",
+  "whosen-bag-wn-wq": "이것은 누구의 가방이니?",
+  "whosen-fault-wn-yn": "그것은 네 잘못이었니?",
+  "whosen-fault-wn-wq": "그것은 누구의 잘못이었니?",
+  "whosen-bike-wn-yn": "너는 그녀의 자전거를 빌렸니?",
+  "whosen-bike-wn-wq": "너는 누구의 자전거를 빌렸니?",
+  "whosen-laptop-wn-yn": "그것은 Jane의 노트북이니?",
+  "whosen-laptop-wn-wq": "그것은 누구의 노트북이니?",
+  "whosen-room-wn-yn": "그것은 네 형의 방이니?",
+  "whosen-room-wn-wq": "그것은 누구의 방이니?",
+  "whosen-shirt-wn-yn": "그것은 Jenny의 티셔츠니?",
+  "whosen-shirt-wn-wq": "그것은 누구의 티셔츠니?",
+  "howadj-old-hw-stmt": "그는 열일곱 살이다",
+  "howadj-old-hw-wq": "그는 몇 살이니?",
+  "howadj-tall-hw-stmt": "그녀는 키가 160cm이다",
+  "howadj-tall-hw-wq": "그녀는 키가 얼마나 크니?",
+  "howadj-much-hw-stmt": "그 표는 7달러였다",
+  "howadj-much-hw-wq": "그 표는 얼마였니?",
+  "howadj-far-hw-stmt": "그 가게는 2킬로미터 떨어져 있다",
+  "howadj-far-hw-wq": "그 가게는 얼마나 머니?",
+  "howadj-long-hw-stmt": "그 강은 길이가 270킬로미터다",
+  "howadj-long-hw-wq": "그 강은 얼마나 기니?",
+  "howadj-big-hw-stmt": "그 방은 아주 크다",
+  "howadj-big-hw-wq": "그 방은 얼마나 크니?",
+  "howadv-often-hw-stmt": "그는 주말마다 그녀를 본다",
+  "howadv-often-hw-wq": "그는 얼마나 자주 그녀를 보니?",
+  "howadv-early-hw-stmt": "그는 아주 일찍 올 수 있다",
+  "howadv-early-hw-wq": "그는 얼마나 일찍 올 수 있니?",
+  "howadv-fast-hw-stmt": "그는 아주 빨리 달렸다",
+  "howadv-fast-hw-wq": "그는 얼마나 빨리 달렸니?",
+  "howadv-long-hw-stmt": "그들은 일주일 동안 머무를 것이다",
+  "howadv-long-hw-wq": "그들은 얼마나 오래 머무를 거니?",
+  "howadv-well-hw-stmt": "그녀는 노래를 아주 잘한다",
+  "howadv-well-hw-wq": "그녀는 노래를 얼마나 잘하니?",
+  "howadv-soon-hw-stmt": "그것은 곧 시작할 것이다",
+  "howadv-soon-hw-wq": "그것은 얼마나 빨리 시작할 거니?",
+  "howmany-eggs-hw-stmt": "우리는 달걀이 열 개 있다",
+  "howmany-eggs-hw-wq": "우리는 달걀이 몇 개 있니?",
+  "howmany-books-hw-stmt": "그는 책이 스무 권 있다",
+  "howmany-books-hw-wq": "그는 책이 몇 권 있니?",
+  "howmany-friends-hw-stmt": "그녀는 친구가 많다",
+  "howmany-friends-hw-wq": "그녀는 친구가 몇 명 있니?",
+  "howmany-time-hw-stmt": "우리는 한 시간이 있다",
+  "howmany-time-hw-wq": "우리는 시간이 얼마나 있니?",
+  "howmany-money-hw-stmt": "그녀는 50달러가 있다",
+  "howmany-money-hw-wq": "그녀는 돈이 얼마나 있니?",
+  "howmany-water-hw-stmt": "그들은 물이 조금 있다",
+  "howmany-water-hw-wq": "그들은 물이 얼마나 있니?",
+  "tag-I-tbe-tagaff": "나는 늦었어, 그렇지 않니?",
+  "tag-I-tbe-tagneg": "나는 늦지 않았어, 그렇지?",
+  "tag-she-tbe-tagaff": "그녀는 아름다워, 그렇지 않니?",
+  "tag-she-tbe-tagneg": "그녀는 아름답지 않아, 그렇지?",
+  "tag-he-tbe-tagaff": "그는 바빠, 그렇지 않니?",
+  "tag-he-tbe-tagneg": "그는 바쁘지 않아, 그렇지?",
+  "tag-it-tbe-tagaff": "날씨가 추워, 그렇지 않니?",
+  "tag-it-tbe-tagneg": "날씨가 춥지 않아, 그렇지?",
+  "tag-we-tbe-tagaff": "우리는 준비됐어, 그렇지 않니?",
+  "tag-we-tbe-tagneg": "우리는 준비되지 않았어, 그렇지?",
+  "tag-they-tbe-tagaff": "그들은 여기 있어, 그렇지 않니?",
+  "tag-they-tbe-tagneg": "그들은 여기 없어, 그렇지?",
+  "tag-I-tverb-tagaff": "나는 너를 알아, 그렇지 않니?",
+  "tag-I-tverb-tagneg": "나는 너를 몰라, 그렇지?",
+  "tag-she-tverb-tagaff": "그녀는 그것을 좋아해, 그렇지 않니?",
+  "tag-she-tverb-tagneg": "그녀는 그것을 좋아하지 않아, 그렇지?",
+  "tag-he-tverb-tagaff": "그는 그것을 알아, 그렇지 않니?",
+  "tag-he-tverb-tagneg": "그는 그것을 모르지, 그렇지?",
+  "tag-it-tverb-tagaff": "그것은 작동해, 그렇지 않니?",
+  "tag-it-tverb-tagneg": "그것은 작동하지 않아, 그렇지?",
+  "tag-we-tverb-tagaff": "우리는 그것이 필요해, 그렇지 않니?",
+  "tag-we-tverb-tagneg": "우리는 그것이 필요하지 않아, 그렇지?",
+  "tag-they-tverb-tagaff": "그들은 여기 살아, 그렇지 않니?",
+  "tag-they-tverb-tagneg": "그들은 여기 살지 않아, 그렇지?",
+  "tag-I-tmodal-tagaff": "나는 도울 수 있어, 그렇지 않니?",
+  "tag-I-tmodal-tagneg": "나는 도울 수 없어, 그렇지?",
+  "tag-she-tmodal-tagaff": "그녀는 노래를 잘할 수 있어, 그렇지 않니?",
+  "tag-she-tmodal-tagneg": "그녀는 노래를 잘할 수 없어, 그렇지?",
+  "tag-he-tmodal-tagaff": "그는 올 수 있어, 그렇지 않니?",
+  "tag-he-tmodal-tagneg": "그는 올 수 없어, 그렇지?",
+  "tag-it-tmodal-tagaff": "그것은 작동할 수 있어, 그렇지 않니?",
+  "tag-it-tmodal-tagneg": "그것은 작동할 수 없어, 그렇지?",
+  "tag-we-tmodal-tagaff": "우리는 기다릴 수 있어, 그렇지 않니?",
+  "tag-we-tmodal-tagneg": "우리는 기다릴 수 없어, 그렇지?",
+  "tag-they-tmodal-tagaff": "그들은 수영할 수 있어, 그렇지 않니?",
+  "tag-they-tmodal-tagneg": "그들은 수영할 수 없어, 그렇지?"
 };

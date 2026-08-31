@@ -42,6 +42,11 @@ test("반복 없음 모드: 범위 전체를 한 번씩 모두 방문하고 끝�
     [{ prog: ["present"], pass: ["present", "past"] }, 2],
     [{ whbe: ["wh"], whdo: ["wh"] }, 1],
     [{ can: ["modal"], should: ["modal"] }, 3],
+    // 문장 종류 — 시제 축이 하나뿐인 세트, 여러 갈래를 섞은 범위
+    [{ impgen: ["imper"], impbe: ["imper"] }, 2],
+    [{ sugg: ["let"] }, 1],
+    [{ whq: ["qbe", "qdo"], whatn: ["wn"] }, 1],
+    [{ tag: ["tbe", "tverb", "tmodal"] }, 1],
   ]) {
     const { seen, total } = runCoverage(scopes, width);
     assert.equal(seen.length, total, JSON.stringify(scopes));
@@ -174,6 +179,40 @@ test("반복 허용: 시제가 안 겹치는 범위도 세트 점프로 오간�
   assert.ok(seen.has("be"));
 });
 
+test("반복 허용: 주어 축의 값이 다른 세트로 점프해도 없는 좌표를 밟지 않는다", () => {
+  // 세트마다 주어 축이 다르다 — adjpos는 I/she/…, adjpron은 something/somebody/…,
+  // warmup은 형용사다. 세트 점프가 주어까지 함께 옮기지 않으면 빈 문장이 나온다.
+  const cfg = { scopes: { adjpos: ["pos"], adjpron: ["pos"], warmup: ["base"] }, width: 1 };
+  let coord = { series: "adjpos", subject: "she", tense: "pos", form: "comp" };
+  const history = [];
+  const seen = new Set([coord.series]);
+  for (let i = 0; i < 300; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), `없는 좌표: ${keyOf(coord)}`);
+    history.push(steps);
+    seen.add(coord.series);
+  }
+  assert.equal(seen.size, 3, `세 세트를 모두 오가야 한다: ${[...seen]}`);
+});
+
+test("문장 종류: 반복 허용 모드가 시제 축이 하나뿐인 세트에서도 유효하게 걷는다", () => {
+  // 명령문·감탄문은 시제 축이 한 값뿐이라 형태·주어·세트로만 이동할 수 있다
+  const cfg = { scopes: { impgen: ["imper"], impbe: ["imper"], exclhow: ["exclm"] }, width: 2 };
+  let coord = { series: "impgen", subject: "wait", tense: "imper", form: "cmd" };
+  const history = [];
+  const seen = new Set([coord.series]);
+  for (let i = 0; i < 300; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    assert.ok(steps && steps.length >= 1);
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), keyOf(coord));
+    history.push(steps);
+    seen.add(coord.series);
+  }
+  assert.equal(seen.size, 3, `세 세트를 모두 오가야 한다: ${[...seen]}`);
+});
+
 test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
   const step = (axis, value) => [{ axis, value }];
   // It is cold → (he) → He is busy: 힌트 "busy"
@@ -229,6 +268,17 @@ test("지정 경로 파싱: 정상·오류", () => {
 
   const wh = parsePath(new URLSearchParams("mode=path&start=whbe-she-wh-where&steps=when,they,why"));
   assert.ok(!wh.error, wh.error);
+
+  // 문장 종류 — 새 시제·형태 토큰
+  const cmd = parsePath(
+    new URLSearchParams("mode=path&start=impgen-wait-imper-cmd&steps=cmdneg,cmdpol,open,cmd")
+  );
+  assert.ok(!cmd.error, cmd.error);
+  assert.equal(cmd.stepsList.length, 4);
+  const tagPath = parsePath(
+    new URLSearchParams("mode=path&start=tag-she-tbe-tagaff&steps=tagneg,tverb,he")
+  );
+  assert.ok(!tagPath.error, tagPath.error);
 
   assert.ok(parsePath(new URLSearchParams("start=xx-yy&steps=she")).error);
   assert.ok(

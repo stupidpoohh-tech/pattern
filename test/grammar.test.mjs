@@ -101,3 +101,32 @@ test("V1.1: 대명사 뒤 형용사·some/any·일반 부사·워밍업 표지",
   assert.deepEqual(cats("better"), ["better:cmp"]);
   assert.deepEqual(cats("most beautiful"), ["most:cmp"]);
 });
+
+test("문장 종류: 명령·청유·의문사·부가의문문 표지", () => {
+  // 명령문 — Don't 는 do + n't 로 쪼개지고, 원형 Be 는 be 슬롯이다
+  assert.deepEqual(cats("Don't be late."), ["Do:do", "n't:neg", "be:be"]);
+  assert.deepEqual(cats("Please don't wait here."), ["Please:imp", "do:do", "n't:neg"]);
+  // 청유문 — Let's 는 명령·청유 표지, 뒤의 not 은 부정 표지
+  assert.deepEqual(cats("Let's not watch the game."), ["Let's:imp", "not:neg"]);
+  assert.deepEqual(cats("Why don't we eat out?"), ["Why:wh", "do:do", "n't:neg"]);
+  // 감탄문 — How·What 은 의문사와 같은 슬롯
+  assert.deepEqual(cats("How fast he runs!"), ["How:wh"]);
+  assert.deepEqual(cats("What a great story it is!"), ["What:wh", "is:be"]);
+  // 의문사 — who·which·whose 도 의문사다
+  assert.deepEqual(cats("Who does she like?"), ["Who:wh", "does:do"]);
+  assert.deepEqual(cats("Which subject do you like?"), ["Which:wh", "do:do"]);
+  assert.deepEqual(cats("Whose bike did you borrow?"), ["Whose:wh", "did:do"]);
+  // 부가의문문 — 꼬리의 조동사는 본문과 같은 슬롯색, 극성만 뒤집힌다
+  assert.deepEqual(cats("She can sing well, can't she?"), ["can:modal", "can:modal", "'t:neg"]);
+  assert.deepEqual(cats("She doesn't like it, does she?"), ["does:do", "n't:neg", "does:do"]);
+  assert.deepEqual(cats("I am late, aren't I?"), ["am:be", "are:be", "n't:neg"]);
+});
+
+test("소유 have: 수사가 뒤따르거나 문장이 끝나면 완료 조동사가 아니다", () => {
+  assert.deepEqual(cats("We have ten eggs."), []);
+  assert.deepEqual(cats("He has twenty books."), []);
+  assert.deepEqual(cats("What does she have?"), ["What:wh", "does:do"]);
+  assert.deepEqual(cats("How much time do we have?"), ["How:wh", "much:qty", "do:do"]);
+  // 완료 조동사는 그대로 색이 붙는다 (뒤에 과거분사가 온다)
+  assert.deepEqual(cats("I have seen it."), ["have:perfect"]);
+});

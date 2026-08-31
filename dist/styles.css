@@ -157,6 +157,7 @@ code {
   --gram-modal: #c026d3;
   --gram-wh: #15803d;
   --gram-neg: #dc2626;
+  --gram-imp: #0369a1;
   --gram-cmp: #0891b2;
   --gram-qty: #7c2d12;
   --gram-freq: #4d7c0f;
@@ -170,6 +171,7 @@ code {
 .gram-modal { color: var(--gram-modal); }
 .gram-wh { color: var(--gram-wh); }
 .gram-neg { color: var(--gram-neg); text-decoration: underline; text-underline-offset: 0.15em; }
+.gram-imp { color: var(--gram-imp); }
 .gram-cmp { color: var(--gram-cmp); }
 .gram-qty { color: var(--gram-qty); }
 .gram-freq { color: var(--gram-freq); }
@@ -196,6 +198,7 @@ code {
 .gram-dot-modal { background: var(--gram-modal); }
 .gram-dot-wh { background: var(--gram-wh); }
 .gram-dot-neg { background: var(--gram-neg); }
+.gram-dot-imp { background: var(--gram-imp); }
 .gram-dot-cmp { background: var(--gram-cmp); }
 .gram-dot-qty { background: var(--gram-qty); }
 .gram-dot-freq { background: var(--gram-freq); }

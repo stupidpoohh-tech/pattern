@@ -40,6 +40,17 @@ export const TENSE_LABELS = {
   adv: "부사",
   there: "There is/are",
   have: "have",
+  // 문장 종류
+  imper: "명령문",
+  let: "청유문",
+  exclm: "감탄문",
+  qbe: "be동사",
+  qdo: "do / does",
+  wn: "의문사 + 명사",
+  hw: "how + 형용사 · 부사",
+  tbe: "be동사",
+  tverb: "일반동사",
+  tmodal: "조동사",
 };
 const FORM_LABELS = {
   aff: "평서",
@@ -63,6 +74,21 @@ const FORM_LABELS = {
   adj: "형용사",
   advb: "부사",
   word: "형태",
+  // 문장 종류
+  cmd: "명령",
+  cmdneg: "금지",
+  cmdpol: "정중 금지",
+  lets: "Let's",
+  letsnot: "Let's not",
+  whywe: "Why don't we",
+  whyyou: "Why don't you",
+  stmt: "평서문",
+  excl: "감탄문",
+  short: "생략형",
+  yn: "일반 의문문",
+  wq: "의문사 의문문",
+  tagaff: "긍정문",
+  tagneg: "부정문",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -262,7 +288,12 @@ export function randomSteps(coord, cfg, history = []) {
     const target = SET_BY_ID[id];
     const tense = cfg.scopes[id].includes(coord.tense) ? coord.tense : pick(cfg.scopes[id]);
     const form = target.forms.includes(coord.form) ? coord.form : pick(target.forms);
+    // 주어 축도 세트마다 값이 다를 수 있다 (명령문은 동사, 감탄문은 형용사, 워밍업은 형용사…).
+    // 목표 세트에 없는 주어면 그 세트의 주어로 함께 옮긴다 — 안 그러면 없는 좌표가 나온다.
+    const subject = target.subjects.includes(coord.subject) ? coord.subject : pick(target.subjects);
     const steps = [{ axis: "series", value: id, prevValue: coord.series }];
+    if (subject !== coord.subject)
+      steps.push({ axis: "subject", value: subject, prevValue: coord.subject });
     if (tense !== coord.tense) steps.push({ axis: "tense", value: tense, prevValue: coord.tense });
     if (form !== coord.form) steps.push({ axis: "form", value: form, prevValue: coord.form });
     return steps;
@@ -368,6 +399,37 @@ const STEP_ALIASES = (() => {
     advb: { axis: "form", value: "advb" },
     there: { axis: "tense", value: "there" },
     have: { axis: "tense", value: "have" },
+    // 문장 종류 — 시제 축
+    imper: { axis: "tense", value: "imper" },
+    "명령문": { axis: "tense", value: "imper" },
+    let: { axis: "tense", value: "let" },
+    "청유문": { axis: "tense", value: "let" },
+    exclm: { axis: "tense", value: "exclm" },
+    "감탄문": { axis: "tense", value: "exclm" },
+    qbe: { axis: "tense", value: "qbe" },
+    qdo: { axis: "tense", value: "qdo" },
+    wn: { axis: "tense", value: "wn" },
+    hw: { axis: "tense", value: "hw" },
+    tbe: { axis: "tense", value: "tbe" },
+    tverb: { axis: "tense", value: "tverb" },
+    tmodal: { axis: "tense", value: "tmodal" },
+    // 문장 종류 — 형태 축
+    cmd: { axis: "form", value: "cmd" },
+    cmdneg: { axis: "form", value: "cmdneg" },
+    cmdpol: { axis: "form", value: "cmdpol" },
+    lets: { axis: "form", value: "lets" },
+    letsnot: { axis: "form", value: "letsnot" },
+    whywe: { axis: "form", value: "whywe" },
+    whyyou: { axis: "form", value: "whyyou" },
+    stmt: { axis: "form", value: "stmt" },
+    "평서문": { axis: "form", value: "stmt" },
+    excl: { axis: "form", value: "excl" },
+    short: { axis: "form", value: "short" },
+    "생략": { axis: "form", value: "short" },
+    yn: { axis: "form", value: "yn" },
+    wq: { axis: "form", value: "wq" },
+    tagaff: { axis: "form", value: "tagaff" },
+    tagneg: { axis: "form", value: "tagneg" },
   });
   return m;
 })();

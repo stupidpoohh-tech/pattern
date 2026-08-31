@@ -978,6 +978,519 @@ const TABLE = {
       },
     },
   },
+
+  // ===== 문장 종류 (교과서 UNIT 01~07) =====
+  // 「~해 / ~하지 마 / 정말 ~구나 / ~하자 / 누구·언제·어디서 / 얼마나 ~한 / 그렇지?」
+  // 이 갈래는 주어 축이 문장의 주어가 아니라 낱말 슬롯인 세트가 많다
+  // (명령문은 동사, 감탄문은 형용사·명사, 의문사 의문문은 의문사가 주어 축이다).
+
+  // UNIT 01 명령문 — 걸음마다 한 요소씩 얹는다: (원형) → Don't → Please don't.
+  impgen: {
+    label: "명령문 (일반동사)",
+    tenses: ["imper"],
+    forms: ["cmd", "cmdneg", "cmdpol"],
+    formHeads: ["명령", "금지", "정중 금지"],
+    pred: {
+      wait: "here", open: "the windows", close: "the door",
+      come: "with me", listen: "to me", sit: "down",
+    },
+    subjects: ["wait", "open", "close", "come", "listen", "sit"],
+    rows: {
+      imper: {
+        wait: ["Wait here.", "Don't wait here.", "Please don't wait here."],
+        open: ["Open the windows.", "Don't open the windows.", "Please don't open the windows."],
+        close: ["Close the door.", "Don't close the door.", "Please don't close the door."],
+        come: ["Come with me.", "Don't come with me.", "Please don't come with me."],
+        listen: ["Listen to me.", "Don't listen to me.", "Please don't listen to me."],
+        sit: ["Sit down.", "Don't sit down.", "Please don't sit down."],
+      },
+    },
+    koRows: {
+      imper: {
+        wait: ["여기서 기다려", "여기서 기다리지 마", "여기서 기다리지 말아 주세요"],
+        open: ["창문을 열어", "창문을 열지 마", "창문을 열지 말아 주세요"],
+        close: ["문을 닫아", "문을 닫지 마", "문을 닫지 말아 주세요"],
+        come: ["나와 함께 가", "나와 함께 가지 마", "나와 함께 가지 말아 주세요"],
+        listen: ["내 말을 들어", "내 말을 듣지 마", "내 말을 듣지 말아 주세요"],
+        sit: ["앉아", "앉지 마", "앉지 말아 주세요"],
+      },
+    },
+  },
+  impbe: {
+    label: "명령문 (be동사)",
+    tenses: ["imper"],
+    forms: ["cmd", "cmdneg", "cmdpol"],
+    formHeads: ["명령", "금지", "정중 금지"],
+    // be동사 명령문은 현재형(am/is/are)이 아니라 원형 Be로 시작한다
+    pred: { quiet: "quiet", late: "late", angry: "angry", afraid: "afraid", shy: "shy", sad: "sad" },
+    subjects: ["quiet", "late", "angry", "afraid", "shy", "sad"],
+    rows: {
+      imper: {
+        quiet: ["Be quiet.", "Don't be quiet.", "Please don't be quiet."],
+        late: ["Be late.", "Don't be late.", "Please don't be late."],
+        angry: ["Be angry.", "Don't be angry.", "Please don't be angry."],
+        afraid: ["Be afraid.", "Don't be afraid.", "Please don't be afraid."],
+        shy: ["Be shy.", "Don't be shy.", "Please don't be shy."],
+        sad: ["Be sad.", "Don't be sad.", "Please don't be sad."],
+      },
+    },
+    koRows: {
+      imper: {
+        quiet: ["조용히 해", "조용히 하지 마", "조용히 하지 말아 주세요"],
+        late: ["늦어라", "늦지 마", "늦지 말아 주세요"],
+        angry: ["화내라", "화내지 마", "화내지 말아 주세요"],
+        afraid: ["무서워해라", "무서워하지 마", "무서워하지 말아 주세요"],
+        shy: ["부끄러워해라", "부끄러워하지 마", "부끄러워하지 말아 주세요"],
+        sad: ["슬퍼해라", "슬퍼하지 마", "슬퍼하지 말아 주세요"],
+      },
+    },
+  },
+
+  // UNIT 03 청유문·제안문 — Let's / Let's not / Why don't we~? / Why don't you~?
+  // 앞의 셋은 "우리 같이", 마지막 하나만 "네가" — 뜻이 갈리는 자리라 한 축에 나란히 둔다.
+  sugg: {
+    label: "청유문 · 제안문",
+    tenses: ["let"],
+    forms: ["lets", "letsnot", "whywe", "whyyou"],
+    formHeads: ["Let's", "Let's not", "Why don't we", "Why don't you"],
+    qForms: ["whywe", "whyyou"],
+    pred: {
+      watch: "watch the game", go: "go to the park", eat: "eat out",
+      take: "take a bus", start: "start now", meet: "meet at six",
+    },
+    subjects: ["watch", "go", "eat", "take", "start", "meet"],
+    rows: {
+      let: {
+        watch: [
+          "Let's watch the game.", "Let's not watch the game.",
+          "Why don't we watch the game?", "Why don't you watch the game?",
+        ],
+        go: [
+          "Let's go to the park.", "Let's not go to the park.",
+          "Why don't we go to the park?", "Why don't you go to the park?",
+        ],
+        eat: [
+          "Let's eat out.", "Let's not eat out.",
+          "Why don't we eat out?", "Why don't you eat out?",
+        ],
+        take: [
+          "Let's take a bus.", "Let's not take a bus.",
+          "Why don't we take a bus?", "Why don't you take a bus?",
+        ],
+        start: [
+          "Let's start now.", "Let's not start now.",
+          "Why don't we start now?", "Why don't you start now?",
+        ],
+        meet: [
+          "Let's meet at six.", "Let's not meet at six.",
+          "Why don't we meet at six?", "Why don't you meet at six?",
+        ],
+      },
+    },
+    koRows: {
+      let: {
+        watch: ["그 경기를 보자", "그 경기를 보지 말자", "우리 그 경기를 보는 게 어때?", "네가 그 경기를 보는 게 어때?"],
+        go: ["공원에 가자", "공원에 가지 말자", "우리 공원에 가는 게 어때?", "네가 공원에 가는 게 어때?"],
+        eat: ["외식하자", "외식하지 말자", "우리 외식하는 게 어때?", "네가 외식하는 게 어때?"],
+        take: ["버스를 타자", "버스를 타지 말자", "우리 버스를 타는 게 어때?", "네가 버스를 타는 게 어때?"],
+        start: ["지금 시작하자", "지금 시작하지 말자", "우리 지금 시작하는 게 어때?", "네가 지금 시작하는 게 어때?"],
+        meet: ["여섯 시에 만나자", "여섯 시에 만나지 말자", "우리 여섯 시에 만나는 게 어때?", "네가 여섯 시에 만나는 게 어때?"],
+      },
+    },
+  },
+
+  // UNIT 02 감탄문 — 평서문 → 감탄문 → 〈주어+동사〉 생략형. 주어 축이 형용사·부사다.
+  exclhow: {
+    label: "How 감탄문",
+    tenses: ["exclm"],
+    forms: ["stmt", "excl", "short"],
+    formHeads: ["평서문", "감탄문", "생략형"],
+    exclForms: ["excl", "short"],
+    pred: {
+      fast: "he runs fast", strong: "he is strong", early: "he gets up early",
+      tall: "she is tall", kind: "she is kind", well: "she sings well",
+    },
+    subjects: ["fast", "strong", "early", "tall", "kind", "well"],
+    rows: {
+      exclm: {
+        fast: ["He runs fast.", "How fast he runs!", "How fast!"],
+        strong: ["He is strong.", "How strong he is!", "How strong!"],
+        early: ["He gets up early.", "How early he gets up!", "How early!"],
+        tall: ["She is tall.", "How tall she is!", "How tall!"],
+        kind: ["She is kind.", "How kind she is!", "How kind!"],
+        well: ["She sings well.", "How well she sings!", "How well!"],
+      },
+    },
+    koRows: {
+      exclm: {
+        fast: ["그는 빨리 달린다", "그는 정말 빨리 달리는구나!", "정말 빠르구나!"],
+        strong: ["그는 강하다", "그는 정말 강하구나!", "정말 강하구나!"],
+        early: ["그는 일찍 일어난다", "그는 정말 일찍 일어나는구나!", "정말 이르구나!"],
+        tall: ["그녀는 키가 크다", "그녀는 정말 키가 크구나!", "정말 키가 크구나!"],
+        kind: ["그녀는 친절하다", "그녀는 정말 친절하구나!", "정말 친절하구나!"],
+        well: ["그녀는 노래를 잘한다", "그녀는 정말 노래를 잘하는구나!", "정말 잘하는구나!"],
+      },
+    },
+  },
+  exclwhat: {
+    label: "What 감탄문",
+    tenses: ["exclm"],
+    forms: ["stmt", "excl", "short"],
+    formHeads: ["평서문", "감탄문", "생략형"],
+    exclForms: ["excl", "short"],
+    // weather는 셀 수 없는 명사라 관사가 붙지 않는다 (What nice weather!)
+    pred: {
+      story: "a great story", day: "a nice day", boy: "a smart boy",
+      girl: "a kind girl", movie: "an exciting movie", weather: "nice weather",
+    },
+    subjects: ["story", "day", "boy", "girl", "movie", "weather"],
+    rows: {
+      exclm: {
+        story: ["It is a great story.", "What a great story it is!", "What a great story!"],
+        day: ["It is a nice day.", "What a nice day it is!", "What a nice day!"],
+        boy: ["He is a smart boy.", "What a smart boy he is!", "What a smart boy!"],
+        girl: ["She is a kind girl.", "What a kind girl she is!", "What a kind girl!"],
+        movie: ["It is an exciting movie.", "What an exciting movie it is!", "What an exciting movie!"],
+        weather: ["It is nice weather.", "What nice weather it is!", "What nice weather!"],
+      },
+    },
+    koRows: {
+      exclm: {
+        story: ["그것은 훌륭한 이야기다", "그것은 정말 훌륭한 이야기구나!", "정말 훌륭한 이야기구나!"],
+        day: ["오늘은 좋은 날이다", "오늘은 정말 좋은 날이구나!", "정말 좋은 날이구나!"],
+        boy: ["그는 똑똑한 소년이다", "그는 정말 똑똑한 소년이구나!", "정말 똑똑한 소년이구나!"],
+        girl: ["그녀는 친절한 소녀다", "그녀는 정말 친절한 소녀구나!", "정말 친절한 소녀구나!"],
+        movie: ["그것은 재미있는 영화다", "그것은 정말 재미있는 영화구나!", "정말 재미있는 영화구나!"],
+        weather: ["날씨가 좋다", "날씨가 정말 좋구나!", "정말 좋은 날씨구나!"],
+      },
+    },
+  },
+
+  // UNIT 04 의문사 의문문 — 주어 축이 의문사, 형태 축이 「일반 의문문 → 의문사 의문문」.
+  // 시제 축은 어순이 갈리는 두 갈래다: 〈의문사+be동사+주어〉 / 〈의문사+조동사+주어+동사원형〉.
+  whq: {
+    label: "의문사 의문문",
+    tenses: ["qbe", "qdo"],
+    forms: ["yn", "wq"],
+    formHeads: ["일반 의문문", "의문사 의문문"],
+    qForms: ["yn", "wq"],
+    subjects: ["who", "what", "when", "where", "why", "how"],
+    pred: {
+      who: "your sister", what: "a book", when: "at six",
+      where: "in the kitchen", why: "sad", how: "nice",
+    },
+    predByTense: {
+      qbe: {
+        who: "your sister", what: "a book", when: "at six",
+        where: "in the kitchen", why: "sad", how: "nice",
+      },
+      qdo: {
+        who: "like Tom", what: "have a car", when: "leave at seven",
+        where: "find it", why: "leave early", how: "work well",
+      },
+    },
+    rows: {
+      qbe: {
+        who: ["Is she your sister?", "Who is she?"],
+        what: ["Is it a book?", "What is it?"],
+        when: ["Is the party at six?", "When is the party?"],
+        where: ["Is he in the kitchen?", "Where is he?"],
+        why: ["Is she sad?", "Why is she sad?"],
+        how: ["Is the weather nice?", "How is the weather?"],
+      },
+      qdo: {
+        who: ["Does she like Tom?", "Who does she like?"],
+        what: ["Does she have a car?", "What does she have?"],
+        when: ["Does he leave at seven?", "When does he leave?"],
+        where: ["Did you find it in the kitchen?", "Where did you find it?"],
+        why: ["Did you leave early?", "Why did you leave early?"],
+        how: ["Does it work well?", "How does it work?"],
+      },
+    },
+    koRows: {
+      qbe: {
+        who: ["그녀는 네 여동생이니?", "그녀는 누구니?"],
+        what: ["그것은 책이니?", "그것은 무엇이니?"],
+        when: ["파티는 여섯 시니?", "파티는 언제니?"],
+        where: ["그는 부엌에 있니?", "그는 어디에 있니?"],
+        why: ["그녀는 슬프니?", "그녀는 왜 슬프니?"],
+        how: ["날씨가 좋니?", "날씨가 어떠니?"],
+      },
+      qdo: {
+        who: ["그녀는 Tom을 좋아하니?", "그녀는 누구를 좋아하니?"],
+        what: ["그녀는 차를 가지고 있니?", "그녀는 무엇을 가지고 있니?"],
+        when: ["그는 일곱 시에 떠나니?", "그는 언제 떠나니?"],
+        where: ["너는 그것을 부엌에서 발견했니?", "너는 그것을 어디에서 발견했니?"],
+        why: ["너는 일찍 떠났니?", "너는 왜 일찍 떠났니?"],
+        how: ["그것은 잘 작동하니?", "그것은 어떻게 작동하니?"],
+      },
+    },
+  },
+
+  // UNIT 06 〈의문사 + 명사〉 — 무슨~ / 어느~ / 누구의~. 셋 다 「일반 의문문 → 의문사+명사」.
+  whatn: {
+    label: "What + 명사",
+    tenses: ["wn"],
+    forms: ["yn", "wq"],
+    formHeads: ["일반 의문문", "의문사 + 명사"],
+    qForms: ["yn", "wq"],
+    subjects: ["movie", "kind", "time", "day", "color", "sport"],
+    pred: {
+      movie: "watch a movie", kind: "like the food", time: "late",
+      day: "Monday today", color: "like this color", sport: "play a sport",
+    },
+    rows: {
+      wn: {
+        movie: ["Will you watch a movie?", "What movie will you watch?"],
+        kind: ["Do you like the food?", "What kind of food do you like?"],
+        time: ["Is it late?", "What time is it?"],
+        day: ["Is it Monday today?", "What day is it today?"],
+        color: ["Do you like this color?", "What color do you like?"],
+        sport: ["Does he play a sport?", "What sport does he play?"],
+      },
+    },
+    koRows: {
+      wn: {
+        movie: ["너는 영화를 볼 거니?", "너는 무슨 영화를 볼 거니?"],
+        kind: ["너는 그 음식을 좋아하니?", "너는 무슨 종류의 음식을 좋아하니?"],
+        time: ["늦었니?", "몇 시니?"],
+        day: ["오늘 월요일이니?", "오늘 무슨 요일이니?"],
+        color: ["너는 이 색을 좋아하니?", "너는 무슨 색을 좋아하니?"],
+        sport: ["그는 운동을 하니?", "그는 무슨 운동을 하니?"],
+      },
+    },
+  },
+  whichn: {
+    label: "Which + 명사",
+    tenses: ["wn"],
+    forms: ["yn", "wq"],
+    formHeads: ["일반 의문문", "의문사 + 명사"],
+    qForms: ["yn", "wq"],
+    subjects: ["one", "way", "subject", "class", "fruit", "seat"],
+    pred: {
+      one: "yours", way: "go this way", subject: "like science",
+      class: "like this class", fruit: "like apples", seat: "this seat",
+    },
+    rows: {
+      wn: {
+        one: ["Is this yours?", "Which one is yours?"],
+        way: ["Should I go this way?", "Which way should I go?"],
+        subject: ["Do you like science?", "Which subject do you like?"],
+        class: ["Do you like this class?", "Which class do you like?"],
+        fruit: ["Do you like apples?", "Which fruit do you like?"],
+        seat: ["Is this seat yours?", "Which seat is yours?"],
+      },
+    },
+    koRows: {
+      wn: {
+        one: ["이것이 네 것이니?", "어느 것이 네 것이니?"],
+        way: ["내가 이쪽으로 가야 하니?", "내가 어느 쪽으로 가야 하니?"],
+        subject: ["너는 과학을 좋아하니?", "너는 어느 과목을 좋아하니?"],
+        class: ["너는 이 수업을 좋아하니?", "너는 어느 수업을 좋아하니?"],
+        fruit: ["너는 사과를 좋아하니?", "너는 어느 과일을 좋아하니?"],
+        seat: ["이 자리가 네 자리니?", "어느 자리가 네 자리니?"],
+      },
+    },
+  },
+  whosen: {
+    label: "Whose + 명사",
+    tenses: ["wn"],
+    forms: ["yn", "wq"],
+    formHeads: ["일반 의문문", "의문사 + 명사"],
+    qForms: ["yn", "wq"],
+    subjects: ["bag", "fault", "bike", "laptop", "room", "shirt"],
+    pred: {
+      bag: "your bag", fault: "your fault", bike: "borrow her bike",
+      laptop: "Jane's laptop", room: "your brother's room", shirt: "Jenny's T-shirt",
+    },
+    rows: {
+      wn: {
+        bag: ["Is this your bag?", "Whose bag is this?"],
+        fault: ["Was it your fault?", "Whose fault was it?"],
+        bike: ["Did you borrow her bike?", "Whose bike did you borrow?"],
+        laptop: ["Is it Jane's laptop?", "Whose laptop is it?"],
+        room: ["Is it your brother's room?", "Whose room is it?"],
+        shirt: ["Is it Jenny's T-shirt?", "Whose T-shirt is it?"],
+      },
+    },
+    koRows: {
+      wn: {
+        bag: ["이것은 네 가방이니?", "이것은 누구의 가방이니?"],
+        fault: ["그것은 네 잘못이었니?", "그것은 누구의 잘못이었니?"],
+        bike: ["너는 그녀의 자전거를 빌렸니?", "너는 누구의 자전거를 빌렸니?"],
+        laptop: ["그것은 Jane의 노트북이니?", "그것은 누구의 노트북이니?"],
+        room: ["그것은 네 형의 방이니?", "그것은 누구의 방이니?"],
+        shirt: ["그것은 Jenny의 티셔츠니?", "그것은 누구의 티셔츠니?"],
+      },
+    },
+  },
+
+  // UNIT 05 〈how + 형용사/부사〉 — 평서문의 밑줄 친 정도를 묻는 의문문으로 바꾼다.
+  howadj: {
+    label: "how + 형용사",
+    tenses: ["hw"],
+    forms: ["stmt", "wq"],
+    formHeads: ["평서문", "의문문"],
+    qForms: ["wq"],
+    subjects: ["old", "tall", "much", "far", "long", "big"],
+    pred: {
+      old: "seventeen years old", tall: "160 cm tall", much: "seven dollars",
+      far: "two kilometers away", long: "270 kilometers long", big: "very big",
+    },
+    rows: {
+      hw: {
+        old: ["He is seventeen years old.", "How old is he?"],
+        tall: ["She is 160 cm tall.", "How tall is she?"],
+        much: ["The ticket was seven dollars.", "How much was the ticket?"],
+        far: ["The store is two kilometers away.", "How far is the store?"],
+        long: ["The river is 270 kilometers long.", "How long is the river?"],
+        big: ["The room is very big.", "How big is the room?"],
+      },
+    },
+    koRows: {
+      hw: {
+        old: ["그는 열일곱 살이다", "그는 몇 살이니?"],
+        tall: ["그녀는 키가 160cm이다", "그녀는 키가 얼마나 크니?"],
+        much: ["그 표는 7달러였다", "그 표는 얼마였니?"],
+        far: ["그 가게는 2킬로미터 떨어져 있다", "그 가게는 얼마나 머니?"],
+        long: ["그 강은 길이가 270킬로미터다", "그 강은 얼마나 기니?"],
+        big: ["그 방은 아주 크다", "그 방은 얼마나 크니?"],
+      },
+    },
+  },
+  howadv: {
+    label: "how + 부사",
+    tenses: ["hw"],
+    forms: ["stmt", "wq"],
+    formHeads: ["평서문", "의문문"],
+    qForms: ["wq"],
+    subjects: ["often", "early", "fast", "long", "well", "soon"],
+    pred: {
+      often: "sees her every weekend", early: "can come very early", fast: "ran very fast",
+      long: "will stay for a week", well: "sings very well", soon: "will start soon",
+    },
+    rows: {
+      hw: {
+        often: ["He sees her every weekend.", "How often does he see her?"],
+        early: ["He can come very early.", "How early can he come?"],
+        fast: ["He ran very fast.", "How fast did he run?"],
+        long: ["They will stay for a week.", "How long will they stay?"],
+        well: ["She sings very well.", "How well does she sing?"],
+        soon: ["It will start soon.", "How soon will it start?"],
+      },
+    },
+    koRows: {
+      hw: {
+        often: ["그는 주말마다 그녀를 본다", "그는 얼마나 자주 그녀를 보니?"],
+        early: ["그는 아주 일찍 올 수 있다", "그는 얼마나 일찍 올 수 있니?"],
+        fast: ["그는 아주 빨리 달렸다", "그는 얼마나 빨리 달렸니?"],
+        long: ["그들은 일주일 동안 머무를 것이다", "그들은 얼마나 오래 머무를 거니?"],
+        well: ["그녀는 노래를 아주 잘한다", "그녀는 노래를 얼마나 잘하니?"],
+        soon: ["그것은 곧 시작할 것이다", "그것은 얼마나 빨리 시작할 거니?"],
+      },
+    },
+  },
+  howmany: {
+    label: "how many · much + 명사",
+    tenses: ["hw"],
+    forms: ["stmt", "wq"],
+    formHeads: ["평서문", "의문문"],
+    qForms: ["wq"],
+    // 셀 수 있는 명사 → how many, 셀 수 없는 명사 → how much
+    subjects: ["eggs", "books", "friends", "time", "money", "water"],
+    pred: {
+      eggs: "ten eggs", books: "twenty books", friends: "many friends",
+      time: "an hour", money: "fifty dollars", water: "some water",
+    },
+    rows: {
+      hw: {
+        eggs: ["We have ten eggs.", "How many eggs do we have?"],
+        books: ["He has twenty books.", "How many books does he have?"],
+        friends: ["She has many friends.", "How many friends does she have?"],
+        time: ["We have an hour.", "How much time do we have?"],
+        money: ["She has fifty dollars.", "How much money does she have?"],
+        water: ["They have some water.", "How much water do they have?"],
+      },
+    },
+    koRows: {
+      hw: {
+        eggs: ["우리는 달걀이 열 개 있다", "우리는 달걀이 몇 개 있니?"],
+        books: ["그는 책이 스무 권 있다", "그는 책이 몇 권 있니?"],
+        friends: ["그녀는 친구가 많다", "그녀는 친구가 몇 명 있니?"],
+        time: ["우리는 한 시간이 있다", "우리는 시간이 얼마나 있니?"],
+        money: ["그녀는 50달러가 있다", "그녀는 돈이 얼마나 있니?"],
+        water: ["그들은 물이 조금 있다", "그들은 물이 얼마나 있니?"],
+      },
+    },
+  },
+
+  // UNIT 07 부가의문문 — 본문과 꼬리의 극성이 반대, 꼬리 주어는 본문 주어의 대명사.
+  // 시제 축이 꼬리에 쓰는 동사의 갈래다: be동사 / do·does / 조동사.
+  tag: {
+    label: "부가의문문",
+    tenses: ["tbe", "tverb", "tmodal"],
+    forms: ["tagaff", "tagneg"],
+    formHeads: ["긍정문 + 부정 꼬리", "부정문 + 긍정 꼬리"],
+    qForms: ["tagaff", "tagneg"],
+    pred: { I: "late", she: "lovely", he: "busy", it: "cold", we: "ready", they: "here" },
+    predByTense: {
+      tbe: { I: "late", she: "lovely", he: "busy", it: "cold", we: "ready", they: "here" },
+      tverb: { I: "know you", she: "like it", he: "know it", it: "work", we: "need it", they: "live here" },
+      tmodal: { I: "help", she: "sing well", he: "come", it: "work", we: "wait", they: "swim" },
+    },
+    rows: {
+      tbe: {
+        I: ["I am late, aren't I?", "I'm not late, am I?"],
+        she: ["She is lovely, isn't she?", "She isn't lovely, is she?"],
+        he: ["He is busy, isn't he?", "He isn't busy, is he?"],
+        it: ["It is cold, isn't it?", "It isn't cold, is it?"],
+        we: ["We are ready, aren't we?", "We aren't ready, are we?"],
+        they: ["They are here, aren't they?", "They aren't here, are they?"],
+      },
+      tverb: {
+        I: ["I know you, don't I?", "I don't know you, do I?"],
+        she: ["She likes it, doesn't she?", "She doesn't like it, does she?"],
+        he: ["He knows it, doesn't he?", "He doesn't know it, does he?"],
+        it: ["It works, doesn't it?", "It doesn't work, does it?"],
+        we: ["We need it, don't we?", "We don't need it, do we?"],
+        they: ["They live here, don't they?", "They don't live here, do they?"],
+      },
+      tmodal: {
+        I: ["I can help, can't I?", "I can't help, can I?"],
+        she: ["She can sing well, can't she?", "She can't sing well, can she?"],
+        he: ["He can come, can't he?", "He can't come, can he?"],
+        it: ["It can work, can't it?", "It can't work, can it?"],
+        we: ["We can wait, can't we?", "We can't wait, can we?"],
+        they: ["They can swim, can't they?", "They can't swim, can they?"],
+      },
+    },
+    koRows: {
+      tbe: {
+        I: ["나는 늦었어, 그렇지 않니?", "나는 늦지 않았어, 그렇지?"],
+        she: ["그녀는 아름다워, 그렇지 않니?", "그녀는 아름답지 않아, 그렇지?"],
+        he: ["그는 바빠, 그렇지 않니?", "그는 바쁘지 않아, 그렇지?"],
+        it: ["날씨가 추워, 그렇지 않니?", "날씨가 춥지 않아, 그렇지?"],
+        we: ["우리는 준비됐어, 그렇지 않니?", "우리는 준비되지 않았어, 그렇지?"],
+        they: ["그들은 여기 있어, 그렇지 않니?", "그들은 여기 없어, 그렇지?"],
+      },
+      tverb: {
+        I: ["나는 너를 알아, 그렇지 않니?", "나는 너를 몰라, 그렇지?"],
+        she: ["그녀는 그것을 좋아해, 그렇지 않니?", "그녀는 그것을 좋아하지 않아, 그렇지?"],
+        he: ["그는 그것을 알아, 그렇지 않니?", "그는 그것을 모르지, 그렇지?"],
+        it: ["그것은 작동해, 그렇지 않니?", "그것은 작동하지 않아, 그렇지?"],
+        we: ["우리는 그것이 필요해, 그렇지 않니?", "우리는 그것이 필요하지 않아, 그렇지?"],
+        they: ["그들은 여기 살아, 그렇지 않니?", "그들은 여기 살지 않아, 그렇지?"],
+      },
+      tmodal: {
+        I: ["나는 도울 수 있어, 그렇지 않니?", "나는 도울 수 없어, 그렇지?"],
+        she: ["그녀는 노래를 잘할 수 있어, 그렇지 않니?", "그녀는 노래를 잘할 수 없어, 그렇지?"],
+        he: ["그는 올 수 있어, 그렇지 않니?", "그는 올 수 없어, 그렇지?"],
+        it: ["그것은 작동할 수 있어, 그렇지 않니?", "그것은 작동할 수 없어, 그렇지?"],
+        we: ["우리는 기다릴 수 있어, 그렇지 않니?", "우리는 기다릴 수 없어, 그렇지?"],
+        they: ["그들은 수영할 수 있어, 그렇지 않니?", "그들은 수영할 수 없어, 그렇지?"],
+      },
+    },
+  },
 };
 
 function build() {
@@ -995,6 +1508,9 @@ function build() {
       // 주어 축은 세트마다 다를 수 있다 (대명사 세트, 워밍업의 형용사 등)
       subjects: set.subjects || SUBJECTS,
       cards: set.cards || false, // 문장이 아니라 낱말 카드인 세트
+      // 구두점이 형태 축을 따라가는 세트: 어떤 형태가 물음표·느낌표로 끝나는가
+      qForms: set.qForms,
+      exclForms: set.exclForms,
       pred: set.pred,
       futurePred: set.futurePred || {},
       predByForm: set.predByForm,

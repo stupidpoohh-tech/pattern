@@ -3,7 +3,7 @@
 // "슬롯(어간)은 그대로, 부정 조작(n't/not)이 더해졌다"는 구조를 색으로 보여주기 위해서다.
 // React에 의존하지 않는 순수 함수라 노드 테스트로 검증할 수 있다.
 
-export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg", "cmp", "qty", "freq", "adv"];
+export const GRAM_CATEGORIES = ["be", "do", "future", "perfect", "modal", "wh", "neg", "imp", "cmp", "qty", "freq", "adv"];
 
 const WORD_CATS = {
   // be동사 슬롯
@@ -18,6 +18,9 @@ const WORD_CATS = {
   can: "modal", should: "modal",
   // 의문사
   where: "wh", when: "wh", why: "wh", what: "wh", how: "wh",
+  who: "wh", which: "wh", whose: "wh",
+  // 명령·청유 표지 — 주어 없이 문장을 여는 자리
+  "let's": "imp", please: "imp",
   // 부정 표지
   not: "neg",
   // 비교 표지 — as/than/more/most + 데이터에 쓰인 -er/-est 형태
@@ -74,10 +77,13 @@ function isContentDo(after) {
 }
 
 // have/has도 두 가지다: 완료 조동사("I have seen it") 또는 "가지다"라는 본동사
-// ("I have many books"). 완료 조동사 뒤에는 과거분사가 오므로, 수량 표현이나
-// 관사가 뒤따르면 본동사로 보고 색을 칠하지 않는다.
+// ("I have many books"). 완료 조동사 뒤에는 반드시 과거분사가 오므로, 목적어를 여는
+// 말(수량 표현·관사·수사)이 뒤따르거나 문장이 거기서 끝나면("What does she have?")
+// 본동사로 보고 색을 칠하지 않는다.
+const HAVE_OBJECT_HEAD =
+  /^\s+(many|much|few|little|some|any|no|a|an|the|\d|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty)\b/i;
 function isContentHave(after) {
-  return /^\s+(many|much|few|little|some|any|a|an|the)\b/i.test(after);
+  return HAVE_OBJECT_HEAD.test(after) || /^[.?!]/.test(after);
 }
 
 // "She isn't lovely." → [{text:"She "}, {text:"is",cat:"be"}, {text:"n't",cat:"neg"}, {text:" lovely."}]
