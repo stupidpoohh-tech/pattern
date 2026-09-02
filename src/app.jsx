@@ -8,7 +8,6 @@ import {
   sentenceOf,
   applySteps,
   randomSteps,
-  coverageSteps,
   sampleSteps,
   chainSteps,
   isChainScope,
@@ -79,16 +78,19 @@ function KoInstruction({ coord, steps }) {
   );
 }
 
+// 세션 길이 — 둘 다 범위에서 무작위로 뽑는 시험이다 (중복 없음).
+// 범위가 더 작으면 있는 문장 수만큼만 낸다.
+const SESSION_LENGTHS = { short: 15, long: 30 };
+const sessionCount = (length, poolSize) => Math.min(SESSION_LENGTHS[length], poolSize);
+
 // ---------- 학생 루프 세션 (자동 산책 / 지정 경로) ----------
 
-function DrillSession({ initialCoord, totalSteps, getSteps, instrMode = "token", onEnd, onExit }) {
-  // 지시 표시: 토큰 / 한국어 해석 / 랜덤(걸음마다 무작위로 둘 중 하나)
-  const pickKo = () => instrMode === "ko" || (instrMode === "random" && Math.random() < 0.5);
+// 지시는 언제나 목표 문장의 한국어 해석이다 — 해석만 보고 목표 문장이 하나로 정해진다.
+function DrillSession({ initialCoord, totalSteps, getSteps, onEnd, onExit }) {
   const [coord, setCoord] = useState(initialCoord);
   const [phase, setPhase] = useState("instruction"); // instruction | revealed
   const [stepIdx, setStepIdx] = useState(0);
   const [steps, setSteps] = useState(() => getSteps(0, initialCoord, []));
-  const [koNow, setKoNow] = useState(pickKo);
   const historyRef = useRef([]);
   const lockRef = useRef(0);
   const tapRef = useRef(() => {});
@@ -129,7 +131,6 @@ function DrillSession({ initialCoord, totalSteps, getSteps, instrMode = "token",
     if (!next || next.length === 0) return onEnd();
     setStepIdx(nextIdx);
     setSteps(next);
-    setKoNow(pickKo());
     setPhase("instruction");
   };
 
@@ -149,12 +150,7 @@ function DrillSession({ initialCoord, totalSteps, getSteps, instrMode = "token",
         <p key={keyOf(coord)} className="sentence fade-in">
           <GrammarText text={sentenceOf(coord)} />
         </p>
-        {phase === "instruction" &&
-          (koNow ? (
-            <KoInstruction coord={coord} steps={steps} />
-          ) : (
-            <TokenChips tokens={displayTokens(coord, steps)} />
-          ))}
+        {phase === "instruction" && <KoInstruction coord={coord} steps={steps} />}
       </main>
 
       <footer className="stage-hint">
@@ -467,10 +463,10 @@ function TableScreen({ onHome, onWalk }) {
 
       <div className="table-walk-row">
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
-          짧게 학습 · {Math.min(15, tabCount)}문장
+          짧게 학습 · {sessionCount("short", tabCount)}문장
         </button>
-        <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "full")}>
-          전체 학습 · {tabCount}문장
+        <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "long")}>
+          길게 학습 · {sessionCount("long", tabCount)}문장
         </button>
       </div>
 
@@ -600,7 +596,6 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
   const [length, setLength] = useState("short");
-  const [instrMode, setInstrMode] = useState("token");
 
   // 칸 탭: 다음 단계로 (마지막 단계에서 한 번 더 탭하면 꺼짐)
   const tapCell = (id) =>
@@ -816,8 +811,8 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
             <span className="set-label">세션</span>
             <Segmented
               options={[
-                { v: "short", t: `짧게 · ${Math.min(15, count)}` },
-                { v: "full", t: `전체 · ${count}` },
+                { v: "short", t: `짧게 · ${sessionCount("short", count)}` },
+                { v: "long", t: `길게 · ${sessionCount("long", count)}` },
               ]}
               value={length}
               onChange={setLength}
@@ -861,26 +856,14 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
             </button>
           </div>
 
-          <div className="set-row">
-            <span className="set-label">지시</span>
-            <Segmented
-              options={[
-                { v: "token", t: "토큰" },
-                { v: "ko", t: "한국어" },
-                { v: "random", t: "랜덤" },
-              ]}
-              value={instrMode}
-              onChange={setInstrMode}
-            />
-          </div>
         </div>
 
         <button
           className="primary-btn"
           disabled={count < 2}
-          onClick={() => onStartWalk({ scopes, width, repeat, length, instrMode })}
+          onClick={() => onStartWalk({ scopes, width, repeat, length })}
         >
-          {count < 2 ? "범위를 선택하세요" : `학습 시작 · ${length === "short" ? Math.min(15, count) : count}문장`}
+          {count < 2 ? "범위를 선택하세요" : `학습 시작 · ${sessionCount(length, count)}문장`}
         </button>
       </section>
 
@@ -971,7 +954,7 @@ export default function App() {
     setRoute({ name: "home" });
   };
 
-  const startWalk = ({ scopes, width = 1, repeat = false, length = "full", instrMode = "token" }) => {
+  const startWalk = ({ scopes, width = 1, repeat = false, length = "short" }) => {
     const coords = scopeCoords(scopes);
     if (coords.length < 2) return;
     const chain = isChainScope(scopes);
@@ -989,22 +972,20 @@ export default function App() {
     );
     const visited = new Set([keyOf(start)]);
     const ecfg = { scopes, width };
-    const total =
-      length === "short" ? Math.min(14, coords.length - 1) : coords.length - 1;
+    // 걸음 수 = 낼 문장 수 - 1 (첫 문장은 걸음 없이 주어진다)
+    const total = sessionCount(length, coords.length) - 1;
     const getSteps = (i, coord, history) => {
-      // 비교 체인 = 기본→원급→비교급→최상급 순서 / 짧게 = 흩어지게 표집 /
-      // 전체 = 빠짐없이 도는 커버리지 / 반복 켬 = 무작위(체인도 역순·랜덤 허용)
+      // 비교 체인 = 기본→원급→비교급→최상급 순서 / 그 외 = 범위에서 흩어지게 표집 /
+      // 반복 켬 = 무작위(체인도 역순·랜덤 허용)
       const steps = repeat
         ? randomSteps(coord, ecfg, history)
         : chain
           ? chainSteps(coord, ecfg, history, visited)
-          : length === "short"
-            ? sampleSteps(coord, ecfg, history, visited)
-            : coverageSteps(coord, ecfg, history, visited);
+          : sampleSteps(coord, ecfg, history, visited);
       if (steps) visited.add(keyOf(applySteps(coord, steps)));
       return steps;
     };
-    setRoute({ name: "walk", start, total, getSteps, instrMode });
+    setRoute({ name: "walk", start, total, getSteps });
   };
 
   if (route.name === "path-error")
@@ -1036,7 +1017,6 @@ export default function App() {
         initialCoord={route.start}
         totalSteps={route.total}
         getSteps={route.getSteps}
-        instrMode={route.instrMode}
         onEnd={() => setRoute({ name: "done", count: route.total + 1 })}
         onExit={() => window.confirm("세션을 중단할까요?") && goHome()}
       />
