@@ -504,6 +504,34 @@ code {
 .table-header { display: flex; align-items: center; gap: 0.8rem; }
 .table-header .page-title { font-size: 1.25rem; }
 
+/* 발음 읽기 — 속도 토글 한 줄, 그리고 표의 칸 자체가 재생 버튼이 된다 */
+.say-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.1rem 0 0.6rem;
+  flex-wrap: wrap;
+}
+.say-note { font-size: 0.78rem; color: var(--muted); }
+
+.sentence-table td.td-say { padding: 0; }
+.cell-say {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cell-say:hover { background: var(--surface-soft); }
+.cell-saying,
+.cell-saying:hover { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--line-strong); }
+
 .table-walk-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .walk-btn {
   padding: 0.5rem 0.9rem;
@@ -655,6 +683,9 @@ code {
   .page-wide { --pad: 0.7rem; }
   .sentence-table { min-width: 26rem; font-size: 0.86rem; }
   .sentence-table th, .sentence-table td { padding: 0.45rem 0.5rem; }
+  .sentence-table td.td-say { padding: 0; }
+  .cell-say { padding: 0.45rem 0.5rem; }
+  .say-note { width: 100%; }
   .table-walk-row .walk-btn { flex: 1; text-align: center; }
   .tab { padding: 0.42rem 0.65rem; font-size: 0.84rem; }
 
@@ -664,10 +695,12 @@ code {
 /* 손가락 입력 기기: 호버 스타일이 눌린 것처럼 남지 않게 */
 @media (hover: none) {
   .icon-btn:hover, .ghost-btn:hover, .matrix-head:hover,
-  .matrix-cell:hover, .tab:hover, .primary-btn:hover, .walk-btn:hover {
+  .matrix-cell:hover, .tab:hover, .primary-btn:hover, .walk-btn:hover,
+  .cell-say:hover {
     background: inherit;
     opacity: 1;
   }
+  .cell-saying:hover { background: var(--accent-soft); }
   .matrix-cell:hover { border-color: var(--line); }
   .cell-on:hover { border-color: var(--accent); background: var(--accent-soft); }
   .tab-on:hover { background: var(--accent); }

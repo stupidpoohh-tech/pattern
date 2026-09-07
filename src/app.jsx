@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SENTENCES, KO } from "./data.js";
 import { BE_DEFAULTS, loadVocab, saveVocab, applyVocab } from "./vocab.js";
 import { GRAM_CATEGORIES, tokenizeGrammar } from "./grammar.js";
+import { speechSupported, warmVoices, speak, stopSpeech, SPEECH_RATES } from "./speech.js";
 import {
   SET_BY_ID,
   keyOf,
@@ -358,7 +359,23 @@ const TAB_AREAS = [
 ];
 const AREA_TITLE = Object.fromEntries(TAB_AREAS.map((a) => [a.v, a.t]));
 
-function SentenceTable({ rows, cols, colLabels, cellOf }) {
+// 문장표의 칸. 발음 읽기가 가능하면 칸 전체가 버튼이 된다 (읽는 중인 칸은 표시).
+function SentenceCell({ text, cellKey, speaking, onSpeak }) {
+  if (!onSpeak) return <td><GrammarText text={text} /></td>;
+  return (
+    <td className="td-say">
+      <button
+        className={`cell-say ${speaking === cellKey ? "cell-saying" : ""}`}
+        onClick={() => onSpeak(cellKey, text)}
+        aria-label={`${text} 발음 듣기`}
+      >
+        <GrammarText text={text} />
+      </button>
+    </td>
+  );
+}
+
+function SentenceTable({ rows, cols, colLabels, cellOf, sectionId, speaking, onSpeak }) {
   return (
     <div className="table-wrap">
       <table className="sentence-table">
@@ -372,7 +389,15 @@ function SentenceTable({ rows, cols, colLabels, cellOf }) {
           {rows.map((s) => (
             <tr key={s}>
               <th>{s}</th>
-              {cols.map((c) => <td key={c}><GrammarText text={cellOf(s, c)} /></td>)}
+              {cols.map((c) => (
+                <SentenceCell
+                  key={c}
+                  text={cellOf(s, c)}
+                  cellKey={`${sectionId}|${s}|${c}`}
+                  speaking={speaking}
+                  onSpeak={onSpeak}
+                />
+              ))}
             </tr>
           ))}
         </tbody>
@@ -400,10 +425,40 @@ function TableScreen({ onHome, onWalk }) {
   );
   const tabCount = counts[tabId];
 
+  // 발음 읽기 — 기기에 영어 음성이 없거나 브라우저가 지원하지 않으면 통째로 숨긴다
+  const canSay = useMemo(speechSupported, []);
+  const [rate, setRate] = useState("normal");
+  const [speaking, setSpeaking] = useState(null);
+  useEffect(() => {
+    if (!canSay) return;
+    warmVoices();
+    return stopSpeech; // 화면을 떠나면 읽던 문장을 끊는다
+  }, [canSay]);
+
+  const onSpeak = canSay
+    ? (cellKey, text) => {
+        // 읽고 있는 칸을 다시 탭하면 멈춘다
+        if (speaking === cellKey) {
+          stopSpeech();
+          setSpeaking(null);
+          return;
+        }
+        setSpeaking(cellKey);
+        const ok = speak(text, {
+          rate: SPEECH_RATES[rate],
+          onend: () => setSpeaking((k) => (k === cellKey ? null : k)),
+        });
+        if (!ok) setSpeaking(null);
+      }
+    : null;
+  const sayProps = { speaking, onSpeak };
+
   // 홈에서 내려 보던 위치가 남아 표 중간부터 보이지 않도록
   useEffect(() => window.scrollTo({ top: 0 }), []);
 
   const chooseTab = (id) => {
+    stopSpeech();
+    setSpeaking(null);
     lastTabRef.current[TABLE_TABS.find((t) => t.id === id).area] = id;
     setTabId(id);
     // 표를 내려 보다 탭을 바꾸면 새 표의 처음이 보이도록
@@ -461,6 +516,25 @@ function TableScreen({ onHome, onWalk }) {
 
       <GrammarLegend />
 
+      {canSay && (
+        <div className="say-row">
+          <span className="set-label">발음</span>
+          <Segmented
+            options={[
+              { v: "normal", t: "보통" },
+              { v: "slow", t: "느리게" },
+            ]}
+            value={rate}
+            onChange={(r) => {
+              stopSpeech();
+              setSpeaking(null);
+              setRate(r);
+            }}
+          />
+          <span className="say-note">문장을 탭하면 읽어 줍니다</span>
+        </div>
+      )}
+
       <div className="table-walk-row">
         <button className="walk-btn" onClick={() => onWalk(tabScopes(tab), "short")}>
           짧게 학습 · {sessionCount("short", tabCount)}문장
@@ -483,6 +557,8 @@ function TableScreen({ onHome, onWalk }) {
                 cols={set.tenses}
                 colLabels={set.tenses.map((t) => TENSE_LABELS[t])}
                 cellOf={(s, t) => SENTENCES[`${setId}-${s}-${t}-${set.forms[0]}`]}
+                sectionId={setId}
+                {...sayProps}
               />
             </section>
           );
@@ -497,6 +573,8 @@ function TableScreen({ onHome, onWalk }) {
               cols={set.forms}
               colLabels={set.formHeads}
               cellOf={(s, f) => SENTENCES[`${setId}-${s}-${tense}-${f}`]}
+              sectionId={`${setId}-${tense}`}
+              {...sayProps}
             />
           </section>
         ));
