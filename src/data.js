@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 991문장 (한국어 해석 991개).
+// 키: `${series}-${subject}-${tense}-${form}` — 총 983문장 (한국어 해석 983개).
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -1744,13 +1744,11 @@ export const SETS = [
     ],
     "forms": [
       "io1",
-      "io2",
-      "do2"
+      "io2"
     ],
     "formHeads": [
       "기본",
-      "사람 바꾸기",
-      "사물 바꾸기"
+      "사람 바꾸기"
     ],
     "subjects": [
       "give",
@@ -2851,28 +2849,20 @@ export const SENTENCES = {
   "changeturn-sour-sc-chg": "The milk turned sour.",
   "ditrans-give-d4-io1": "I gave him a book.",
   "ditrans-give-d4-io2": "I gave her a book.",
-  "ditrans-give-d4-do2": "I gave her a pen.",
   "ditrans-send-d4-io1": "She sent me a card.",
   "ditrans-send-d4-io2": "She sent him a card.",
-  "ditrans-send-d4-do2": "She sent him an email.",
   "ditrans-show-d4-io1": "He showed us the picture.",
   "ditrans-show-d4-io2": "He showed me the picture.",
-  "ditrans-show-d4-do2": "He showed me his photo.",
   "ditrans-tell-d4-io1": "They told me the story.",
   "ditrans-tell-d4-io2": "They told her the story.",
-  "ditrans-tell-d4-do2": "They told her the truth.",
   "ditrans-teach-d4-io1": "She taught me English.",
   "ditrans-teach-d4-io2": "She taught them English.",
-  "ditrans-teach-d4-do2": "She taught them math.",
   "ditrans-bring-d4-io1": "He brought me some water.",
   "ditrans-bring-d4-io2": "He brought her some water.",
-  "ditrans-bring-d4-do2": "He brought her some coffee.",
   "ditrans-buy-d4-io1": "Mom bought me a jacket.",
   "ditrans-buy-d4-io2": "Mom bought him a jacket.",
-  "ditrans-buy-d4-do2": "Mom bought him a hat.",
   "ditrans-make-d4-io1": "Dad made us dinner.",
   "ditrans-make-d4-io2": "Dad made me dinner.",
-  "ditrans-make-d4-do2": "Dad made me breakfast.",
   "dativeto-give-dat-f4": "I gave him a book.",
   "dativeto-give-dat-f3": "I gave a book to him.",
   "dativeto-send-dat-f4": "She sent me a card.",
@@ -3844,28 +3834,20 @@ export const KO = {
   "changeturn-sour-sc-chg": "그 우유는 시어졌다",
   "ditrans-give-d4-io1": "나는 그에게 책을 주었다",
   "ditrans-give-d4-io2": "나는 그녀에게 책을 주었다",
-  "ditrans-give-d4-do2": "나는 그녀에게 펜을 주었다",
   "ditrans-send-d4-io1": "그녀는 나에게 카드를 보냈다",
   "ditrans-send-d4-io2": "그녀는 그에게 카드를 보냈다",
-  "ditrans-send-d4-do2": "그녀는 그에게 이메일을 보냈다",
   "ditrans-show-d4-io1": "그는 우리에게 그 그림을 보여 주었다",
   "ditrans-show-d4-io2": "그는 나에게 그 그림을 보여 주었다",
-  "ditrans-show-d4-do2": "그는 나에게 그의 사진을 보여 주었다",
   "ditrans-tell-d4-io1": "그들은 나에게 그 이야기를 해 주었다",
   "ditrans-tell-d4-io2": "그들은 그녀에게 그 이야기를 해 주었다",
-  "ditrans-tell-d4-do2": "그들은 그녀에게 진실을 말해 주었다",
   "ditrans-teach-d4-io1": "그녀는 나에게 영어를 가르쳤다",
   "ditrans-teach-d4-io2": "그녀는 그들에게 영어를 가르쳤다",
-  "ditrans-teach-d4-do2": "그녀는 그들에게 수학을 가르쳤다",
   "ditrans-bring-d4-io1": "그는 나에게 물을 가져다주었다",
   "ditrans-bring-d4-io2": "그는 그녀에게 물을 가져다주었다",
-  "ditrans-bring-d4-do2": "그는 그녀에게 커피를 가져다주었다",
   "ditrans-buy-d4-io1": "엄마는 나에게 재킷을 사 주었다",
   "ditrans-buy-d4-io2": "엄마는 그에게 재킷을 사 주었다",
-  "ditrans-buy-d4-do2": "엄마는 그에게 모자를 사 주었다",
   "ditrans-make-d4-io1": "아빠는 우리에게 저녁을 만들어 주었다",
   "ditrans-make-d4-io2": "아빠는 나에게 저녁을 만들어 주었다",
-  "ditrans-make-d4-do2": "아빠는 나에게 아침을 만들어 주었다",
   "dativeto-give-dat-f4": "나는 그에게 책을 주었다",
   "dativeto-give-dat-f3": "나는 책을 그에게 주었다",
   "dativeto-send-dat-f4": "그녀는 나에게 카드를 보냈다",

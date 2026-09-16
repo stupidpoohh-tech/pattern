@@ -72,15 +72,14 @@ some/any 세트는 명사(books/water/…), 워밍업은 형용사(tall/nice/…
 |---|---|---|---|
 | 감각동사 + 형용사 | `sensefeel` `senselook` `sensesound` `sensesmell` `sensetaste` | be동사 문장 / 감각동사 문장 | 12+12+12+8+8 |
 | 〃 변화동사 | `changebecome` `changeget` `changeturn` | 문장 (짝 없는 독립 family) | 4 + 4 + 4 |
-| 4형식 | `ditrans` | 기본 / 사람 바꾸기 / 사물 바꾸기 | 24 |
+| 4형식 | `ditrans` | 기본 / 사람 바꾸기 | 16 |
 | 3형식 ↔ 4형식 | `dativeto` `dativefor` `dativeof` | 4형식 / 3형식 | 12 + 8 + 2 |
 | 5형식 | `svocadj` `svocnoun` | 상태문 / 5형식 | 12 + 8 |
 
 - 감각동사는 be동사 문장과 감각동사 문장이 한 쌍이다: `It is soft.` ↔ `It feels soft.`
   주어부와 보어는 그대로 두고 동사만 바뀐다.
-- 4형식은 한 걸음에 한 자리만 바꾼다: `I gave him a book.` → (사람) `I gave her a book.`
-  → (사물) `I gave her a pen.` 주어 축이 동사라, 엔진의 가족 이동 간격 규칙이 한 동사에
-  최소 2걸음 머무르게 한다.
+- 4형식은 한 걸음에 사람(간접목적어) 한 자리만 바꾼다: `I gave him a book.` → `I gave her a book.`
+  주어 축이 동사라, 엔진의 가족 이동 간격 규칙이 한 동사에 최소 2걸음 머무르게 한다.
 - 3형식 ↔ 4형식은 뜻이 같은 두 어순이라 한국어 해석도 어순을 그대로 따라간다:
   4형식 `나는 그에게 책을 주었다`(사람 먼저) / 3형식 `나는 책을 그에게 주었다`(사물 먼저).
   전치사(to / for / of)별로 세트를 나눠 메뉴·문장표에서 구분해 보인다.
@@ -103,7 +102,7 @@ npm test        # 문장표 스냅샷·전수 검증 테스트 (node --test)
 ```
 
 `dist/` 폴더(index.html, app.js, styles.css)가 산출물 전부다.
-Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory `dist`.
+Cloudflare(GitHub 연동): build command `npm run build`, 정적 자산 디렉터리 `dist`.
 
 ## 화면
 
@@ -151,6 +150,9 @@ Cloudflare Pages(GitHub 연동): build command `npm run build`, output directory
 - **지정 경로** — URL 파라미터로 교사가 경로를 사전 지정 (아래 참고).
 - **오프라인 지원(PWA)** — 한 번 접속하면 service worker가 전체를 캐시해
   오프라인에서도 동작하고, 태블릿/폰 홈 화면에 앱으로 추가할 수 있다.
+  캐시 우선이라 새로 배포해도 이미 캐시된 화면이 먼저 나오므로,
+  새 버전이 화면을 넘겨받는 순간(`controllerchange`) 한 번만 자동으로 새로고침한다
+  (`public/index.html`의 등록 코드). 처음 방문은 설치 직후에도 같은 이벤트가 오므로 건너뛴다.
 
 ## 걸음 짜임새 (무작위 걸음 규칙)
 
@@ -184,7 +186,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
   - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`, 의문사 세트는 `where` `when` `why` `what` `how`,
     문장 종류는 `cmd` `cmdneg` `cmdpol`, `lets` `letsnot` `whywe` `whyyou`,
     `stmt`/`평서문` `excl` `short`, `yn` `wq`, `tagaff` `tagneg`,
-    문장 구조는 `plain` `sense`/`감각동사` `chg`, `io1` `io2` `do2`, `f4` `f3`, `svoc`
+    문장 구조는 `plain` `sense`/`감각동사` `chg`, `io1` `io2`, `f4` `f3`, `svoc`
   - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`,
     `impgen`, `impbe`, `sugg`, `exclhow`, `exclwhat`, `whq`, `whatn`, `whichn`, `whosen`,
     `howadj`, `howadv`, `howmany`, `tag`,
@@ -211,7 +213,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ## 프로젝트 구조
 
 ```
-scripts/generate-data.mjs   문장표(991문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
+scripts/generate-data.mjs   문장표(983문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
 src/data.js                 생성된 문장 데이터 (직접 수정 금지)
 src/engine.js               좌표 이동·무작위 걸음(짜임새 규칙)·경로 파싱 로직
 src/app.jsx                 화면 컴포넌트 (홈/드릴/문장표/어휘 바꾸기)

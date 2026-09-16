@@ -327,7 +327,7 @@ test("문장 구조: 새 series가 모두 있고 영어·한국어 수가 맞는
     const s = SETS.find((x) => x.id === id);
     return n + s.subjects.length * s.tenses.length * s.forms.length;
   }, 0);
-  assert.equal(added, 130);
+  assert.equal(added, 122);
 });
 
 test("감각동사: be동사 문장 → 감각동사 문장 짝이 형용사를 그대로 물려받는다", () => {
@@ -365,23 +365,22 @@ test("변화동사: become / get / turn 이 각각 독립 family로 형용사 �
   }
 });
 
-test("4형식: S + V + 사람 + 사물, 걸음마다 한 자리만 바뀐다", () => {
+test("4형식: S + V + 사람 + 사물, 걸음마다 사람 한 자리만 바뀐다", () => {
+  assert.deepEqual(SETS.find((s) => s.id === "ditrans").forms, ["io1", "io2"]);
   for (const v of subjectsOf("ditrans")) {
     const base = SENTENCES[`ditrans-${v}-d4-io1`];
     const io = SENTENCES[`ditrans-${v}-d4-io2`];
-    const dobj = SENTENCES[`ditrans-${v}-d4-do2`];
     const words = (x) => x.replace(/\.$/, "").split(" ");
     // 전치사 없이 목적어 둘이 나란히 온다 (4형식)
-    for (const s of [base, io, dobj])
+    for (const s of [base, io])
       assert.doesNotMatch(s, /\b(to|for|of)\b/, `4형식에 전치사: ${s}`);
     // 기본 → 사람 바꾸기: 간접목적어(동사 바로 뒤) 한 자리만 다르다
-    const a = words(base), b = words(io), c = words(dobj);
+    const a = words(base), b = words(io);
     assert.equal(a.length, b.length, `${base} / ${io}`);
-    const diffAB = a.map((w, i) => (w === b[i] ? null : i)).filter((i) => i !== null);
-    assert.deepEqual(diffAB.length, 1, `사람만 바뀌어야 한다: ${base} → ${io}`);
-    // 사람 바꾸기 → 사물 바꾸기: 간접목적어는 유지되고 직접목적어만 다르다
-    assert.equal(b[diffAB[0]], c[diffAB[0]], `사람이 또 바뀌었다: ${io} → ${dobj}`);
-    assert.notDeepEqual(b.slice(diffAB[0] + 1), c.slice(diffAB[0] + 1), `사물이 그대로: ${io} → ${dobj}`);
+    const diff = a.map((w, i) => (w === b[i] ? null : i)).filter((i) => i !== null);
+    assert.equal(diff.length, 1, `사람만 바뀌어야 한다: ${base} → ${io}`);
+    // 바뀌는 자리는 동사 바로 뒤(간접목적어)다
+    assert.equal(diff[0], 2, `간접목적어 자리가 아니다: ${base} → ${io}`);
   }
 });
 

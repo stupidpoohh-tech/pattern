@@ -15,7 +15,19 @@
   <script src="app.js" defer></script>
   <script>
     if ("serviceWorker" in navigator)
-      addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+      addEventListener("load", () => {
+        // service worker가 캐시 우선이라, 새로 배포해도 이미 캐시된 화면이 먼저 나온다.
+        // 새 버전이 화면을 넘겨받는 순간(controllerchange) 한 번만 새로고침해 바로 반영한다.
+        // 처음 방문(아직 controller가 없을 때)은 설치 직후에도 이 이벤트가 오므로 건너뛴다.
+        var hadController = !!navigator.serviceWorker.controller;
+        var reloaded = false;
+        navigator.serviceWorker.addEventListener("controllerchange", function () {
+          if (!hadController || reloaded) return;
+          reloaded = true;
+          location.reload();
+        });
+        navigator.serviceWorker.register("sw.js");
+      });
   </script>
 </body>
 </html>
