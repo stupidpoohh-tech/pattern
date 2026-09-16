@@ -51,6 +51,11 @@ export const TENSE_LABELS = {
   tbe: "be동사",
   tverb: "일반동사",
   tmodal: "조동사",
+  // 문장 구조
+  sc: "감각 · 변화동사",
+  d4: "4형식",
+  dat: "3형식 ↔ 4형식",
+  oc: "5형식",
 };
 const FORM_LABELS = {
   aff: "평서",
@@ -89,6 +94,16 @@ const FORM_LABELS = {
   wq: "의문사 의문문",
   tagaff: "긍정문",
   tagneg: "부정문",
+  // 문장 구조
+  plain: "be동사 문장",
+  sense: "감각동사",
+  chg: "문장",
+  io1: "기본",
+  io2: "사람 바꾸기",
+  do2: "사물 바꾸기",
+  f4: "4형식",
+  f3: "3형식",
+  svoc: "5형식",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -430,6 +445,24 @@ const STEP_ALIASES = (() => {
     wq: { axis: "form", value: "wq" },
     tagaff: { axis: "form", value: "tagaff" },
     tagneg: { axis: "form", value: "tagneg" },
+    // 문장 구조 — 시제 축
+    sc: { axis: "tense", value: "sc" },
+    d4: { axis: "tense", value: "d4" },
+    "4형식": { axis: "tense", value: "d4" },
+    dat: { axis: "tense", value: "dat" },
+    oc: { axis: "tense", value: "oc" },
+    "5형식": { axis: "tense", value: "oc" },
+    // 문장 구조 — 형태 축
+    plain: { axis: "form", value: "plain" },
+    sense: { axis: "form", value: "sense" },
+    "감각동사": { axis: "form", value: "sense" },
+    chg: { axis: "form", value: "chg" },
+    io1: { axis: "form", value: "io1" },
+    io2: { axis: "form", value: "io2" },
+    do2: { axis: "form", value: "do2" },
+    f4: { axis: "form", value: "f4" },
+    f3: { axis: "form", value: "f3" },
+    svoc: { axis: "form", value: "svoc" },
   });
   return m;
 })();

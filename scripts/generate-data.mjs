@@ -1491,6 +1491,401 @@ const TABLE = {
       },
     },
   },
+
+  // ===== 문장 구조 =====
+  // 2형식(감각·변화동사 + 보어), 4형식, 3형식↔4형식, 5형식.
+  // 주어 축은 문장의 주어가 아니라 낱말 슬롯이다 — 감각동사는 형용사, 4·5형식은 동사가 주어 축이다.
+  // 형태 축이 곧 드릴의 변형이다: 같은 문장에서 한 요소만 바꿔 말하게 한다.
+
+  // --- 감각동사 + 형용사 (be동사 문장 → 감각동사 문장) ---
+  sensefeel: {
+    label: "feel",
+    tenses: ["sc"],
+    forms: ["plain", "sense"],
+    formHeads: ["be동사", "feels"],
+    subjects: ["soft", "warm", "cold", "hard", "dry", "cool"],
+    pred: { soft: "soft", warm: "warm", cold: "cold", hard: "hard", dry: "dry", cool: "cool" },
+    rows: {
+      sc: {
+        soft: ["It is soft.", "It feels soft."],
+        warm: ["The blanket is warm.", "The blanket feels warm."],
+        cold: ["The water is cold.", "The water feels cold."],
+        hard: ["The chair is hard.", "The chair feels hard."],
+        dry: ["The towel is dry.", "The towel feels dry."],
+        cool: ["The air is cool.", "The air feels cool."],
+      },
+    },
+    koRows: {
+      sc: {
+        soft: ["그것은 부드럽다", "그것은 부드럽게 느껴진다"],
+        warm: ["그 담요는 따뜻하다", "그 담요는 따뜻하게 느껴진다"],
+        cold: ["그 물은 차갑다", "그 물은 차갑게 느껴진다"],
+        hard: ["그 의자는 딱딱하다", "그 의자는 딱딱하게 느껴진다"],
+        dry: ["그 수건은 건조하다", "그 수건은 건조하게 느껴진다"],
+        cool: ["그 공기는 시원하다", "그 공기는 시원하게 느껴진다"],
+      },
+    },
+  },
+  senselook: {
+    label: "look",
+    tenses: ["sc"],
+    forms: ["plain", "sense"],
+    formHeads: ["be동사", "looks"],
+    subjects: ["tired", "happy", "busy", "sleepy", "clean", "delicious"],
+    pred: {
+      tired: "tired", happy: "happy", busy: "busy",
+      sleepy: "sleepy", clean: "clean", delicious: "delicious",
+    },
+    rows: {
+      sc: {
+        tired: ["She is tired.", "She looks tired."],
+        happy: ["He is happy.", "He looks happy."],
+        busy: ["You are busy.", "You look busy."],
+        sleepy: ["The dog is sleepy.", "The dog looks sleepy."],
+        clean: ["The room is clean.", "The room looks clean."],
+        delicious: ["The cake is delicious.", "The cake looks delicious."],
+      },
+    },
+    koRows: {
+      sc: {
+        tired: ["그녀는 피곤하다", "그녀는 피곤해 보인다"],
+        happy: ["그는 행복하다", "그는 행복해 보인다"],
+        busy: ["너는 바쁘다", "너는 바빠 보인다"],
+        sleepy: ["그 개는 졸리다", "그 개는 졸려 보인다"],
+        clean: ["그 방은 깨끗하다", "그 방은 깨끗해 보인다"],
+        delicious: ["그 케이크는 맛있다", "그 케이크는 맛있어 보인다"],
+      },
+    },
+  },
+  sensesound: {
+    label: "sound",
+    tenses: ["sc"],
+    forms: ["plain", "sense"],
+    formHeads: ["be동사", "sounds"],
+    subjects: ["good", "interesting", "beautiful", "strange", "exciting", "difficult"],
+    pred: {
+      good: "good", interesting: "interesting", beautiful: "beautiful",
+      strange: "strange", exciting: "exciting", difficult: "difficult",
+    },
+    rows: {
+      sc: {
+        good: ["The idea is good.", "The idea sounds good."],
+        interesting: ["The plan is interesting.", "The plan sounds interesting."],
+        beautiful: ["The music is beautiful.", "The music sounds beautiful."],
+        strange: ["Your voice is strange.", "Your voice sounds strange."],
+        exciting: ["The story is exciting.", "The story sounds exciting."],
+        difficult: ["That is difficult.", "That sounds difficult."],
+      },
+    },
+    koRows: {
+      sc: {
+        good: ["그 생각은 좋다", "그 생각은 좋게 들린다"],
+        interesting: ["그 계획은 흥미롭다", "그 계획은 흥미롭게 들린다"],
+        beautiful: ["그 음악은 아름답다", "그 음악은 아름답게 들린다"],
+        strange: ["네 목소리는 이상하다", "네 목소리는 이상하게 들린다"],
+        exciting: ["그 이야기는 신난다", "그 이야기는 신나게 들린다"],
+        difficult: ["그것은 어렵다", "그것은 어렵게 들린다"],
+      },
+    },
+  },
+  sensesmell: {
+    label: "smell",
+    tenses: ["sc"],
+    forms: ["plain", "sense"],
+    formHeads: ["be동사", "smells"],
+    subjects: ["nice", "good", "fresh", "bad"],
+    pred: { nice: "nice", good: "good", fresh: "fresh", bad: "bad" },
+    rows: {
+      sc: {
+        nice: ["The flower is nice.", "The flower smells nice."],
+        good: ["The bread is good.", "The bread smells good."],
+        fresh: ["The room is fresh.", "The room smells fresh."],
+        bad: ["The milk is bad.", "The milk smells bad."],
+      },
+    },
+    koRows: {
+      sc: {
+        nice: ["그 꽃은 좋다", "그 꽃에서 좋은 냄새가 난다"],
+        good: ["그 빵은 좋다", "그 빵에서 좋은 냄새가 난다"],
+        fresh: ["그 방은 상쾌하다", "그 방에서 상쾌한 냄새가 난다"],
+        bad: ["그 우유는 상했다", "그 우유에서 나쁜 냄새가 난다"],
+      },
+    },
+  },
+  sensetaste: {
+    label: "taste",
+    tenses: ["sc"],
+    forms: ["plain", "sense"],
+    formHeads: ["be동사", "tastes"],
+    subjects: ["good", "sweet", "sour", "bitter"],
+    pred: { good: "good", sweet: "sweet", sour: "sour", bitter: "bitter" },
+    rows: {
+      sc: {
+        good: ["The soup is good.", "The soup tastes good."],
+        sweet: ["The cake is sweet.", "The cake tastes sweet."],
+        sour: ["The lemon is sour.", "The lemon tastes sour."],
+        bitter: ["The coffee is bitter.", "The coffee tastes bitter."],
+      },
+    },
+    koRows: {
+      sc: {
+        good: ["그 수프는 좋다", "그 수프는 맛이 좋다"],
+        sweet: ["그 케이크는 달다", "그 케이크는 단맛이 난다"],
+        sour: ["그 레몬은 시다", "그 레몬은 신맛이 난다"],
+        bitter: ["그 커피는 쓰다", "그 커피는 쓴맛이 난다"],
+      },
+    },
+  },
+
+  // --- 변화동사 + 형용사 — be동사 짝이 없는 독립 family 셋 ---
+  changebecome: {
+    label: "become",
+    tenses: ["sc"],
+    forms: ["chg"],
+    formHeads: ["문장"],
+    subjects: ["tired", "famous", "cold", "serious"],
+    pred: { tired: "tired", famous: "famous", cold: "cold", serious: "serious" },
+    rows: {
+      sc: {
+        tired: ["She became tired."],
+        famous: ["He became famous."],
+        cold: ["The weather became cold."],
+        serious: ["The problem became serious."],
+      },
+    },
+    koRows: {
+      sc: {
+        tired: ["그녀는 피곤해졌다"],
+        famous: ["그는 유명해졌다"],
+        cold: ["날씨가 추워졌다"],
+        serious: ["그 문제는 심각해졌다"],
+      },
+    },
+  },
+  changeget: {
+    label: "get",
+    tenses: ["sc"],
+    forms: ["chg"],
+    formHeads: ["문장"],
+    subjects: ["tired", "angry", "dark", "cold"],
+    pred: { tired: "tired", angry: "angry", dark: "dark", cold: "cold" },
+    rows: {
+      sc: {
+        tired: ["She got tired."],
+        angry: ["He got angry."],
+        dark: ["It got dark."],
+        cold: ["The water got cold."],
+      },
+    },
+    koRows: {
+      sc: {
+        tired: ["그녀는 피곤해졌다"],
+        angry: ["그는 화가 났다"],
+        dark: ["날이 어두워졌다"],
+        cold: ["그 물은 차가워졌다"],
+      },
+    },
+  },
+  changeturn: {
+    label: "turn",
+    tenses: ["sc"],
+    forms: ["chg"],
+    formHeads: ["문장"],
+    subjects: ["brown", "red", "dark", "sour"],
+    pred: { brown: "brown", red: "red", dark: "dark", sour: "sour" },
+    rows: {
+      sc: {
+        brown: ["The leaves turned brown."],
+        red: ["His face turned red."],
+        dark: ["The sky turned dark."],
+        sour: ["The milk turned sour."],
+      },
+    },
+    koRows: {
+      sc: {
+        brown: ["그 잎들은 갈색으로 변했다"],
+        red: ["그의 얼굴은 빨개졌다"],
+        dark: ["하늘이 어두워졌다"],
+        sour: ["그 우유는 시어졌다"],
+      },
+    },
+  },
+
+  // --- 4형식: S + V + 사람 + 사물 ---
+  // 형태 축이 "무엇을 바꾸는가"다: 기본 → 사람(간접목적어) 교체 → 사물(직접목적어) 교체.
+  // 주어 축이 동사라, 엔진의 가족 이동 간격 규칙이 한 동사에 최소 2걸음 머무르게 한다.
+  ditrans: {
+    label: "4형식",
+    tenses: ["d4"],
+    forms: ["io1", "io2", "do2"],
+    formHeads: ["기본", "사람 바꾸기", "사물 바꾸기"],
+    subjects: ["give", "send", "show", "tell", "teach", "bring", "buy", "make"],
+    pred: {
+      give: "a book", send: "a card", show: "the picture", tell: "the story",
+      teach: "English", bring: "some water", buy: "a jacket", make: "dinner",
+    },
+    rows: {
+      d4: {
+        give: ["I gave him a book.", "I gave her a book.", "I gave her a pen."],
+        send: ["She sent me a card.", "She sent him a card.", "She sent him an email."],
+        show: ["He showed us the picture.", "He showed me the picture.", "He showed me his photo."],
+        tell: ["They told me the story.", "They told her the story.", "They told her the truth."],
+        teach: ["She taught me English.", "She taught them English.", "She taught them math."],
+        bring: ["He brought me some water.", "He brought her some water.", "He brought her some coffee."],
+        buy: ["Mom bought me a jacket.", "Mom bought him a jacket.", "Mom bought him a hat."],
+        make: ["Dad made us dinner.", "Dad made me dinner.", "Dad made me breakfast."],
+      },
+    },
+    koRows: {
+      d4: {
+        give: ["나는 그에게 책을 주었다", "나는 그녀에게 책을 주었다", "나는 그녀에게 펜을 주었다"],
+        send: ["그녀는 나에게 카드를 보냈다", "그녀는 그에게 카드를 보냈다", "그녀는 그에게 이메일을 보냈다"],
+        show: ["그는 우리에게 그 그림을 보여 주었다", "그는 나에게 그 그림을 보여 주었다", "그는 나에게 그의 사진을 보여 주었다"],
+        tell: ["그들은 나에게 그 이야기를 해 주었다", "그들은 그녀에게 그 이야기를 해 주었다", "그들은 그녀에게 진실을 말해 주었다"],
+        teach: ["그녀는 나에게 영어를 가르쳤다", "그녀는 그들에게 영어를 가르쳤다", "그녀는 그들에게 수학을 가르쳤다"],
+        bring: ["그는 나에게 물을 가져다주었다", "그는 그녀에게 물을 가져다주었다", "그는 그녀에게 커피를 가져다주었다"],
+        buy: ["엄마는 나에게 재킷을 사 주었다", "엄마는 그에게 재킷을 사 주었다", "엄마는 그에게 모자를 사 주었다"],
+        make: ["아빠는 우리에게 저녁을 만들어 주었다", "아빠는 나에게 저녁을 만들어 주었다", "아빠는 나에게 아침을 만들어 주었다"],
+      },
+    },
+  },
+
+  // --- 3형식 ↔ 4형식 ---
+  // 뜻이 같은 두 어순이라, 한국어 해석도 어순을 그대로 따라간다:
+  // 4형식 "나는 그에게 책을 주었다"(사람 먼저) / 3형식 "나는 책을 그에게 주었다"(사물 먼저).
+  // 전치사(to / for / of)별로 세트를 나눠 메뉴·문장표에서 구분해 보이게 한다.
+  dativeto: {
+    label: "3↔4형식 to",
+    tenses: ["dat"],
+    forms: ["f4", "f3"],
+    formHeads: ["4형식", "3형식 (to)"],
+    subjects: ["give", "send", "show", "write", "lend", "bring"],
+    pred: {
+      give: "a book", send: "a card", show: "the picture",
+      write: "a letter", lend: "a pen", bring: "some water",
+    },
+    rows: {
+      dat: {
+        give: ["I gave him a book.", "I gave a book to him."],
+        send: ["She sent me a card.", "She sent a card to me."],
+        show: ["He showed us the picture.", "He showed the picture to us."],
+        write: ["I wrote her a letter.", "I wrote a letter to her."],
+        lend: ["She lent me a pen.", "She lent a pen to me."],
+        bring: ["He brought me some water.", "He brought some water to me."],
+      },
+    },
+    koRows: {
+      dat: {
+        give: ["나는 그에게 책을 주었다", "나는 책을 그에게 주었다"],
+        send: ["그녀는 나에게 카드를 보냈다", "그녀는 카드를 나에게 보냈다"],
+        show: ["그는 우리에게 그 그림을 보여 주었다", "그는 그 그림을 우리에게 보여 주었다"],
+        write: ["나는 그녀에게 편지를 썼다", "나는 편지를 그녀에게 썼다"],
+        lend: ["그녀는 나에게 펜을 빌려주었다", "그녀는 펜을 나에게 빌려주었다"],
+        bring: ["그는 나에게 물을 가져다주었다", "그는 물을 나에게 가져다주었다"],
+      },
+    },
+  },
+  dativefor: {
+    label: "3↔4형식 for",
+    tenses: ["dat"],
+    forms: ["f4", "f3"],
+    formHeads: ["4형식", "3형식 (for)"],
+    subjects: ["buy", "make", "cook", "get"],
+    pred: { buy: "a jacket", make: "dinner", cook: "lunch", get: "a ticket" },
+    rows: {
+      dat: {
+        buy: ["Mom bought me a jacket.", "Mom bought a jacket for me."],
+        make: ["Dad made us dinner.", "Dad made dinner for us."],
+        cook: ["She cooked me lunch.", "She cooked lunch for me."],
+        get: ["He got me a ticket.", "He got a ticket for me."],
+      },
+    },
+    koRows: {
+      dat: {
+        buy: ["엄마는 나에게 재킷을 사 주었다", "엄마는 재킷을 나에게 사 주었다"],
+        make: ["아빠는 우리에게 저녁을 만들어 주었다", "아빠는 저녁을 우리에게 만들어 주었다"],
+        cook: ["그녀는 나에게 점심을 요리해 주었다", "그녀는 점심을 나에게 요리해 주었다"],
+        get: ["그는 나에게 표를 구해 주었다", "그는 표를 나에게 구해 주었다"],
+      },
+    },
+  },
+  dativeof: {
+    label: "3↔4형식 of",
+    tenses: ["dat"],
+    forms: ["f4", "f3"],
+    formHeads: ["4형식", "3형식 (of)"],
+    subjects: ["ask"],
+    pred: { ask: "a question" },
+    rows: {
+      dat: {
+        ask: ["I asked him a question.", "I asked a question of him."],
+      },
+    },
+    koRows: {
+      dat: {
+        ask: ["나는 그에게 질문을 했다", "나는 질문을 그에게 했다"],
+      },
+    },
+  },
+
+  // --- 5형식: S + V + 목적어 + 목적격보어 ---
+  // 상태문(be동사)과 5형식 문장을 한 쌍으로 묶는다 — 형태 축이 그 전환이다.
+  svocadj: {
+    label: "5형식 (형용사)",
+    tenses: ["oc"],
+    forms: ["plain", "svoc"],
+    formHeads: ["상태문", "5형식"],
+    // 주어 축은 5형식 문장의 동사다 (make는 현재·과거 두 자리라 make / made로 나눈다)
+    subjects: ["make", "made", "keep", "leave", "find", "think"],
+    pred: {
+      make: "sad", made: "angry", keep: "clean",
+      leave: "open", find: "exciting", think: "funny",
+    },
+    rows: {
+      oc: {
+        make: ["People are sad.", "His poem makes people sad."],
+        made: ["He is angry.", "The news made him angry."],
+        keep: ["The room is clean.", "We keep the room clean."],
+        leave: ["The door is open.", "Leave the door open."],
+        find: ["The book is exciting.", "I found the book exciting."],
+        think: ["He is funny.", "I think him funny."],
+      },
+    },
+    koRows: {
+      oc: {
+        make: ["사람들은 슬프다", "그의 시는 사람들을 슬프게 만든다"],
+        made: ["그는 화가 나 있다", "그 소식은 그를 화나게 만들었다"],
+        keep: ["그 방은 깨끗하다", "우리는 그 방을 깨끗하게 유지한다"],
+        leave: ["그 문은 열려 있다", "그 문을 열어 둬라"],
+        find: ["그 책은 재미있다", "나는 그 책이 재미있다는 것을 알았다"],
+        think: ["그는 웃기다", "나는 그를 웃기다고 생각한다"],
+      },
+    },
+  },
+  svocnoun: {
+    label: "5형식 (명사)",
+    tenses: ["oc"],
+    forms: ["plain", "svoc"],
+    formHeads: ["상태문", "5형식"],
+    subjects: ["call", "name", "make", "elect"],
+    pred: { call: "Doc", name: "Coco", make: "a doctor", elect: "our leader" },
+    rows: {
+      oc: {
+        call: ["His name is Doc.", "They call him Doc."],
+        name: ["The puppy's name is Coco.", "We named the puppy Coco."],
+        make: ["He is a doctor.", "They made him a doctor."],
+        elect: ["Tom is our leader.", "We elected Tom our leader."],
+      },
+    },
+    koRows: {
+      oc: {
+        call: ["그의 이름은 Doc이다", "그들은 그를 Doc이라고 부른다"],
+        name: ["그 강아지의 이름은 Coco다", "우리는 그 강아지를 Coco라고 이름 지었다"],
+        make: ["그는 의사다", "그들은 그를 의사로 만들었다"],
+        elect: ["Tom은 우리의 지도자다", "우리는 Tom을 우리의 지도자로 뽑았다"],
+      },
+    },
+  },
 };
 
 function build() {

@@ -313,11 +313,52 @@ const SCHOOL_GROUPS = [
   },
 ];
 
+// ---------- 문장 구조 메뉴 ----------
+// 꾸미기·비교 / 문장 종류와 같은 메뉴 방식 — 항목 하나가 곧 scope 하나다.
+
+const STRUCT_GROUPS = [
+  {
+    title: "감각동사 + 형용사",
+    items: [
+      { id: "feel", label: "feel", scope: { sensefeel: ["sc"] } },
+      { id: "look", label: "look", scope: { senselook: ["sc"] } },
+      { id: "sound", label: "sound", scope: { sensesound: ["sc"] } },
+      { id: "smell", label: "smell", scope: { sensesmell: ["sc"] } },
+      { id: "taste", label: "taste", scope: { sensetaste: ["sc"] } },
+      { id: "become", label: "become (변화)", scope: { changebecome: ["sc"] } },
+      { id: "get", label: "get (변화)", scope: { changeget: ["sc"] } },
+      { id: "turn", label: "turn (변화)", scope: { changeturn: ["sc"] } },
+    ],
+  },
+  {
+    title: "4형식",
+    items: [
+      { id: "d4", label: "S + V + 사람 + 사물", scope: { ditrans: ["d4"] } },
+    ],
+  },
+  {
+    title: "3형식 ↔ 4형식",
+    items: [
+      { id: "dto", label: "to 그룹", scope: { dativeto: ["dat"] } },
+      { id: "dfor", label: "for 그룹", scope: { dativefor: ["dat"] } },
+      { id: "dof", label: "of 그룹", scope: { dativeof: ["dat"] } },
+    ],
+  },
+  {
+    title: "5형식",
+    items: [
+      { id: "ocadj", label: "목적어 + 형용사", scope: { svocadj: ["oc"] } },
+      { id: "ocnoun", label: "목적어 + 명사", scope: { svocnoun: ["oc"] } },
+    ],
+  },
+];
+
 const itemsOf = (groups) =>
   Object.fromEntries(groups.flatMap((g) => g.items.map((it) => [it.id, it])));
 
 const DECOR_ITEMS = itemsOf(DECOR_GROUPS);
 const SCHOOL_ITEMS = itemsOf(SCHOOL_GROUPS);
+const STRUCT_ITEMS = itemsOf(STRUCT_GROUPS);
 
 // 선택된 항목들 → 엔진 scopes (세트별 시제 합집합)
 function buildMenuScopes(selected, items) {
@@ -349,6 +390,24 @@ const TABLE_TABS = [
   { id: "whq", area: "school", title: "의문사 의문문", sets: ["whq", "whatn", "whichn", "whosen"], headings: ["의문사 의문문", "What + 명사", "Which + 명사", "Whose + 명사"] },
   { id: "howq", area: "school", title: "how + 형용사 · 부사", sets: ["howadj", "howadv", "howmany"], headings: ["how + 형용사", "how + 부사", "how many · much + 명사"] },
   { id: "tag", area: "school", title: "부가의문문", sets: ["tag"] },
+  {
+    id: "sense", area: "struct", title: "감각동사 + 형용사",
+    sets: ["sensefeel", "senselook", "sensesound", "sensesmell", "sensetaste",
+           "changebecome", "changeget", "changeturn"],
+    headings: ["feel", "look", "sound", "smell", "taste",
+               "become (변화)", "get (변화)", "turn (변화)"],
+  },
+  { id: "d4", area: "struct", title: "4형식", sets: ["ditrans"] },
+  {
+    id: "dative", area: "struct", title: "3형식 ↔ 4형식",
+    sets: ["dativeto", "dativefor", "dativeof"],
+    headings: ["to 그룹", "for 그룹", "of 그룹"],
+  },
+  {
+    id: "svoc", area: "struct", title: "5형식",
+    sets: ["svocadj", "svocnoun"],
+    headings: ["목적어 + 형용사", "목적어 + 명사"],
+  },
 ];
 
 // 학습 영역 — 홈과 문장표가 같은 전환을 쓴다
@@ -356,6 +415,7 @@ const TAB_AREAS = [
   { v: "sentence", t: "문장 변형" },
   { v: "decor", t: "꾸미기 · 비교" },
   { v: "school", t: "문장 종류" },
+  { v: "struct", t: "문장 구조" },
 ];
 const AREA_TITLE = Object.fromEntries(TAB_AREAS.map((a) => [a.v, a.t]));
 
@@ -415,7 +475,7 @@ function TableScreen({ onHome, onWalk }) {
   const tab = TABLE_TABS.find((t) => t.id === tabId);
   const area = tab.area;
   // 영역을 오갈 때 마지막으로 보던 탭으로 돌아온다
-  const lastTabRef = useRef({ sentence: "be", decor: "adjpos", school: "imper" });
+  const lastTabRef = useRef({ sentence: "be", decor: "adjpos", school: "imper", struct: "sense" });
   const navRef = useRef(null);
   const areaTabs = TABLE_TABS.filter((t) => t.area === area);
 
@@ -670,6 +730,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [area, setArea] = useState("sentence"); // sentence | decor | school
   const [decorSel, setDecorSel] = useState(() => new Set(["adjpos"]));
   const [schoolSel, setSchoolSel] = useState(() => new Set(["impgen"]));
+  const [structSel, setStructSel] = useState(() => new Set(["feel"]));
   const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
@@ -775,11 +836,13 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const rowIds = (rowId) => MATRIX_COLS.map((c) => cellId(rowId, c.id));
   const colIds = (colId) => MATRIX_ROWS.map((r) => cellId(r.id, colId));
 
-  // 메뉴형 영역(꾸미기·비교 / 문장 종류)은 항목표와 선택 상태만 다르고 조작은 같다
-  const menu =
-    area === "school"
-      ? { groups: SCHOOL_GROUPS, items: SCHOOL_ITEMS, sel: schoolSel, setSel: setSchoolSel }
-      : { groups: DECOR_GROUPS, items: DECOR_ITEMS, sel: decorSel, setSel: setDecorSel };
+  // 메뉴형 영역(꾸미기·비교 / 문장 종류 / 문장 구조)은 항목표와 선택 상태만 다르고 조작은 같다
+  const MENUS = {
+    decor: { groups: DECOR_GROUPS, items: DECOR_ITEMS, sel: decorSel, setSel: setDecorSel },
+    school: { groups: SCHOOL_GROUPS, items: SCHOOL_ITEMS, sel: schoolSel, setSel: setSchoolSel },
+    struct: { groups: STRUCT_GROUPS, items: STRUCT_ITEMS, sel: structSel, setSel: setStructSel },
+  };
+  const menu = MENUS[area] || MENUS.decor;
 
   const toggleMenuItem = (id) =>
     menu.setSel((prev) => {

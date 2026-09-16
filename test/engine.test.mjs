@@ -47,6 +47,11 @@ test("반복 없음 모드: 범위 전체를 한 번씩 모두 방문하고 끝�
     [{ sugg: ["let"] }, 1],
     [{ whq: ["qbe", "qdo"], whatn: ["wn"] }, 1],
     [{ tag: ["tbe", "tverb", "tmodal"] }, 1],
+    // 문장 구조 — 감각동사 짝, 4형식, 3↔4형식, 5형식
+    [{ sensefeel: ["sc"], senselook: ["sc"], changeget: ["sc"] }, 2],
+    [{ ditrans: ["d4"] }, 1],
+    [{ dativeto: ["dat"], dativefor: ["dat"], dativeof: ["dat"] }, 2],
+    [{ svocadj: ["oc"], svocnoun: ["oc"] }, 2],
   ]) {
     const { seen, total } = runCoverage(scopes, width);
     assert.equal(seen.length, total, JSON.stringify(scopes));
@@ -213,6 +218,55 @@ test("문장 종류: 반복 허용 모드가 시제 축이 하나뿐인 세트�
   assert.equal(seen.size, 3, `세 세트를 모두 오가야 한다: ${[...seen]}`);
 });
 
+test("문장 구조: 짝(2형식·3↔4형식·5형식) 안에서는 형태 이동만으로 오갈 수 있다", () => {
+  // 시제 축이 한 값, 형태 축이 두 값인 세트 — 한 family 안의 이동은 곧 그 짝의 전환이다
+  for (const [scopes, start] of [
+    [{ sensefeel: ["sc"] }, { series: "sensefeel", subject: "soft", tense: "sc", form: "plain" }],
+    [{ dativeto: ["dat"] }, { series: "dativeto", subject: "give", tense: "dat", form: "f4" }],
+    [{ svocadj: ["oc"] }, { series: "svocadj", subject: "keep", tense: "oc", form: "plain" }],
+  ]) {
+    const cfg = { scopes, width: 1 };
+    let coord = start;
+    const history = [];
+    let pairMoves = 0;
+    for (let i = 0; i < 120; i++) {
+      const steps = randomSteps(coord, cfg, history);
+      assert.ok(steps && steps.length >= 1);
+      const next = applySteps(coord, steps);
+      assert.ok(sentenceOf(next), `없는 좌표: ${keyOf(next)}`);
+      // 주어(=낱말 슬롯)가 그대로면 형태 축만 바뀐 것 = 짝 전환
+      if (next.subject === coord.subject && next.series === coord.series) {
+        assert.equal(steps.length, 1, `짝 전환은 한 축만 바뀐다: ${keyOf(coord)} → ${keyOf(next)}`);
+        assert.equal(steps[0].axis, "form");
+        pairMoves++;
+      }
+      coord = next;
+      history.push(steps);
+    }
+    assert.ok(pairMoves > 20, `짝 전환이 너무 드물다: ${pairMoves}/120 (${JSON.stringify(scopes)})`);
+  }
+});
+
+test("문장 구조: 주어 축의 값이 다른 세트를 섞어도 유효한 좌표만 밟는다", () => {
+  // 감각동사는 형용사, 4·5형식은 동사가 주어 축이라 세트 점프에서 주어도 함께 옮겨야 한다
+  const cfg = {
+    scopes: { sensefeel: ["sc"], ditrans: ["d4"], dativeof: ["dat"], svocnoun: ["oc"] },
+    width: 2,
+  };
+  let coord = { series: "sensefeel", subject: "soft", tense: "sc", form: "plain" };
+  const history = [];
+  const seen = new Set([coord.series]);
+  for (let i = 0; i < 400; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    assert.ok(steps && steps.length >= 1);
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), `없는 좌표: ${keyOf(coord)}`);
+    history.push(steps);
+    seen.add(coord.series);
+  }
+  assert.equal(seen.size, 4, `네 세트를 모두 오가야 한다: ${[...seen]}`);
+});
+
 test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
   const step = (axis, value) => [{ axis, value }];
   // It is cold → (he) → He is busy: 힌트 "busy"
@@ -279,6 +333,17 @@ test("지정 경로 파싱: 정상·오류", () => {
     new URLSearchParams("mode=path&start=tag-she-tbe-tagaff&steps=tagneg,tverb,he")
   );
   assert.ok(!tagPath.error, tagPath.error);
+
+  // 문장 구조 — 새 시제·형태 토큰
+  const struct = parsePath(
+    new URLSearchParams("mode=path&start=sensefeel-soft-sc-plain&steps=sense,warm,plain")
+  );
+  assert.ok(!struct.error, struct.error);
+  assert.equal(struct.stepsList.length, 3);
+  const dative = parsePath(
+    new URLSearchParams("mode=path&start=dativeto-give-dat-f4&steps=f3,send,f4")
+  );
+  assert.ok(!dative.error, dative.error);
 
   assert.ok(parsePath(new URLSearchParams("start=xx-yy&steps=she")).error);
   assert.ok(

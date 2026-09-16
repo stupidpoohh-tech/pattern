@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 861문장 (한국어 해석 861개).
+// 키: `${series}-${subject}-${tense}-${form}` — 총 991문장 (한국어 해석 991개).
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -1497,6 +1497,430 @@ export const SETS = [
         "they": "swim"
       }
     }
+  },
+  {
+    "id": "sensefeel",
+    "label": "feel",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "plain",
+      "sense"
+    ],
+    "formHeads": [
+      "be동사",
+      "feels"
+    ],
+    "subjects": [
+      "soft",
+      "warm",
+      "cold",
+      "hard",
+      "dry",
+      "cool"
+    ],
+    "cards": false,
+    "pred": {
+      "soft": "soft",
+      "warm": "warm",
+      "cold": "cold",
+      "hard": "hard",
+      "dry": "dry",
+      "cool": "cool"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "senselook",
+    "label": "look",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "plain",
+      "sense"
+    ],
+    "formHeads": [
+      "be동사",
+      "looks"
+    ],
+    "subjects": [
+      "tired",
+      "happy",
+      "busy",
+      "sleepy",
+      "clean",
+      "delicious"
+    ],
+    "cards": false,
+    "pred": {
+      "tired": "tired",
+      "happy": "happy",
+      "busy": "busy",
+      "sleepy": "sleepy",
+      "clean": "clean",
+      "delicious": "delicious"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "sensesound",
+    "label": "sound",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "plain",
+      "sense"
+    ],
+    "formHeads": [
+      "be동사",
+      "sounds"
+    ],
+    "subjects": [
+      "good",
+      "interesting",
+      "beautiful",
+      "strange",
+      "exciting",
+      "difficult"
+    ],
+    "cards": false,
+    "pred": {
+      "good": "good",
+      "interesting": "interesting",
+      "beautiful": "beautiful",
+      "strange": "strange",
+      "exciting": "exciting",
+      "difficult": "difficult"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "sensesmell",
+    "label": "smell",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "plain",
+      "sense"
+    ],
+    "formHeads": [
+      "be동사",
+      "smells"
+    ],
+    "subjects": [
+      "nice",
+      "good",
+      "fresh",
+      "bad"
+    ],
+    "cards": false,
+    "pred": {
+      "nice": "nice",
+      "good": "good",
+      "fresh": "fresh",
+      "bad": "bad"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "sensetaste",
+    "label": "taste",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "plain",
+      "sense"
+    ],
+    "formHeads": [
+      "be동사",
+      "tastes"
+    ],
+    "subjects": [
+      "good",
+      "sweet",
+      "sour",
+      "bitter"
+    ],
+    "cards": false,
+    "pred": {
+      "good": "good",
+      "sweet": "sweet",
+      "sour": "sour",
+      "bitter": "bitter"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "changebecome",
+    "label": "become",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "chg"
+    ],
+    "formHeads": [
+      "문장"
+    ],
+    "subjects": [
+      "tired",
+      "famous",
+      "cold",
+      "serious"
+    ],
+    "cards": false,
+    "pred": {
+      "tired": "tired",
+      "famous": "famous",
+      "cold": "cold",
+      "serious": "serious"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "changeget",
+    "label": "get",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "chg"
+    ],
+    "formHeads": [
+      "문장"
+    ],
+    "subjects": [
+      "tired",
+      "angry",
+      "dark",
+      "cold"
+    ],
+    "cards": false,
+    "pred": {
+      "tired": "tired",
+      "angry": "angry",
+      "dark": "dark",
+      "cold": "cold"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "changeturn",
+    "label": "turn",
+    "tenses": [
+      "sc"
+    ],
+    "forms": [
+      "chg"
+    ],
+    "formHeads": [
+      "문장"
+    ],
+    "subjects": [
+      "brown",
+      "red",
+      "dark",
+      "sour"
+    ],
+    "cards": false,
+    "pred": {
+      "brown": "brown",
+      "red": "red",
+      "dark": "dark",
+      "sour": "sour"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "ditrans",
+    "label": "4형식",
+    "tenses": [
+      "d4"
+    ],
+    "forms": [
+      "io1",
+      "io2",
+      "do2"
+    ],
+    "formHeads": [
+      "기본",
+      "사람 바꾸기",
+      "사물 바꾸기"
+    ],
+    "subjects": [
+      "give",
+      "send",
+      "show",
+      "tell",
+      "teach",
+      "bring",
+      "buy",
+      "make"
+    ],
+    "cards": false,
+    "pred": {
+      "give": "a book",
+      "send": "a card",
+      "show": "the picture",
+      "tell": "the story",
+      "teach": "English",
+      "bring": "some water",
+      "buy": "a jacket",
+      "make": "dinner"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "dativeto",
+    "label": "3↔4형식 to",
+    "tenses": [
+      "dat"
+    ],
+    "forms": [
+      "f4",
+      "f3"
+    ],
+    "formHeads": [
+      "4형식",
+      "3형식 (to)"
+    ],
+    "subjects": [
+      "give",
+      "send",
+      "show",
+      "write",
+      "lend",
+      "bring"
+    ],
+    "cards": false,
+    "pred": {
+      "give": "a book",
+      "send": "a card",
+      "show": "the picture",
+      "write": "a letter",
+      "lend": "a pen",
+      "bring": "some water"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "dativefor",
+    "label": "3↔4형식 for",
+    "tenses": [
+      "dat"
+    ],
+    "forms": [
+      "f4",
+      "f3"
+    ],
+    "formHeads": [
+      "4형식",
+      "3형식 (for)"
+    ],
+    "subjects": [
+      "buy",
+      "make",
+      "cook",
+      "get"
+    ],
+    "cards": false,
+    "pred": {
+      "buy": "a jacket",
+      "make": "dinner",
+      "cook": "lunch",
+      "get": "a ticket"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "dativeof",
+    "label": "3↔4형식 of",
+    "tenses": [
+      "dat"
+    ],
+    "forms": [
+      "f4",
+      "f3"
+    ],
+    "formHeads": [
+      "4형식",
+      "3형식 (of)"
+    ],
+    "subjects": [
+      "ask"
+    ],
+    "cards": false,
+    "pred": {
+      "ask": "a question"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "svocadj",
+    "label": "5형식 (형용사)",
+    "tenses": [
+      "oc"
+    ],
+    "forms": [
+      "plain",
+      "svoc"
+    ],
+    "formHeads": [
+      "상태문",
+      "5형식"
+    ],
+    "subjects": [
+      "make",
+      "made",
+      "keep",
+      "leave",
+      "find",
+      "think"
+    ],
+    "cards": false,
+    "pred": {
+      "make": "sad",
+      "made": "angry",
+      "keep": "clean",
+      "leave": "open",
+      "find": "exciting",
+      "think": "funny"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "svocnoun",
+    "label": "5형식 (명사)",
+    "tenses": [
+      "oc"
+    ],
+    "forms": [
+      "plain",
+      "svoc"
+    ],
+    "formHeads": [
+      "상태문",
+      "5형식"
+    ],
+    "subjects": [
+      "call",
+      "name",
+      "make",
+      "elect"
+    ],
+    "cards": false,
+    "pred": {
+      "call": "Doc",
+      "name": "Coco",
+      "make": "a doctor",
+      "elect": "our leader"
+    },
+    "futurePred": {}
   }
 ];
 export const SENTENCES = {
@@ -2360,7 +2784,137 @@ export const SENTENCES = {
   "tag-we-tmodal-tagaff": "We can wait, can't we?",
   "tag-we-tmodal-tagneg": "We can't wait, can we?",
   "tag-they-tmodal-tagaff": "They can swim, can't they?",
-  "tag-they-tmodal-tagneg": "They can't swim, can they?"
+  "tag-they-tmodal-tagneg": "They can't swim, can they?",
+  "sensefeel-soft-sc-plain": "It is soft.",
+  "sensefeel-soft-sc-sense": "It feels soft.",
+  "sensefeel-warm-sc-plain": "The blanket is warm.",
+  "sensefeel-warm-sc-sense": "The blanket feels warm.",
+  "sensefeel-cold-sc-plain": "The water is cold.",
+  "sensefeel-cold-sc-sense": "The water feels cold.",
+  "sensefeel-hard-sc-plain": "The chair is hard.",
+  "sensefeel-hard-sc-sense": "The chair feels hard.",
+  "sensefeel-dry-sc-plain": "The towel is dry.",
+  "sensefeel-dry-sc-sense": "The towel feels dry.",
+  "sensefeel-cool-sc-plain": "The air is cool.",
+  "sensefeel-cool-sc-sense": "The air feels cool.",
+  "senselook-tired-sc-plain": "She is tired.",
+  "senselook-tired-sc-sense": "She looks tired.",
+  "senselook-happy-sc-plain": "He is happy.",
+  "senselook-happy-sc-sense": "He looks happy.",
+  "senselook-busy-sc-plain": "You are busy.",
+  "senselook-busy-sc-sense": "You look busy.",
+  "senselook-sleepy-sc-plain": "The dog is sleepy.",
+  "senselook-sleepy-sc-sense": "The dog looks sleepy.",
+  "senselook-clean-sc-plain": "The room is clean.",
+  "senselook-clean-sc-sense": "The room looks clean.",
+  "senselook-delicious-sc-plain": "The cake is delicious.",
+  "senselook-delicious-sc-sense": "The cake looks delicious.",
+  "sensesound-good-sc-plain": "The idea is good.",
+  "sensesound-good-sc-sense": "The idea sounds good.",
+  "sensesound-interesting-sc-plain": "The plan is interesting.",
+  "sensesound-interesting-sc-sense": "The plan sounds interesting.",
+  "sensesound-beautiful-sc-plain": "The music is beautiful.",
+  "sensesound-beautiful-sc-sense": "The music sounds beautiful.",
+  "sensesound-strange-sc-plain": "Your voice is strange.",
+  "sensesound-strange-sc-sense": "Your voice sounds strange.",
+  "sensesound-exciting-sc-plain": "The story is exciting.",
+  "sensesound-exciting-sc-sense": "The story sounds exciting.",
+  "sensesound-difficult-sc-plain": "That is difficult.",
+  "sensesound-difficult-sc-sense": "That sounds difficult.",
+  "sensesmell-nice-sc-plain": "The flower is nice.",
+  "sensesmell-nice-sc-sense": "The flower smells nice.",
+  "sensesmell-good-sc-plain": "The bread is good.",
+  "sensesmell-good-sc-sense": "The bread smells good.",
+  "sensesmell-fresh-sc-plain": "The room is fresh.",
+  "sensesmell-fresh-sc-sense": "The room smells fresh.",
+  "sensesmell-bad-sc-plain": "The milk is bad.",
+  "sensesmell-bad-sc-sense": "The milk smells bad.",
+  "sensetaste-good-sc-plain": "The soup is good.",
+  "sensetaste-good-sc-sense": "The soup tastes good.",
+  "sensetaste-sweet-sc-plain": "The cake is sweet.",
+  "sensetaste-sweet-sc-sense": "The cake tastes sweet.",
+  "sensetaste-sour-sc-plain": "The lemon is sour.",
+  "sensetaste-sour-sc-sense": "The lemon tastes sour.",
+  "sensetaste-bitter-sc-plain": "The coffee is bitter.",
+  "sensetaste-bitter-sc-sense": "The coffee tastes bitter.",
+  "changebecome-tired-sc-chg": "She became tired.",
+  "changebecome-famous-sc-chg": "He became famous.",
+  "changebecome-cold-sc-chg": "The weather became cold.",
+  "changebecome-serious-sc-chg": "The problem became serious.",
+  "changeget-tired-sc-chg": "She got tired.",
+  "changeget-angry-sc-chg": "He got angry.",
+  "changeget-dark-sc-chg": "It got dark.",
+  "changeget-cold-sc-chg": "The water got cold.",
+  "changeturn-brown-sc-chg": "The leaves turned brown.",
+  "changeturn-red-sc-chg": "His face turned red.",
+  "changeturn-dark-sc-chg": "The sky turned dark.",
+  "changeturn-sour-sc-chg": "The milk turned sour.",
+  "ditrans-give-d4-io1": "I gave him a book.",
+  "ditrans-give-d4-io2": "I gave her a book.",
+  "ditrans-give-d4-do2": "I gave her a pen.",
+  "ditrans-send-d4-io1": "She sent me a card.",
+  "ditrans-send-d4-io2": "She sent him a card.",
+  "ditrans-send-d4-do2": "She sent him an email.",
+  "ditrans-show-d4-io1": "He showed us the picture.",
+  "ditrans-show-d4-io2": "He showed me the picture.",
+  "ditrans-show-d4-do2": "He showed me his photo.",
+  "ditrans-tell-d4-io1": "They told me the story.",
+  "ditrans-tell-d4-io2": "They told her the story.",
+  "ditrans-tell-d4-do2": "They told her the truth.",
+  "ditrans-teach-d4-io1": "She taught me English.",
+  "ditrans-teach-d4-io2": "She taught them English.",
+  "ditrans-teach-d4-do2": "She taught them math.",
+  "ditrans-bring-d4-io1": "He brought me some water.",
+  "ditrans-bring-d4-io2": "He brought her some water.",
+  "ditrans-bring-d4-do2": "He brought her some coffee.",
+  "ditrans-buy-d4-io1": "Mom bought me a jacket.",
+  "ditrans-buy-d4-io2": "Mom bought him a jacket.",
+  "ditrans-buy-d4-do2": "Mom bought him a hat.",
+  "ditrans-make-d4-io1": "Dad made us dinner.",
+  "ditrans-make-d4-io2": "Dad made me dinner.",
+  "ditrans-make-d4-do2": "Dad made me breakfast.",
+  "dativeto-give-dat-f4": "I gave him a book.",
+  "dativeto-give-dat-f3": "I gave a book to him.",
+  "dativeto-send-dat-f4": "She sent me a card.",
+  "dativeto-send-dat-f3": "She sent a card to me.",
+  "dativeto-show-dat-f4": "He showed us the picture.",
+  "dativeto-show-dat-f3": "He showed the picture to us.",
+  "dativeto-write-dat-f4": "I wrote her a letter.",
+  "dativeto-write-dat-f3": "I wrote a letter to her.",
+  "dativeto-lend-dat-f4": "She lent me a pen.",
+  "dativeto-lend-dat-f3": "She lent a pen to me.",
+  "dativeto-bring-dat-f4": "He brought me some water.",
+  "dativeto-bring-dat-f3": "He brought some water to me.",
+  "dativefor-buy-dat-f4": "Mom bought me a jacket.",
+  "dativefor-buy-dat-f3": "Mom bought a jacket for me.",
+  "dativefor-make-dat-f4": "Dad made us dinner.",
+  "dativefor-make-dat-f3": "Dad made dinner for us.",
+  "dativefor-cook-dat-f4": "She cooked me lunch.",
+  "dativefor-cook-dat-f3": "She cooked lunch for me.",
+  "dativefor-get-dat-f4": "He got me a ticket.",
+  "dativefor-get-dat-f3": "He got a ticket for me.",
+  "dativeof-ask-dat-f4": "I asked him a question.",
+  "dativeof-ask-dat-f3": "I asked a question of him.",
+  "svocadj-make-oc-plain": "People are sad.",
+  "svocadj-make-oc-svoc": "His poem makes people sad.",
+  "svocadj-made-oc-plain": "He is angry.",
+  "svocadj-made-oc-svoc": "The news made him angry.",
+  "svocadj-keep-oc-plain": "The room is clean.",
+  "svocadj-keep-oc-svoc": "We keep the room clean.",
+  "svocadj-leave-oc-plain": "The door is open.",
+  "svocadj-leave-oc-svoc": "Leave the door open.",
+  "svocadj-find-oc-plain": "The book is exciting.",
+  "svocadj-find-oc-svoc": "I found the book exciting.",
+  "svocadj-think-oc-plain": "He is funny.",
+  "svocadj-think-oc-svoc": "I think him funny.",
+  "svocnoun-call-oc-plain": "His name is Doc.",
+  "svocnoun-call-oc-svoc": "They call him Doc.",
+  "svocnoun-name-oc-plain": "The puppy's name is Coco.",
+  "svocnoun-name-oc-svoc": "We named the puppy Coco.",
+  "svocnoun-make-oc-plain": "He is a doctor.",
+  "svocnoun-make-oc-svoc": "They made him a doctor.",
+  "svocnoun-elect-oc-plain": "Tom is our leader.",
+  "svocnoun-elect-oc-svoc": "We elected Tom our leader."
 };
 export const KO = {
   "be-I-present-aff": "나는 늦는다",
@@ -3223,5 +3777,135 @@ export const KO = {
   "tag-we-tmodal-tagaff": "우리는 기다릴 수 있어, 그렇지 않니?",
   "tag-we-tmodal-tagneg": "우리는 기다릴 수 없어, 그렇지?",
   "tag-they-tmodal-tagaff": "그들은 수영할 수 있어, 그렇지 않니?",
-  "tag-they-tmodal-tagneg": "그들은 수영할 수 없어, 그렇지?"
+  "tag-they-tmodal-tagneg": "그들은 수영할 수 없어, 그렇지?",
+  "sensefeel-soft-sc-plain": "그것은 부드럽다",
+  "sensefeel-soft-sc-sense": "그것은 부드럽게 느껴진다",
+  "sensefeel-warm-sc-plain": "그 담요는 따뜻하다",
+  "sensefeel-warm-sc-sense": "그 담요는 따뜻하게 느껴진다",
+  "sensefeel-cold-sc-plain": "그 물은 차갑다",
+  "sensefeel-cold-sc-sense": "그 물은 차갑게 느껴진다",
+  "sensefeel-hard-sc-plain": "그 의자는 딱딱하다",
+  "sensefeel-hard-sc-sense": "그 의자는 딱딱하게 느껴진다",
+  "sensefeel-dry-sc-plain": "그 수건은 건조하다",
+  "sensefeel-dry-sc-sense": "그 수건은 건조하게 느껴진다",
+  "sensefeel-cool-sc-plain": "그 공기는 시원하다",
+  "sensefeel-cool-sc-sense": "그 공기는 시원하게 느껴진다",
+  "senselook-tired-sc-plain": "그녀는 피곤하다",
+  "senselook-tired-sc-sense": "그녀는 피곤해 보인다",
+  "senselook-happy-sc-plain": "그는 행복하다",
+  "senselook-happy-sc-sense": "그는 행복해 보인다",
+  "senselook-busy-sc-plain": "너는 바쁘다",
+  "senselook-busy-sc-sense": "너는 바빠 보인다",
+  "senselook-sleepy-sc-plain": "그 개는 졸리다",
+  "senselook-sleepy-sc-sense": "그 개는 졸려 보인다",
+  "senselook-clean-sc-plain": "그 방은 깨끗하다",
+  "senselook-clean-sc-sense": "그 방은 깨끗해 보인다",
+  "senselook-delicious-sc-plain": "그 케이크는 맛있다",
+  "senselook-delicious-sc-sense": "그 케이크는 맛있어 보인다",
+  "sensesound-good-sc-plain": "그 생각은 좋다",
+  "sensesound-good-sc-sense": "그 생각은 좋게 들린다",
+  "sensesound-interesting-sc-plain": "그 계획은 흥미롭다",
+  "sensesound-interesting-sc-sense": "그 계획은 흥미롭게 들린다",
+  "sensesound-beautiful-sc-plain": "그 음악은 아름답다",
+  "sensesound-beautiful-sc-sense": "그 음악은 아름답게 들린다",
+  "sensesound-strange-sc-plain": "네 목소리는 이상하다",
+  "sensesound-strange-sc-sense": "네 목소리는 이상하게 들린다",
+  "sensesound-exciting-sc-plain": "그 이야기는 신난다",
+  "sensesound-exciting-sc-sense": "그 이야기는 신나게 들린다",
+  "sensesound-difficult-sc-plain": "그것은 어렵다",
+  "sensesound-difficult-sc-sense": "그것은 어렵게 들린다",
+  "sensesmell-nice-sc-plain": "그 꽃은 좋다",
+  "sensesmell-nice-sc-sense": "그 꽃에서 좋은 냄새가 난다",
+  "sensesmell-good-sc-plain": "그 빵은 좋다",
+  "sensesmell-good-sc-sense": "그 빵에서 좋은 냄새가 난다",
+  "sensesmell-fresh-sc-plain": "그 방은 상쾌하다",
+  "sensesmell-fresh-sc-sense": "그 방에서 상쾌한 냄새가 난다",
+  "sensesmell-bad-sc-plain": "그 우유는 상했다",
+  "sensesmell-bad-sc-sense": "그 우유에서 나쁜 냄새가 난다",
+  "sensetaste-good-sc-plain": "그 수프는 좋다",
+  "sensetaste-good-sc-sense": "그 수프는 맛이 좋다",
+  "sensetaste-sweet-sc-plain": "그 케이크는 달다",
+  "sensetaste-sweet-sc-sense": "그 케이크는 단맛이 난다",
+  "sensetaste-sour-sc-plain": "그 레몬은 시다",
+  "sensetaste-sour-sc-sense": "그 레몬은 신맛이 난다",
+  "sensetaste-bitter-sc-plain": "그 커피는 쓰다",
+  "sensetaste-bitter-sc-sense": "그 커피는 쓴맛이 난다",
+  "changebecome-tired-sc-chg": "그녀는 피곤해졌다",
+  "changebecome-famous-sc-chg": "그는 유명해졌다",
+  "changebecome-cold-sc-chg": "날씨가 추워졌다",
+  "changebecome-serious-sc-chg": "그 문제는 심각해졌다",
+  "changeget-tired-sc-chg": "그녀는 피곤해졌다",
+  "changeget-angry-sc-chg": "그는 화가 났다",
+  "changeget-dark-sc-chg": "날이 어두워졌다",
+  "changeget-cold-sc-chg": "그 물은 차가워졌다",
+  "changeturn-brown-sc-chg": "그 잎들은 갈색으로 변했다",
+  "changeturn-red-sc-chg": "그의 얼굴은 빨개졌다",
+  "changeturn-dark-sc-chg": "하늘이 어두워졌다",
+  "changeturn-sour-sc-chg": "그 우유는 시어졌다",
+  "ditrans-give-d4-io1": "나는 그에게 책을 주었다",
+  "ditrans-give-d4-io2": "나는 그녀에게 책을 주었다",
+  "ditrans-give-d4-do2": "나는 그녀에게 펜을 주었다",
+  "ditrans-send-d4-io1": "그녀는 나에게 카드를 보냈다",
+  "ditrans-send-d4-io2": "그녀는 그에게 카드를 보냈다",
+  "ditrans-send-d4-do2": "그녀는 그에게 이메일을 보냈다",
+  "ditrans-show-d4-io1": "그는 우리에게 그 그림을 보여 주었다",
+  "ditrans-show-d4-io2": "그는 나에게 그 그림을 보여 주었다",
+  "ditrans-show-d4-do2": "그는 나에게 그의 사진을 보여 주었다",
+  "ditrans-tell-d4-io1": "그들은 나에게 그 이야기를 해 주었다",
+  "ditrans-tell-d4-io2": "그들은 그녀에게 그 이야기를 해 주었다",
+  "ditrans-tell-d4-do2": "그들은 그녀에게 진실을 말해 주었다",
+  "ditrans-teach-d4-io1": "그녀는 나에게 영어를 가르쳤다",
+  "ditrans-teach-d4-io2": "그녀는 그들에게 영어를 가르쳤다",
+  "ditrans-teach-d4-do2": "그녀는 그들에게 수학을 가르쳤다",
+  "ditrans-bring-d4-io1": "그는 나에게 물을 가져다주었다",
+  "ditrans-bring-d4-io2": "그는 그녀에게 물을 가져다주었다",
+  "ditrans-bring-d4-do2": "그는 그녀에게 커피를 가져다주었다",
+  "ditrans-buy-d4-io1": "엄마는 나에게 재킷을 사 주었다",
+  "ditrans-buy-d4-io2": "엄마는 그에게 재킷을 사 주었다",
+  "ditrans-buy-d4-do2": "엄마는 그에게 모자를 사 주었다",
+  "ditrans-make-d4-io1": "아빠는 우리에게 저녁을 만들어 주었다",
+  "ditrans-make-d4-io2": "아빠는 나에게 저녁을 만들어 주었다",
+  "ditrans-make-d4-do2": "아빠는 나에게 아침을 만들어 주었다",
+  "dativeto-give-dat-f4": "나는 그에게 책을 주었다",
+  "dativeto-give-dat-f3": "나는 책을 그에게 주었다",
+  "dativeto-send-dat-f4": "그녀는 나에게 카드를 보냈다",
+  "dativeto-send-dat-f3": "그녀는 카드를 나에게 보냈다",
+  "dativeto-show-dat-f4": "그는 우리에게 그 그림을 보여 주었다",
+  "dativeto-show-dat-f3": "그는 그 그림을 우리에게 보여 주었다",
+  "dativeto-write-dat-f4": "나는 그녀에게 편지를 썼다",
+  "dativeto-write-dat-f3": "나는 편지를 그녀에게 썼다",
+  "dativeto-lend-dat-f4": "그녀는 나에게 펜을 빌려주었다",
+  "dativeto-lend-dat-f3": "그녀는 펜을 나에게 빌려주었다",
+  "dativeto-bring-dat-f4": "그는 나에게 물을 가져다주었다",
+  "dativeto-bring-dat-f3": "그는 물을 나에게 가져다주었다",
+  "dativefor-buy-dat-f4": "엄마는 나에게 재킷을 사 주었다",
+  "dativefor-buy-dat-f3": "엄마는 재킷을 나에게 사 주었다",
+  "dativefor-make-dat-f4": "아빠는 우리에게 저녁을 만들어 주었다",
+  "dativefor-make-dat-f3": "아빠는 저녁을 우리에게 만들어 주었다",
+  "dativefor-cook-dat-f4": "그녀는 나에게 점심을 요리해 주었다",
+  "dativefor-cook-dat-f3": "그녀는 점심을 나에게 요리해 주었다",
+  "dativefor-get-dat-f4": "그는 나에게 표를 구해 주었다",
+  "dativefor-get-dat-f3": "그는 표를 나에게 구해 주었다",
+  "dativeof-ask-dat-f4": "나는 그에게 질문을 했다",
+  "dativeof-ask-dat-f3": "나는 질문을 그에게 했다",
+  "svocadj-make-oc-plain": "사람들은 슬프다",
+  "svocadj-make-oc-svoc": "그의 시는 사람들을 슬프게 만든다",
+  "svocadj-made-oc-plain": "그는 화가 나 있다",
+  "svocadj-made-oc-svoc": "그 소식은 그를 화나게 만들었다",
+  "svocadj-keep-oc-plain": "그 방은 깨끗하다",
+  "svocadj-keep-oc-svoc": "우리는 그 방을 깨끗하게 유지한다",
+  "svocadj-leave-oc-plain": "그 문은 열려 있다",
+  "svocadj-leave-oc-svoc": "그 문을 열어 둬라",
+  "svocadj-find-oc-plain": "그 책은 재미있다",
+  "svocadj-find-oc-svoc": "나는 그 책이 재미있다는 것을 알았다",
+  "svocadj-think-oc-plain": "그는 웃기다",
+  "svocadj-think-oc-svoc": "나는 그를 웃기다고 생각한다",
+  "svocnoun-call-oc-plain": "그의 이름은 Doc이다",
+  "svocnoun-call-oc-svoc": "그들은 그를 Doc이라고 부른다",
+  "svocnoun-name-oc-plain": "그 강아지의 이름은 Coco다",
+  "svocnoun-name-oc-svoc": "우리는 그 강아지를 Coco라고 이름 지었다",
+  "svocnoun-make-oc-plain": "그는 의사다",
+  "svocnoun-make-oc-svoc": "그들은 그를 의사로 만들었다",
+  "svocnoun-elect-oc-plain": "Tom은 우리의 지도자다",
+  "svocnoun-elect-oc-svoc": "우리는 Tom을 우리의 지도자로 뽑았다"
 };

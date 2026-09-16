@@ -298,3 +298,151 @@ test("부가의문문: 본문과 꼬리의 극성이 반대이고, 꼬리 주어
       }
     }
 });
+
+// ---------- 문장 구조 (2형식 보어 · 4형식 · 3↔4형식 · 5형식) ----------
+
+const STRUCT_SETS = [
+  "sensefeel", "senselook", "sensesound", "sensesmell", "sensetaste",
+  "changebecome", "changeget", "changeturn",
+  "ditrans", "dativeto", "dativefor", "dativeof", "svocadj", "svocnoun",
+];
+
+test("문장 구조: 새 series가 모두 있고 영어·한국어 수가 맞는다", () => {
+  for (const id of STRUCT_SETS) {
+    const set = SETS.find((s) => s.id === id);
+    assert.ok(set, `없는 세트: ${id}`);
+    let n = 0;
+    for (const su of set.subjects)
+      for (const t of set.tenses)
+        for (const f of set.forms) {
+          const key = `${id}-${su}-${t}-${f}`;
+          assert.ok(SENTENCES[key], `영어 없음: ${key}`);
+          assert.ok(KO[key], `한국어 없음: ${key}`);
+          n++;
+        }
+    assert.equal(n, set.subjects.length * set.tenses.length * set.forms.length, id);
+  }
+  // 이번에 늘어난 문장 수
+  const added = STRUCT_SETS.reduce((n, id) => {
+    const s = SETS.find((x) => x.id === id);
+    return n + s.subjects.length * s.tenses.length * s.forms.length;
+  }, 0);
+  assert.equal(added, 130);
+});
+
+test("감각동사: be동사 문장 → 감각동사 문장 짝이 형용사를 그대로 물려받는다", () => {
+  const VERBS = {
+    sensefeel: /\b(feels?)\b/, senselook: /\b(looks?)\b/, sensesound: /\b(sounds?)\b/,
+    sensesmell: /\b(smells?)\b/, sensetaste: /\b(tastes?)\b/,
+  };
+  for (const [id, verb] of Object.entries(VERBS))
+    for (const adj of subjectsOf(id)) {
+      const plain = SENTENCES[`${id}-${adj}-sc-plain`];
+      const sense = SENTENCES[`${id}-${adj}-sc-sense`];
+      // be동사 쪽에는 감각동사가 없고, 감각동사 쪽에는 be동사가 없다
+      assert.match(plain, /\b(is|are)\b/, `be동사가 없다: ${plain}`);
+      assert.doesNotMatch(plain, verb, `be동사 문장에 감각동사: ${plain}`);
+      assert.match(sense, verb, `감각동사가 없다: ${sense}`);
+      assert.doesNotMatch(sense, /\b(is|are|was|were)\b/, `감각동사 문장에 be동사: ${sense}`);
+      // 보어(형용사)는 두 문장에서 같고, 주어부도 그대로다
+      assert.ok(plain.endsWith(` ${adj}.`), `보어 불일치: ${plain} / ${adj}`);
+      assert.ok(sense.endsWith(` ${adj}.`), `보어 불일치: ${sense} / ${adj}`);
+      const subj = (x) => x.split(" ").slice(0, -2).join(" ");
+      assert.equal(subj(sense), subj(plain), `주어부가 바뀌었다: ${plain} / ${sense}`);
+    }
+});
+
+test("변화동사: become / get / turn 이 각각 독립 family로 형용사 보어를 받는다", () => {
+  const VERBS = { changebecome: "became", changeget: "got", changeturn: "turned" };
+  for (const [id, verb] of Object.entries(VERBS)) {
+    const set = SETS.find((s) => s.id === id);
+    assert.deepEqual(set.forms, ["chg"], `${id}: 짝이 없는 단일 형태여야 한다`);
+    for (const adj of set.subjects) {
+      const s = SENTENCES[`${id}-${adj}-sc-chg`];
+      assert.ok(s.includes(` ${verb} `), `${verb}가 없다: ${s}`);
+      assert.ok(s.endsWith(` ${adj}.`), `보어 불일치: ${s} / ${adj}`);
+    }
+  }
+});
+
+test("4형식: S + V + 사람 + 사물, 걸음마다 한 자리만 바뀐다", () => {
+  for (const v of subjectsOf("ditrans")) {
+    const base = SENTENCES[`ditrans-${v}-d4-io1`];
+    const io = SENTENCES[`ditrans-${v}-d4-io2`];
+    const dobj = SENTENCES[`ditrans-${v}-d4-do2`];
+    const words = (x) => x.replace(/\.$/, "").split(" ");
+    // 전치사 없이 목적어 둘이 나란히 온다 (4형식)
+    for (const s of [base, io, dobj])
+      assert.doesNotMatch(s, /\b(to|for|of)\b/, `4형식에 전치사: ${s}`);
+    // 기본 → 사람 바꾸기: 간접목적어(동사 바로 뒤) 한 자리만 다르다
+    const a = words(base), b = words(io), c = words(dobj);
+    assert.equal(a.length, b.length, `${base} / ${io}`);
+    const diffAB = a.map((w, i) => (w === b[i] ? null : i)).filter((i) => i !== null);
+    assert.deepEqual(diffAB.length, 1, `사람만 바뀌어야 한다: ${base} → ${io}`);
+    // 사람 바꾸기 → 사물 바꾸기: 간접목적어는 유지되고 직접목적어만 다르다
+    assert.equal(b[diffAB[0]], c[diffAB[0]], `사람이 또 바뀌었다: ${io} → ${dobj}`);
+    assert.notDeepEqual(b.slice(diffAB[0] + 1), c.slice(diffAB[0] + 1), `사물이 그대로: ${io} → ${dobj}`);
+  }
+});
+
+test("3형식 ↔ 4형식: 모든 동사에 짝이 있고 to / for / of 가 정확하다", () => {
+  const GROUPS = { dativeto: "to", dativefor: "for", dativeof: "of" };
+  for (const [id, prep] of Object.entries(GROUPS)) {
+    const set = SETS.find((s) => s.id === id);
+    assert.deepEqual(set.forms, ["f4", "f3"], id);
+    for (const v of set.subjects) {
+      const f4 = SENTENCES[`${id}-${v}-dat-f4`];
+      const f3 = SENTENCES[`${id}-${v}-dat-f3`];
+      assert.ok(f4 && f3, `짝 누락: ${id}-${v}`);
+      // 4형식에는 전치사가 없고, 3형식에는 그 그룹의 전치사만 있다
+      assert.doesNotMatch(f4, /\b(to|for|of)\b/, `4형식에 전치사: ${f4}`);
+      assert.match(f3, new RegExp(`\\b${prep}\\b`), `${prep}가 없다: ${f3}`);
+      for (const other of Object.values(GROUPS))
+        if (other !== prep)
+          assert.doesNotMatch(f3, new RegExp(`\\b${other}\\b`), `전치사 혼용: ${f3}`);
+      // 주어·동사는 그대로, 목적어 두 개의 순서만 뒤집힌다
+      const head = (x) => x.split(" ").slice(0, 2).join(" ");
+      assert.equal(head(f3), head(f4), `주어·동사가 바뀌었다: ${f4} / ${f3}`);
+      assert.ok(f3.trim().endsWith(`${prep} ${f4.replace(/\.$/, "").split(" ")[2]}.`),
+        `3형식 끝이 〈${prep} + 사람〉이 아니다: ${f3}`);
+    }
+  }
+});
+
+test("5형식: 상태문 ↔ 5형식 짝, 목적격보어가 형용사 / 명사로 나뉜다", () => {
+  for (const id of ["svocadj", "svocnoun"]) {
+    const set = SETS.find((s) => s.id === id);
+    assert.deepEqual(set.forms, ["plain", "svoc"], id);
+    for (const v of set.subjects) {
+      const plain = SENTENCES[`${id}-${v}-oc-plain`];
+      const svoc = SENTENCES[`${id}-${v}-oc-svoc`];
+      assert.ok(plain && svoc, `짝 누락: ${id}-${v}`);
+      // 상태문은 be동사, 5형식 문장에는 be동사가 없다
+      assert.match(plain, /\b(is|are)\b/, `상태문에 be동사가 없다: ${plain}`);
+      assert.doesNotMatch(svoc, /\b(is|are|was|were)\b/, `5형식에 be동사: ${svoc}`);
+      // 상태문의 보어가 5형식 문장의 목적격보어로 그대로 옮겨 간다
+      const comp = plain.replace(/\.$/, "").split(" is ").pop().split(" are ").pop();
+      assert.ok(svoc.includes(comp), `보어가 옮겨 오지 않았다: ${plain} → ${svoc}`);
+    }
+  }
+  // 목적어 + 명사 쪽은 보어가 명사구다
+  for (const v of subjectsOf("svocnoun"))
+    assert.match(
+      SENTENCES[`svocnoun-${v}-oc-svoc`],
+      /\b(Doc|Coco|a doctor|our leader)\.$/,
+      `명사 보어가 아니다: ${SENTENCES[`svocnoun-${v}-oc-svoc`]}`
+    );
+});
+
+test("문장 구조: 문장 ID가 기존 영역과 충돌하지 않는다", () => {
+  // SETS의 id는 유일하고, 좌표 키도 전부 유일하다
+  const ids = SETS.map((s) => s.id);
+  assert.equal(new Set(ids).size, ids.length, "세트 id 중복");
+  const keys = [];
+  for (const set of SETS)
+    for (const su of set.subjects)
+      for (const t of set.tenses)
+        for (const f of set.forms) keys.push(`${set.id}-${su}-${t}-${f}`);
+  assert.equal(new Set(keys).size, keys.length, "좌표 키 중복");
+  assert.equal(keys.length, Object.keys(SENTENCES).length);
+});
