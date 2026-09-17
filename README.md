@@ -65,21 +65,18 @@ some/any 세트는 명사(books/water/…), 워밍업은 형용사(tall/nice/…
 
 ### 문장 구조 (네 번째 학습 영역)
 
-2형식 보어(감각·변화동사), 4형식, 3형식↔4형식, 5형식. 메뉴에서 고르는 단위는 **tense 축**,
+2형식 보어(감각·변화동사), 3형식↔4형식, 5형식. 메뉴에서 고르는 단위는 **tense 축**,
 드릴로 굴리는 변형은 **form 축**이다.
 
 | 챕터 | 세트 | form (드릴 변형) | 문장 수 |
 |---|---|---|---|
 | 감각동사 + 형용사 | `sensefeel` `senselook` `sensesound` `sensesmell` `sensetaste` | be동사 문장 / 감각동사 문장 | 12+12+12+8+8 |
 | 〃 변화동사 | `changebecome` `changeget` `changeturn` | 문장 (짝 없는 독립 family) | 4 + 4 + 4 |
-| 4형식 | `ditrans` | 기본 / 사람 바꾸기 | 16 |
 | 3형식 ↔ 4형식 | `dativeto` `dativefor` `dativeof` | 4형식 / 3형식 | 12 + 8 + 2 |
 | 5형식 | `svocadj` `svocnoun` | 상태문 / 5형식 | 12 + 8 |
 
 - 감각동사는 be동사 문장과 감각동사 문장이 한 쌍이다: `It is soft.` ↔ `It feels soft.`
   주어부와 보어는 그대로 두고 동사만 바뀐다.
-- 4형식은 한 걸음에 사람(간접목적어) 한 자리만 바꾼다: `I gave him a book.` → `I gave her a book.`
-  주어 축이 동사라, 엔진의 가족 이동 간격 규칙이 한 동사에 최소 2걸음 머무르게 한다.
 - 3형식 ↔ 4형식은 뜻이 같은 두 어순이라 한국어 해석도 어순을 그대로 따라간다:
   4형식 `나는 그에게 책을 주었다`(사람 먼저) / 3형식 `나는 책을 그에게 주었다`(사물 먼저).
   전치사(to / for / of)별로 세트를 나눠 메뉴·문장표에서 구분해 보인다.
@@ -128,13 +125,13 @@ Cloudflare(GitHub 연동): build command `npm run build`, 정적 자산 디렉�
   (반복 노출을 켜면 역순·랜덤도 허용).
 - **문장 종류** — 명령문 · 청유문 / 감탄문 / 의문사 의문문 / how + 형용사 · 부사 / 부가의문문
   5갈래 메뉴. 조작은 꾸미기 · 비교와 같다.
-- **문장 구조** — 감각동사 + 형용사 / 4형식 / 3형식 ↔ 4형식 / 5형식 4갈래 메뉴.
+- **문장 구조** — 감각동사 + 형용사 / 3형식 ↔ 4형식 / 5형식 3갈래 메뉴.
   조작은 꾸미기 · 비교와 같다.
 - **전체 문장표** — 수업용 열람 화면. 홈과 같은 **학습 영역 전환**(문장 변형 / 꾸미기 · 비교 / 문장 종류 / 문장 구조) 아래에
   그 영역의 탭만 보인다 — 문장 변형: be동사 / 일반동사 / 진행 / 수동 / 완료 / 조동사 / 의문사,
   꾸미기 · 비교: 형용사 / 수량 / 부사 / 비교,
   문장 종류: 명령문 · 청유문 / 감탄문 / 의문사 의문문 / how + 형용사 · 부사 / 부가의문문,
-  문장 구조: 감각동사 + 형용사 / 4형식 / 3형식 ↔ 4형식 / 5형식.
+  문장 구조: 감각동사 + 형용사 / 3형식 ↔ 4형식 / 5형식.
   탭은 가로 스크롤로 감추지 않고 줄바꿈해 전부 보이며,
   각 탭에 그 범위의 문장 수가 붙는다. 탭 막대는 화면 위에 고정되어 표를 내려 봐도 다른 탭으로 바로 옮길 수 있고,
   ← → Home End 키로도 탭을 옮길 수 있다. 영역을 오가면 마지막으로 보던 탭으로 돌아온다.
@@ -182,16 +179,16 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
   - 주어: `I` `she` `he` `it` `we` `they`
   - 시제: `present`/`현재`, `past`/`과거`, `will`, `goingto`, `perf`/`완료`, `modal`/`조동사`,
     문장 종류는 `imper`/`명령문`, `let`/`청유문`, `exclm`/`감탄문`, `qbe`, `qdo`, `wn`, `hw`, `tbe`, `tverb`, `tmodal`,
-    문장 구조는 `sc`, `d4`/`4형식`, `dat`, `oc`/`5형식`
+    문장 구조는 `sc`, `dat`, `oc`/`5형식`
   - 형태: `q`/`?`, `neg`/`not`, `aff`/`평서`, 의문사 세트는 `where` `when` `why` `what` `how`,
     문장 종류는 `cmd` `cmdneg` `cmdpol`, `lets` `letsnot` `whywe` `whyyou`,
     `stmt`/`평서문` `excl` `short`, `yn` `wq`, `tagaff` `tagneg`,
-    문장 구조는 `plain` `sense`/`감각동사` `chg`, `io1` `io2`, `f4` `f3`, `svoc`
+    문장 구조는 `plain` `sense`/`감각동사` `chg`, `f4` `f3`, `svoc`
   - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`,
     `impgen`, `impbe`, `sugg`, `exclhow`, `exclwhat`, `whq`, `whatn`, `whichn`, `whosen`,
     `howadj`, `howadv`, `howmany`, `tag`,
     `sensefeel`, `senselook`, `sensesound`, `sensesmell`, `sensetaste`,
-    `changebecome`, `changeget`, `changeturn`, `ditrans`,
+    `changebecome`, `changeget`, `changeturn`,
     `dativeto`, `dativefor`, `dativeof`, `svocadj`, `svocnoun`
 - 한 걸음에 두 축 이상을 바꾸려면 `+`로 묶는다: `they+?`.
   세트를 옮길 때 시제가 안 맞으면 함께 지정한다: `can+조동사`
@@ -213,7 +210,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ## 프로젝트 구조
 
 ```
-scripts/generate-data.mjs   문장표(983문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
+scripts/generate-data.mjs   문장표(967문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
 src/data.js                 생성된 문장 데이터 (직접 수정 금지)
 src/engine.js               좌표 이동·무작위 걸음(짜임새 규칙)·경로 파싱 로직
 src/app.jsx                 화면 컴포넌트 (홈/드릴/문장표/어휘 바꾸기)

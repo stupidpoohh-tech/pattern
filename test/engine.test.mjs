@@ -49,7 +49,6 @@ test("반복 없음 모드: 범위 전체를 한 번씩 모두 방문하고 끝�
     [{ tag: ["tbe", "tverb", "tmodal"] }, 1],
     // 문장 구조 — 감각동사 짝, 4형식, 3↔4형식, 5형식
     [{ sensefeel: ["sc"], senselook: ["sc"], changeget: ["sc"] }, 2],
-    [{ ditrans: ["d4"] }, 1],
     [{ dativeto: ["dat"], dativefor: ["dat"], dativeof: ["dat"] }, 2],
     [{ svocadj: ["oc"], svocnoun: ["oc"] }, 2],
   ]) {
@@ -248,9 +247,9 @@ test("문장 구조: 짝(2형식·3↔4형식·5형식) 안에서는 형태 이�
 });
 
 test("문장 구조: 주어 축의 값이 다른 세트를 섞어도 유효한 좌표만 밟는다", () => {
-  // 감각동사는 형용사, 4·5형식은 동사가 주어 축이라 세트 점프에서 주어도 함께 옮겨야 한다
+  // 감각동사는 형용사, 3↔4·5형식은 동사가 주어 축이라 세트 점프에서 주어도 함께 옮겨야 한다
   const cfg = {
-    scopes: { sensefeel: ["sc"], ditrans: ["d4"], dativeof: ["dat"], svocnoun: ["oc"] },
+    scopes: { sensefeel: ["sc"], dativefor: ["dat"], dativeof: ["dat"], svocnoun: ["oc"] },
     width: 2,
   };
   let coord = { series: "sensefeel", subject: "soft", tense: "sc", form: "plain" };

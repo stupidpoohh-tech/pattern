@@ -53,7 +53,6 @@ export const TENSE_LABELS = {
   tmodal: "조동사",
   // 문장 구조
   sc: "감각 · 변화동사",
-  d4: "4형식",
   dat: "3형식 ↔ 4형식",
   oc: "5형식",
 };
@@ -98,8 +97,6 @@ const FORM_LABELS = {
   plain: "be동사 문장",
   sense: "감각동사",
   chg: "문장",
-  io1: "기본",
-  io2: "사람 바꾸기",
   f4: "4형식",
   f3: "3형식",
   svoc: "5형식",
@@ -446,8 +443,6 @@ const STEP_ALIASES = (() => {
     tagneg: { axis: "form", value: "tagneg" },
     // 문장 구조 — 시제 축
     sc: { axis: "tense", value: "sc" },
-    d4: { axis: "tense", value: "d4" },
-    "4형식": { axis: "tense", value: "d4" },
     dat: { axis: "tense", value: "dat" },
     oc: { axis: "tense", value: "oc" },
     "5형식": { axis: "tense", value: "oc" },
@@ -456,8 +451,6 @@ const STEP_ALIASES = (() => {
     sense: { axis: "form", value: "sense" },
     "감각동사": { axis: "form", value: "sense" },
     chg: { axis: "form", value: "chg" },
-    io1: { axis: "form", value: "io1" },
-    io2: { axis: "form", value: "io2" },
     f4: { axis: "form", value: "f4" },
     f3: { axis: "form", value: "f3" },
     svoc: { axis: "form", value: "svoc" },

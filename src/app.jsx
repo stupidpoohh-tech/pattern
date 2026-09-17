@@ -331,12 +331,6 @@ const STRUCT_GROUPS = [
     ],
   },
   {
-    title: "4형식",
-    items: [
-      { id: "d4", label: "S + V + 사람 + 사물", scope: { ditrans: ["d4"] } },
-    ],
-  },
-  {
     title: "3형식 ↔ 4형식",
     items: [
       { id: "dto", label: "to 그룹", scope: { dativeto: ["dat"] } },
@@ -397,7 +391,6 @@ const TABLE_TABS = [
     headings: ["feel", "look", "sound", "smell", "taste",
                "become (변화)", "get (변화)", "turn (변화)"],
   },
-  { id: "d4", area: "struct", title: "4형식", sets: ["ditrans"] },
   {
     id: "dative", area: "struct", title: "3형식 ↔ 4형식",
     sets: ["dativeto", "dativefor", "dativeof"],

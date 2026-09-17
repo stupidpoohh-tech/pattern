@@ -1711,45 +1711,6 @@ const TABLE = {
     },
   },
 
-  // --- 4형식: S + V + 사람 + 사물 ---
-  // 형태 축이 "무엇을 바꾸는가"다: 기본 → 사람(간접목적어) 교체.
-  // 주어 축이 동사라, 엔진의 가족 이동 간격 규칙이 한 동사에 최소 2걸음 머무르게 한다.
-  ditrans: {
-    label: "4형식",
-    tenses: ["d4"],
-    forms: ["io1", "io2"],
-    formHeads: ["기본", "사람 바꾸기"],
-    subjects: ["give", "send", "show", "tell", "teach", "bring", "buy", "make"],
-    pred: {
-      give: "a book", send: "a card", show: "the picture", tell: "the story",
-      teach: "English", bring: "some water", buy: "a jacket", make: "dinner",
-    },
-    rows: {
-      d4: {
-        give: ["I gave him a book.", "I gave her a book."],
-        send: ["She sent me a card.", "She sent him a card."],
-        show: ["He showed us the picture.", "He showed me the picture."],
-        tell: ["They told me the story.", "They told her the story."],
-        teach: ["She taught me English.", "She taught them English."],
-        bring: ["He brought me some water.", "He brought her some water."],
-        buy: ["Mom bought me a jacket.", "Mom bought him a jacket."],
-        make: ["Dad made us dinner.", "Dad made me dinner."],
-      },
-    },
-    koRows: {
-      d4: {
-        give: ["나는 그에게 책을 주었다", "나는 그녀에게 책을 주었다"],
-        send: ["그녀는 나에게 카드를 보냈다", "그녀는 그에게 카드를 보냈다"],
-        show: ["그는 우리에게 그 그림을 보여 주었다", "그는 나에게 그 그림을 보여 주었다"],
-        tell: ["그들은 나에게 그 이야기를 해 주었다", "그들은 그녀에게 그 이야기를 해 주었다"],
-        teach: ["그녀는 나에게 영어를 가르쳤다", "그녀는 그들에게 영어를 가르쳤다"],
-        bring: ["그는 나에게 물을 가져다주었다", "그는 그녀에게 물을 가져다주었다"],
-        buy: ["엄마는 나에게 재킷을 사 주었다", "엄마는 그에게 재킷을 사 주었다"],
-        make: ["아빠는 우리에게 저녁을 만들어 주었다", "아빠는 나에게 저녁을 만들어 주었다"],
-      },
-    },
-  },
-
   // --- 3형식 ↔ 4형식 ---
   // 뜻이 같은 두 어순이라, 한국어 해석도 어순을 그대로 따라간다:
   // 4형식 "나는 그에게 책을 주었다"(사람 먼저) / 3형식 "나는 책을 그에게 주었다"(사물 먼저).
