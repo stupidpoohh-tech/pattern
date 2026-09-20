@@ -109,6 +109,44 @@ test("짧은 세션 표집: 15문장이 중복 없이 나오고, 커버리지보
   assert.ok(sampled > 5, `주어 다양성이 낮다: ${sampled}/6`);
 });
 
+test("짧은 세션: 여러 갈래를 골랐는데 한 세트에 갇히지 않는다", () => {
+  // 세트마다 주어 축의 값이 다르면(명령문은 동사 wait, be동사 명령문은 형용사 quiet)
+  // 세트 이동이 주어까지 함께 바꾼다. 이를 축 수로만 세면 걸음 폭 1축에서는 세트 이동이
+  // 후보에 들지 못해 한 갈래 문장만 나온다 — 세트 이동을 한 걸음으로 세어 막는다.
+  const scopes = { impgen: ["imper"], impbe: ["imper"] };
+  const cfg = { scopes, width: 1 };
+  const trials = 60;
+  let bothSeen = 0;
+  let sameSeriesSteps = 0;
+  let totalSteps = 0;
+  for (let t = 0; t < trials; t++) {
+    let coord = { series: "impgen", subject: "wait", tense: "imper", form: "cmd" };
+    const visited = new Set([keyOf(coord)]);
+    const history = [];
+    const sets = new Set([coord.series]);
+    for (let i = 0; i < 14; i++) {
+      const steps = sampleSteps(coord, cfg, history, visited);
+      assert.ok(steps, `걸음이 끊겼다 (${i}번째)`);
+      const next = applySteps(coord, steps);
+      assert.ok(sentenceOf(next), `없는 좌표: ${keyOf(next)}`);
+      assert.ok(!visited.has(keyOf(next)), `중복 문장: ${keyOf(next)}`);
+      totalSteps++;
+      if (next.series === coord.series) sameSeriesSteps++;
+      coord = next;
+      visited.add(keyOf(coord));
+      history.push(steps);
+      sets.add(coord.series);
+    }
+    assert.equal(visited.size, 15, "15문장이 나와야 한다");
+    if (sets.size === 2) bothSeen++;
+  }
+  assert.equal(bothSeen, trials, `고른 두 갈래가 매번 모두 나와야 한다: ${bothSeen}/${trials}`);
+  // 그렇다고 걸음마다 갈래가 바뀌면 "직전 문장에서 한 요소만 바꿔 말하기"가 사라진다 —
+  // 한 갈래에서 이어지는 변형이 절반 안팎은 유지돼야 한다.
+  const stayRatio = sameSeriesSteps / totalSteps;
+  assert.ok(stayRatio > 0.4 && stayRatio < 0.8, `같은 갈래 연속 변형 비율이 벗어남: ${stayRatio.toFixed(2)}`);
+});
+
 test("비교 체인: 기본 → 원급 → 비교급 → 최상급 순서로 진행하고 전수 방문한다", () => {
   const scopes = { cmpadj: CHAIN_ORDER, cmpadv: CHAIN_ORDER };
   assert.ok(isChainScope(scopes));

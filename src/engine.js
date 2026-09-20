@@ -174,6 +174,16 @@ function diffSteps(from, to) {
 
 const sameFamily = (steps) => !steps.some((s) => isFamilyAxis(s.axis));
 
+// 걸음 폭을 셀 때 세트 이동은 통째로 한 걸음으로 본다 ("세트 점프").
+// 세트마다 주어 축의 값이 다를 수 있어서(명령문은 동사 wait, be동사 명령문은 형용사 quiet,
+// 감각동사는 형용사, 3↔4형식은 동사…) 세트를 옮기면 주어까지 함께 바뀐다. 이를 축 수로
+// 세면 걸음 폭 1축에서 세트 이동이 영영 후보에 들지 못해 한 세트에 갇힌다 — 여러 항목을
+// 골라도 한 갈래 문장만 나오던 원인이다. randomSteps의 세트 점프와 같은 취급이다.
+const stepCost = (steps) => (steps.some((s) => s.axis === "series") ? 1 : steps.length);
+const sameSeries = (steps) => !steps.some((s) => s.axis === "series");
+// 짧은·긴 세션에서 같은 세트에 머무를 확률. 평균 2~3걸음 굴린 뒤 다른 갈래로 넘어간다.
+const STAY_IN_SERIES = 0.6;
+
 function isBridgedSubjectMove(steps, coord) {
   const su = steps.find((s) => s.axis === "subject");
   if (!su || steps.some((s) => s.axis === "series")) return false;
@@ -195,7 +205,7 @@ export function coverageSteps(coord, cfg, history, visited) {
     .filter((steps) => steps.length > 0);
   if (pool.length === 0) return null;
 
-  const near = pool.filter((steps) => steps.length <= cfg.width);
+  const near = pool.filter((steps) => stepCost(steps) <= cfg.width);
   const familyReady = stepsSinceFamilyMove(history) >= 2;
 
   const inFamily = near.filter(sameFamily);
@@ -210,8 +220,8 @@ export function coverageSteps(coord, cfg, history, visited) {
   }
 
   // 걸음 폭 안에 남은 문장이 없으면 가장 가까운 문장으로 점프 (축 여러 개가 나란히 표시된다)
-  const min = Math.min(...pool.map((s) => s.length));
-  return pick(pool.filter((s) => s.length === min));
+  const min = Math.min(...pool.map(stepCost));
+  return pick(pool.filter((s) => stepCost(s) === min));
 }
 
 // ---- 비교 체인 ----
@@ -262,11 +272,19 @@ export function sampleSteps(coord, cfg, history, visited) {
     .filter((steps) => steps.length > 0);
   if (pool.length === 0) return null;
 
-  const near = pool.filter((steps) => steps.length <= cfg.width);
-  if (near.length > 0) return pick(near);
+  const near = pool.filter((steps) => stepCost(steps) <= cfg.width);
+  if (near.length > 0) {
+    // 세트 이동 후보는 그 세트의 문장 수만큼 많아서, 후보를 통째로 놓고 고르면 걸음마다
+    // 세트가 바뀌어 "직전 문장에서 한 요소만 바꿔 말하기"가 사라진다. 머무를지 옮길지를
+    // 먼저 정하고 그 안에서 고른다 — 한 갈래를 두세 걸음 굴린 뒤 다음 갈래로 넘어간다.
+    const stay = near.filter(sameSeries);
+    const jump = near.filter((steps) => !sameSeries(steps));
+    if (stay.length > 0 && jump.length > 0) return pick(Math.random() < STAY_IN_SERIES ? stay : jump);
+    return pick(near);
+  }
 
-  const min = Math.min(...pool.map((s) => s.length));
-  return pick(pool.filter((s) => s.length === min));
+  const min = Math.min(...pool.map(stepCost));
+  return pick(pool.filter((s) => stepCost(s) === min));
 }
 
 // 반복 허용 모드: 방문 여부와 무관한 무작위 걸음.
