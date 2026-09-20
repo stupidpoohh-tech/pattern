@@ -76,6 +76,11 @@ function isContentDo(after) {
   return /^\s+it\b/i.test(after) || /^[.?]/.test(after);
 }
 
+// "so as to ~"의 as는 비교(as ~ as)가 아니라 목적을 나타낸다 — 색을 칠하지 않는다.
+function isPurposeAs(before, after) {
+  return /\bso\s*$/i.test(before) && /^\s+to\b/i.test(after);
+}
+
 // have/has도 두 가지다: 완료 조동사("I have seen it") 또는 "가지다"라는 본동사
 // ("I have many books"). 완료 조동사 뒤에는 반드시 과거분사가 오므로, 목적어를 여는
 // 말(수량 표현·관사·수사)이 뒤따르거나 문장이 거기서 끝나면("What does she have?")
@@ -106,6 +111,7 @@ export function tokenizeGrammar(text) {
     } else {
       const after = text.slice(m.index + matched.length);
       let cat = WORD_CATS[lower] || CONTRACTIONS[lower];
+      if (lower === "as" && isPurposeAs(text.slice(0, m.index), after)) cat = undefined;
       if (lower === "do" && isContentDo(after)) cat = undefined;
       if ((lower === "have" || lower === "has") && isContentHave(after)) cat = undefined;
       parts.push({ text: matched, cat });

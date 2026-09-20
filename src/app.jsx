@@ -347,12 +347,46 @@ const STRUCT_GROUPS = [
   },
 ];
 
+// ---------- 준동사 메뉴 ----------
+// 다른 메뉴형 영역과 같은 방식 — 항목 하나가 곧 scope 하나다.
+
+const VERBAL_GROUPS = [
+  {
+    title: "명사 역할",
+    items: [
+      { id: "nsubj", label: "주어", scope: { infsubj: ["nom"] } },
+      { id: "ncomp", label: "보어", scope: { infcomp: ["nom"] } },
+    ],
+  },
+  {
+    title: "목적어",
+    items: [
+      { id: "obj", label: "want · need · hope …", scope: { infobj: ["obj"] } },
+    ],
+  },
+  {
+    title: "부사 역할",
+    items: [
+      { id: "purpose", label: "목적", scope: { infpurpose: ["purp"] } },
+      { id: "emotion", label: "감정의 원인", scope: { infemotion: ["emo"] } },
+    ],
+  },
+  {
+    title: "형용사 역할",
+    items: [
+      { id: "adjnoun", label: "일반 명사", scope: { infadj: ["adjr"] } },
+      { id: "adjindef", label: "-thing · -one · -body", scope: { infindef: ["adjr"] } },
+    ],
+  },
+];
+
 const itemsOf = (groups) =>
   Object.fromEntries(groups.flatMap((g) => g.items.map((it) => [it.id, it])));
 
 const DECOR_ITEMS = itemsOf(DECOR_GROUPS);
 const SCHOOL_ITEMS = itemsOf(SCHOOL_GROUPS);
 const STRUCT_ITEMS = itemsOf(STRUCT_GROUPS);
+const VERBAL_ITEMS = itemsOf(VERBAL_GROUPS);
 
 // 선택된 항목들 → 엔진 scopes (세트별 시제 합집합)
 function buildMenuScopes(selected, items) {
@@ -401,6 +435,19 @@ const TABLE_TABS = [
     sets: ["svocadj", "svocnoun"],
     headings: ["목적어 + 형용사", "목적어 + 명사"],
   },
+  {
+    id: "infnoun", area: "verbal", title: "명사 역할",
+    sets: ["infsubj", "infcomp"], headings: ["주어", "보어"],
+  },
+  { id: "infobj", area: "verbal", title: "목적어", sets: ["infobj"] },
+  {
+    id: "infadv", area: "verbal", title: "부사 역할",
+    sets: ["infpurpose", "infemotion"], headings: ["목적", "감정의 원인"],
+  },
+  {
+    id: "infadjr", area: "verbal", title: "형용사 역할",
+    sets: ["infadj", "infindef"], headings: ["일반 명사", "-thing · -one · -body"],
+  },
 ];
 
 // 학습 영역 — 홈과 문장표가 같은 전환을 쓴다
@@ -409,6 +456,7 @@ const TAB_AREAS = [
   { v: "decor", t: "꾸미기 · 비교" },
   { v: "school", t: "문장 종류" },
   { v: "struct", t: "문장 구조" },
+  { v: "verbal", t: "준동사" },
 ];
 const AREA_TITLE = Object.fromEntries(TAB_AREAS.map((a) => [a.v, a.t]));
 
@@ -468,7 +516,9 @@ function TableScreen({ onHome, onWalk }) {
   const tab = TABLE_TABS.find((t) => t.id === tabId);
   const area = tab.area;
   // 영역을 오갈 때 마지막으로 보던 탭으로 돌아온다
-  const lastTabRef = useRef({ sentence: "be", decor: "adjpos", school: "imper", struct: "sense" });
+  const lastTabRef = useRef({
+    sentence: "be", decor: "adjpos", school: "imper", struct: "sense", verbal: "infnoun",
+  });
   const navRef = useRef(null);
   const areaTabs = TABLE_TABS.filter((t) => t.area === area);
 
@@ -724,6 +774,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
   const [decorSel, setDecorSel] = useState(() => new Set(["adjpos"]));
   const [schoolSel, setSchoolSel] = useState(() => new Set(["impgen"]));
   const [structSel, setStructSel] = useState(() => new Set(["feel"]));
+  const [verbalSel, setVerbalSel] = useState(() => new Set(["nsubj"]));
   const [selected, setSelected] = useState(() => ({ ...DEFAULT_SELECTED }));
   const [width, setWidth] = useState(1);
   const [repeat, setRepeat] = useState(false);
@@ -834,6 +885,7 @@ function HomeScreen({ onStartWalk, onTable, onVocab }) {
     decor: { groups: DECOR_GROUPS, items: DECOR_ITEMS, sel: decorSel, setSel: setDecorSel },
     school: { groups: SCHOOL_GROUPS, items: SCHOOL_ITEMS, sel: schoolSel, setSel: setSchoolSel },
     struct: { groups: STRUCT_GROUPS, items: STRUCT_ITEMS, sel: structSel, setSel: setStructSel },
+    verbal: { groups: VERBAL_GROUPS, items: VERBAL_ITEMS, sel: verbalSel, setSel: setVerbalSel },
   };
   const menu = MENUS[area] || MENUS.decor;
 

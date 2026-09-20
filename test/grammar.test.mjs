@@ -130,3 +130,20 @@ test("소유 have: 수사가 뒤따르거나 문장이 끝나면 완료 조동�
   // 완료 조동사는 그대로 색이 붙는다 (뒤에 과거분사가 온다)
   assert.deepEqual(cats("I have seen it."), ["have:perfect"]);
 });
+
+test("준동사: to부정사의 to는 색이 없고, so as to의 as는 비교가 아니다", () => {
+  assert.deepEqual(cats("To read books is useful."), ["is:be"]);
+  assert.deepEqual(cats("My dream is to sing."), ["is:be"]);
+  assert.deepEqual(cats("I want something cold to drink."), []);
+  assert.deepEqual(cats("John doesn't want to go shopping."), ["does:do", "n't:neg"]);
+  assert.deepEqual(cats("He has a lot of homework to do."), []);   // 소유 have + 본동사 do
+  assert.deepEqual(cats("I have five books to read."), []);        // 수사가 뒤따르는 소유 have
+  assert.deepEqual(cats("She has some work to finish."), ["some:qty"]);
+  assert.deepEqual(cats("I am happy to see you."), ["am:be"]);
+  // 목적의 so as to — as에 비교 색이 붙으면 안 된다
+  assert.deepEqual(cats("We left home early so as to catch the first bus."), []);
+  // better는 여기서도 진짜 비교급("더 잘")이라 비교 색이 맞다 — so as to의 as만 빠진다
+  assert.deepEqual(cats("She stood up so as to see the stage better."), ["better:cmp"]);
+  // 진짜 비교의 as는 그대로 비교 표지다
+  assert.deepEqual(cats("I am as tall as Mina."), ["am:be", "as:cmp", "as:cmp"]);
+});

@@ -1,5 +1,5 @@
 // 이 파일은 scripts/generate-data.mjs 가 문장표에서 자동 생성한다. 직접 수정 금지.
-// 키: `${series}-${subject}-${tense}-${form}` — 총 967문장 (한국어 해석 967개).
+// 키: `${series}-${subject}-${tense}-${form}` — 총 1081문장 (한국어 해석 1081개).
 export const SUBJECTS = ["I","she","he","it","we","they"];
 export const SETS = [
   {
@@ -1882,6 +1882,254 @@ export const SETS = [
       "elect": "our leader"
     },
     "futurePred": {}
+  },
+  {
+    "id": "infsubj",
+    "label": "명사 역할 · 주어",
+    "tenses": [
+      "nom"
+    ],
+    "forms": [
+      "core",
+      "more"
+    ],
+    "formHeads": [
+      "기본",
+      "확장"
+    ],
+    "subjects": [
+      "getup",
+      "read",
+      "learn",
+      "exercise",
+      "help",
+      "travel"
+    ],
+    "cards": false,
+    "pred": {
+      "getup": "hard",
+      "read": "useful",
+      "learn": "fun",
+      "exercise": "healthy",
+      "help": "important",
+      "travel": "exciting"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infcomp",
+    "label": "명사 역할 · 보어",
+    "tenses": [
+      "nom"
+    ],
+    "forms": [
+      "core",
+      "more"
+    ],
+    "formHeads": [
+      "기본",
+      "확장"
+    ],
+    "subjects": [
+      "dream",
+      "plan",
+      "goal",
+      "job",
+      "step",
+      "hope"
+    ],
+    "cards": false,
+    "pred": {
+      "dream": "to sing",
+      "plan": "to study abroad",
+      "goal": "to win",
+      "job": "to help people",
+      "step": "to ask",
+      "hope": "to travel"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infobj",
+    "label": "목적어",
+    "tenses": [
+      "obj"
+    ],
+    "forms": [
+      "o1",
+      "o2",
+      "o3"
+    ],
+    "formHeads": [
+      "기본",
+      "2단계",
+      "3단계"
+    ],
+    "subjects": [
+      "want",
+      "need",
+      "hope",
+      "wish",
+      "decide",
+      "promise",
+      "learn",
+      "plan",
+      "like",
+      "love"
+    ],
+    "cards": false,
+    "pred": {
+      "want": "to go shopping",
+      "need": "to get up early",
+      "hope": "to win the game",
+      "wish": "to travel abroad",
+      "decide": "to study harder",
+      "promise": "to call him",
+      "learn": "to swim",
+      "plan": "to visit Busan",
+      "like": "to read",
+      "love": "to take pictures"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infpurpose",
+    "label": "부사 역할 · 목적",
+    "tenses": [
+      "purp"
+    ],
+    "forms": [
+      "core",
+      "to",
+      "order"
+    ],
+    "formHeads": [
+      "기본문",
+      "to부정사",
+      "in order to · so as to"
+    ],
+    "subjects": [
+      "find",
+      "air",
+      "study",
+      "milk",
+      "bus",
+      "stage"
+    ],
+    "cards": false,
+    "pred": {
+      "find": "to find his book",
+      "air": "to get some fresh air",
+      "study": "to study",
+      "milk": "to buy some milk",
+      "bus": "to catch the first bus",
+      "stage": "to see the stage better"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infemotion",
+    "label": "부사 역할 · 감정의 원인",
+    "tenses": [
+      "emo"
+    ],
+    "forms": [
+      "core",
+      "to"
+    ],
+    "formHeads": [
+      "감정만",
+      "to부정사"
+    ],
+    "subjects": [
+      "happy",
+      "glad",
+      "sad",
+      "sorry"
+    ],
+    "cards": false,
+    "pred": {
+      "happy": "to see you",
+      "glad": "to meet you",
+      "sad": "to leave you",
+      "sorry": "to hear that"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infadj",
+    "label": "형용사 역할 · 명사",
+    "tenses": [
+      "adjr"
+    ],
+    "forms": [
+      "core",
+      "to"
+    ],
+    "formHeads": [
+      "명사만",
+      "명사 + to부정사"
+    ],
+    "subjects": [
+      "books",
+      "work",
+      "ways",
+      "place",
+      "homework",
+      "chair",
+      "pen",
+      "time"
+    ],
+    "cards": false,
+    "pred": {
+      "books": "to read",
+      "work": "to finish",
+      "ways": "to get there",
+      "place": "to stay",
+      "homework": "to do",
+      "chair": "to sit on",
+      "pen": "to write with",
+      "time": "to waste"
+    },
+    "futurePred": {}
+  },
+  {
+    "id": "infindef",
+    "label": "형용사 역할 · thing · one · body",
+    "tenses": [
+      "adjr"
+    ],
+    "forms": [
+      "core",
+      "withadj",
+      "to"
+    ],
+    "formHeads": [
+      "대명사",
+      "+ 형용사",
+      "+ to부정사"
+    ],
+    "subjects": [
+      "cold",
+      "sweet",
+      "interesting",
+      "kind",
+      "available",
+      "strong"
+    ],
+    "cards": false,
+    "qSubjects": [
+      "available"
+    ],
+    "pred": {
+      "cold": "something cold",
+      "sweet": "something sweet",
+      "interesting": "nothing interesting",
+      "kind": "someone kind",
+      "available": "anyone available",
+      "strong": "someone strong"
+    },
+    "futurePred": {}
   }
 ];
 export const SENTENCES = {
@@ -2851,7 +3099,121 @@ export const SENTENCES = {
   "svocnoun-make-oc-plain": "He is a doctor.",
   "svocnoun-make-oc-svoc": "They made him a doctor.",
   "svocnoun-elect-oc-plain": "Tom is our leader.",
-  "svocnoun-elect-oc-svoc": "We elected Tom our leader."
+  "svocnoun-elect-oc-svoc": "We elected Tom our leader.",
+  "infsubj-getup-nom-core": "To get up early is hard.",
+  "infsubj-getup-nom-more": "To get up early in the morning is hard.",
+  "infsubj-read-nom-core": "To read books is useful.",
+  "infsubj-read-nom-more": "To read books every day is useful.",
+  "infsubj-learn-nom-core": "To learn English is fun.",
+  "infsubj-learn-nom-more": "To learn English with friends is fun.",
+  "infsubj-exercise-nom-core": "To exercise is healthy.",
+  "infsubj-exercise-nom-more": "To exercise every morning is healthy.",
+  "infsubj-help-nom-core": "To help people is important.",
+  "infsubj-help-nom-more": "To help people in need is important.",
+  "infsubj-travel-nom-core": "To travel is exciting.",
+  "infsubj-travel-nom-more": "To travel to new places is exciting.",
+  "infcomp-dream-nom-core": "My dream is to sing.",
+  "infcomp-dream-nom-more": "My dream is to become a famous singer.",
+  "infcomp-plan-nom-core": "Her plan is to study abroad.",
+  "infcomp-plan-nom-more": "Her plan is to study abroad next year.",
+  "infcomp-goal-nom-core": "His goal is to win.",
+  "infcomp-goal-nom-more": "His goal is to win the game.",
+  "infcomp-job-nom-core": "Our job is to help people.",
+  "infcomp-job-nom-more": "Our job is to help people in need.",
+  "infcomp-step-nom-core": "The first step is to ask.",
+  "infcomp-step-nom-more": "The first step is to ask for help.",
+  "infcomp-hope-nom-core": "My hope is to travel.",
+  "infcomp-hope-nom-more": "My hope is to travel around the world.",
+  "infobj-want-obj-o1": "I want to go shopping.",
+  "infobj-want-obj-o2": "Sara wants to go shopping.",
+  "infobj-want-obj-o3": "John doesn't want to go shopping.",
+  "infobj-need-obj-o1": "I need to get up early.",
+  "infobj-need-obj-o2": "He needs to get up early.",
+  "infobj-need-obj-o3": "He doesn't need to get up early.",
+  "infobj-hope-obj-o1": "I hope to win the game.",
+  "infobj-hope-obj-o2": "She hopes to win the game.",
+  "infobj-hope-obj-o3": "She hopes to win the game tomorrow.",
+  "infobj-wish-obj-o1": "I wish to travel abroad.",
+  "infobj-wish-obj-o2": "She wishes to travel abroad.",
+  "infobj-wish-obj-o3": "She wishes to travel abroad someday.",
+  "infobj-decide-obj-o1": "I decided to study harder.",
+  "infobj-decide-obj-o2": "She decided to study harder.",
+  "infobj-decide-obj-o3": "She decided to study harder this year.",
+  "infobj-promise-obj-o1": "I promised to call him.",
+  "infobj-promise-obj-o2": "She promised to call him.",
+  "infobj-promise-obj-o3": "She promised to call him tonight.",
+  "infobj-learn-obj-o1": "I learned to swim.",
+  "infobj-learn-obj-o2": "She learned to swim.",
+  "infobj-learn-obj-o3": "She learned to swim last year.",
+  "infobj-plan-obj-o1": "I plan to visit Busan.",
+  "infobj-plan-obj-o2": "We plan to visit Busan.",
+  "infobj-plan-obj-o3": "We plan to visit Busan next month.",
+  "infobj-like-obj-o1": "I like to read.",
+  "infobj-like-obj-o2": "I like to read before bed.",
+  "infobj-like-obj-o3": "She likes to read before bed.",
+  "infobj-love-obj-o1": "I love to take pictures.",
+  "infobj-love-obj-o2": "We love to take pictures.",
+  "infobj-love-obj-o3": "We love to take pictures together.",
+  "infpurpose-find-purp-core": "Paul came early.",
+  "infpurpose-find-purp-to": "Paul came early to find his book.",
+  "infpurpose-find-purp-order": "Paul came early in order to find his book.",
+  "infpurpose-air-purp-core": "He opened the windows.",
+  "infpurpose-air-purp-to": "He opened the windows to get some fresh air.",
+  "infpurpose-air-purp-order": "He opened the windows in order to get some fresh air.",
+  "infpurpose-study-purp-core": "She went to the library.",
+  "infpurpose-study-purp-to": "She went to the library to study.",
+  "infpurpose-study-purp-order": "She went to the library in order to study.",
+  "infpurpose-milk-purp-core": "I went to the store.",
+  "infpurpose-milk-purp-to": "I went to the store to buy some milk.",
+  "infpurpose-milk-purp-order": "I went to the store in order to buy some milk.",
+  "infpurpose-bus-purp-core": "We left home early.",
+  "infpurpose-bus-purp-to": "We left home early to catch the first bus.",
+  "infpurpose-bus-purp-order": "We left home early so as to catch the first bus.",
+  "infpurpose-stage-purp-core": "She stood up.",
+  "infpurpose-stage-purp-to": "She stood up to see the stage better.",
+  "infpurpose-stage-purp-order": "She stood up so as to see the stage better.",
+  "infemotion-happy-emo-core": "I am happy.",
+  "infemotion-happy-emo-to": "I am happy to see you.",
+  "infemotion-glad-emo-core": "I am glad.",
+  "infemotion-glad-emo-to": "I am glad to meet you.",
+  "infemotion-sad-emo-core": "I am sad.",
+  "infemotion-sad-emo-to": "I am sad to leave you.",
+  "infemotion-sorry-emo-core": "I am sorry.",
+  "infemotion-sorry-emo-to": "I am sorry to hear that.",
+  "infadj-books-adjr-core": "I have five books.",
+  "infadj-books-adjr-to": "I have five books to read.",
+  "infadj-work-adjr-core": "She has some work.",
+  "infadj-work-adjr-to": "She has some work to finish.",
+  "infadj-ways-adjr-core": "There are two ways.",
+  "infadj-ways-adjr-to": "There are two ways to get there.",
+  "infadj-place-adjr-core": "We need a place.",
+  "infadj-place-adjr-to": "We need a place to stay.",
+  "infadj-homework-adjr-core": "He has a lot of homework.",
+  "infadj-homework-adjr-to": "He has a lot of homework to do.",
+  "infadj-chair-adjr-core": "I need a chair.",
+  "infadj-chair-adjr-to": "I need a chair to sit on.",
+  "infadj-pen-adjr-core": "She needs a pen.",
+  "infadj-pen-adjr-to": "She needs a pen to write with.",
+  "infadj-time-adjr-core": "We have no time.",
+  "infadj-time-adjr-to": "We have no time to waste.",
+  "infindef-cold-adjr-core": "I want something.",
+  "infindef-cold-adjr-withadj": "I want something cold.",
+  "infindef-cold-adjr-to": "I want something cold to drink.",
+  "infindef-sweet-adjr-core": "I need something.",
+  "infindef-sweet-adjr-withadj": "I need something sweet.",
+  "infindef-sweet-adjr-to": "I need something sweet to eat.",
+  "infindef-interesting-adjr-core": "There is nothing.",
+  "infindef-interesting-adjr-withadj": "There is nothing interesting.",
+  "infindef-interesting-adjr-to": "There is nothing interesting to watch.",
+  "infindef-kind-adjr-core": "I need someone.",
+  "infindef-kind-adjr-withadj": "I need someone kind.",
+  "infindef-kind-adjr-to": "I need someone kind to help me.",
+  "infindef-available-adjr-core": "Is there anyone?",
+  "infindef-available-adjr-withadj": "Is there anyone available?",
+  "infindef-available-adjr-to": "Is there anyone available to help me?",
+  "infindef-strong-adjr-core": "We need someone.",
+  "infindef-strong-adjr-withadj": "We need someone strong.",
+  "infindef-strong-adjr-to": "We need someone strong to carry this box."
 };
 export const KO = {
   "be-I-present-aff": "나는 늦는다",
@@ -3820,5 +4182,119 @@ export const KO = {
   "svocnoun-make-oc-plain": "그는 의사다",
   "svocnoun-make-oc-svoc": "그들은 그를 의사로 만들었다",
   "svocnoun-elect-oc-plain": "Tom은 우리의 지도자다",
-  "svocnoun-elect-oc-svoc": "우리는 Tom을 우리의 지도자로 뽑았다"
+  "svocnoun-elect-oc-svoc": "우리는 Tom을 우리의 지도자로 뽑았다",
+  "infsubj-getup-nom-core": "일찍 일어나는 것은 어렵다",
+  "infsubj-getup-nom-more": "아침에 일찍 일어나는 것은 어렵다",
+  "infsubj-read-nom-core": "책을 읽는 것은 유익하다",
+  "infsubj-read-nom-more": "매일 책을 읽는 것은 유익하다",
+  "infsubj-learn-nom-core": "영어를 배우는 것은 재미있다",
+  "infsubj-learn-nom-more": "친구들과 영어를 배우는 것은 재미있다",
+  "infsubj-exercise-nom-core": "운동하는 것은 건강에 좋다",
+  "infsubj-exercise-nom-more": "매일 아침 운동하는 것은 건강에 좋다",
+  "infsubj-help-nom-core": "사람들을 돕는 것은 중요하다",
+  "infsubj-help-nom-more": "어려움에 처한 사람들을 돕는 것은 중요하다",
+  "infsubj-travel-nom-core": "여행하는 것은 신난다",
+  "infsubj-travel-nom-more": "새로운 곳으로 여행하는 것은 신난다",
+  "infcomp-dream-nom-core": "내 꿈은 노래하는 것이다",
+  "infcomp-dream-nom-more": "내 꿈은 유명한 가수가 되는 것이다",
+  "infcomp-plan-nom-core": "그녀의 계획은 유학하는 것이다",
+  "infcomp-plan-nom-more": "그녀의 계획은 내년에 유학하는 것이다",
+  "infcomp-goal-nom-core": "그의 목표는 이기는 것이다",
+  "infcomp-goal-nom-more": "그의 목표는 그 경기를 이기는 것이다",
+  "infcomp-job-nom-core": "우리의 일은 사람들을 돕는 것이다",
+  "infcomp-job-nom-more": "우리의 일은 어려움에 처한 사람들을 돕는 것이다",
+  "infcomp-step-nom-core": "첫 번째 단계는 묻는 것이다",
+  "infcomp-step-nom-more": "첫 번째 단계는 도움을 청하는 것이다",
+  "infcomp-hope-nom-core": "내 바람은 여행하는 것이다",
+  "infcomp-hope-nom-more": "내 바람은 세계를 여행하는 것이다",
+  "infobj-want-obj-o1": "나는 쇼핑하러 가고 싶다",
+  "infobj-want-obj-o2": "Sara는 쇼핑하러 가고 싶어 한다",
+  "infobj-want-obj-o3": "John은 쇼핑하러 가고 싶어 하지 않는다",
+  "infobj-need-obj-o1": "나는 일찍 일어나야 한다",
+  "infobj-need-obj-o2": "그는 일찍 일어나야 한다",
+  "infobj-need-obj-o3": "그는 일찍 일어날 필요가 없다",
+  "infobj-hope-obj-o1": "나는 그 경기를 이기기를 바란다",
+  "infobj-hope-obj-o2": "그녀는 그 경기를 이기기를 바란다",
+  "infobj-hope-obj-o3": "그녀는 내일 그 경기를 이기기를 바란다",
+  "infobj-wish-obj-o1": "나는 해외로 여행하기를 바란다",
+  "infobj-wish-obj-o2": "그녀는 해외로 여행하기를 바란다",
+  "infobj-wish-obj-o3": "그녀는 언젠가 해외로 여행하기를 바란다",
+  "infobj-decide-obj-o1": "나는 더 열심히 공부하기로 결심했다",
+  "infobj-decide-obj-o2": "그녀는 더 열심히 공부하기로 결심했다",
+  "infobj-decide-obj-o3": "그녀는 올해 더 열심히 공부하기로 결심했다",
+  "infobj-promise-obj-o1": "나는 그에게 전화하기로 약속했다",
+  "infobj-promise-obj-o2": "그녀는 그에게 전화하기로 약속했다",
+  "infobj-promise-obj-o3": "그녀는 오늘 밤 그에게 전화하기로 약속했다",
+  "infobj-learn-obj-o1": "나는 수영하는 것을 배웠다",
+  "infobj-learn-obj-o2": "그녀는 수영하는 것을 배웠다",
+  "infobj-learn-obj-o3": "그녀는 작년에 수영하는 것을 배웠다",
+  "infobj-plan-obj-o1": "나는 부산을 방문할 계획이다",
+  "infobj-plan-obj-o2": "우리는 부산을 방문할 계획이다",
+  "infobj-plan-obj-o3": "우리는 다음 달에 부산을 방문할 계획이다",
+  "infobj-like-obj-o1": "나는 책 읽는 것을 좋아한다",
+  "infobj-like-obj-o2": "나는 자기 전에 책 읽는 것을 좋아한다",
+  "infobj-like-obj-o3": "그녀는 자기 전에 책 읽는 것을 좋아한다",
+  "infobj-love-obj-o1": "나는 사진 찍는 것을 아주 좋아한다",
+  "infobj-love-obj-o2": "우리는 사진 찍는 것을 아주 좋아한다",
+  "infobj-love-obj-o3": "우리는 함께 사진 찍는 것을 아주 좋아한다",
+  "infpurpose-find-purp-core": "Paul은 일찍 왔다",
+  "infpurpose-find-purp-to": "Paul은 그의 책을 찾으려고 일찍 왔다",
+  "infpurpose-find-purp-order": "Paul은 그의 책을 찾기 위해서 일찍 왔다",
+  "infpurpose-air-purp-core": "그는 창문을 열었다",
+  "infpurpose-air-purp-to": "그는 신선한 공기를 마시려고 창문을 열었다",
+  "infpurpose-air-purp-order": "그는 신선한 공기를 마시기 위해서 창문을 열었다",
+  "infpurpose-study-purp-core": "그녀는 도서관에 갔다",
+  "infpurpose-study-purp-to": "그녀는 공부하려고 도서관에 갔다",
+  "infpurpose-study-purp-order": "그녀는 공부하기 위해서 도서관에 갔다",
+  "infpurpose-milk-purp-core": "나는 가게에 갔다",
+  "infpurpose-milk-purp-to": "나는 우유를 사려고 가게에 갔다",
+  "infpurpose-milk-purp-order": "나는 우유를 사기 위해서 가게에 갔다",
+  "infpurpose-bus-purp-core": "우리는 집에서 일찍 나섰다",
+  "infpurpose-bus-purp-to": "우리는 첫차를 타려고 집에서 일찍 나섰다",
+  "infpurpose-bus-purp-order": "우리는 첫차를 타기 위해서 집에서 일찍 나섰다",
+  "infpurpose-stage-purp-core": "그녀는 일어섰다",
+  "infpurpose-stage-purp-to": "그녀는 무대를 더 잘 보려고 일어섰다",
+  "infpurpose-stage-purp-order": "그녀는 무대를 더 잘 보기 위해서 일어섰다",
+  "infemotion-happy-emo-core": "나는 행복하다",
+  "infemotion-happy-emo-to": "나는 너를 보게 되어 행복하다",
+  "infemotion-glad-emo-core": "나는 기쁘다",
+  "infemotion-glad-emo-to": "나는 너를 만나게 되어 기쁘다",
+  "infemotion-sad-emo-core": "나는 슬프다",
+  "infemotion-sad-emo-to": "나는 너를 떠나게 되어 슬프다",
+  "infemotion-sorry-emo-core": "나는 안타깝다",
+  "infemotion-sorry-emo-to": "나는 그런 말을 듣게 되어 안타깝다",
+  "infadj-books-adjr-core": "나는 책이 다섯 권 있다",
+  "infadj-books-adjr-to": "나는 읽을 책이 다섯 권 있다",
+  "infadj-work-adjr-core": "그녀는 일이 좀 있다",
+  "infadj-work-adjr-to": "그녀는 끝내야 할 일이 좀 있다",
+  "infadj-ways-adjr-core": "두 가지 방법이 있다",
+  "infadj-ways-adjr-to": "거기에 가는 두 가지 방법이 있다",
+  "infadj-place-adjr-core": "우리는 장소가 필요하다",
+  "infadj-place-adjr-to": "우리는 머물 장소가 필요하다",
+  "infadj-homework-adjr-core": "그는 숙제가 많다",
+  "infadj-homework-adjr-to": "그는 해야 할 숙제가 많다",
+  "infadj-chair-adjr-core": "나는 의자가 필요하다",
+  "infadj-chair-adjr-to": "나는 앉을 의자가 필요하다",
+  "infadj-pen-adjr-core": "그녀는 펜이 필요하다",
+  "infadj-pen-adjr-to": "그녀는 쓸 펜이 필요하다",
+  "infadj-time-adjr-core": "우리는 시간이 없다",
+  "infadj-time-adjr-to": "우리는 낭비할 시간이 없다",
+  "infindef-cold-adjr-core": "나는 무언가를 원한다",
+  "infindef-cold-adjr-withadj": "나는 차가운 것을 원한다",
+  "infindef-cold-adjr-to": "나는 마실 차가운 것을 원한다",
+  "infindef-sweet-adjr-core": "나는 무언가가 필요하다",
+  "infindef-sweet-adjr-withadj": "나는 단것이 필요하다",
+  "infindef-sweet-adjr-to": "나는 먹을 단것이 필요하다",
+  "infindef-interesting-adjr-core": "아무것도 없다",
+  "infindef-interesting-adjr-withadj": "재미있는 것이 아무것도 없다",
+  "infindef-interesting-adjr-to": "볼 만한 재미있는 것이 아무것도 없다",
+  "infindef-kind-adjr-core": "나는 누군가가 필요하다",
+  "infindef-kind-adjr-withadj": "나는 친절한 사람이 필요하다",
+  "infindef-kind-adjr-to": "나는 나를 도와줄 친절한 사람이 필요하다",
+  "infindef-available-adjr-core": "누구 있니?",
+  "infindef-available-adjr-withadj": "시간 되는 사람 있니?",
+  "infindef-available-adjr-to": "나를 도와줄 시간 되는 사람 있니?",
+  "infindef-strong-adjr-core": "우리는 누군가가 필요하다",
+  "infindef-strong-adjr-withadj": "우리는 힘센 사람이 필요하다",
+  "infindef-strong-adjr-to": "우리는 이 상자를 옮길 힘센 사람이 필요하다"
 };

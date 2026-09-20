@@ -51,6 +51,11 @@ test("반복 없음 모드: 범위 전체를 한 번씩 모두 방문하고 끝�
     [{ sensefeel: ["sc"], senselook: ["sc"], changeget: ["sc"] }, 2],
     [{ dativeto: ["dat"], dativefor: ["dat"], dativeof: ["dat"] }, 2],
     [{ svocadj: ["oc"], svocnoun: ["oc"] }, 2],
+    // 준동사
+    [{ infsubj: ["nom"], infcomp: ["nom"] }, 1],
+    [{ infobj: ["obj"] }, 1],
+    [{ infpurpose: ["purp"], infemotion: ["emo"] }, 2],
+    [{ infadj: ["adjr"], infindef: ["adjr"] }, 2],
   ]) {
     const { seen, total } = runCoverage(scopes, width);
     assert.equal(seen.length, total, JSON.stringify(scopes));
@@ -304,6 +309,34 @@ test("문장 구조: 주어 축의 값이 다른 세트를 섞어도 유효한 �
   assert.equal(seen.size, 4, `네 세트를 모두 오가야 한다: ${[...seen]}`);
 });
 
+test("준동사: 한 family 안의 걸음은 형태 축만 움직인다 (기본 → 확장 → 더 확장)", () => {
+  for (const [scopes, start] of [
+    [{ infsubj: ["nom"] }, { series: "infsubj", subject: "read", tense: "nom", form: "core" }],
+    [{ infpurpose: ["purp"] }, { series: "infpurpose", subject: "find", tense: "purp", form: "core" }],
+    [{ infindef: ["adjr"] }, { series: "infindef", subject: "cold", tense: "adjr", form: "core" }],
+    [{ infobj: ["obj"] }, { series: "infobj", subject: "want", tense: "obj", form: "o1" }],
+  ]) {
+    const cfg = { scopes, width: 1 };
+    let coord = start;
+    const history = [];
+    let inFamily = 0;
+    for (let i = 0; i < 150; i++) {
+      const steps = randomSteps(coord, cfg, history);
+      assert.ok(steps && steps.length >= 1);
+      const next = applySteps(coord, steps);
+      assert.ok(sentenceOf(next), `없는 좌표: ${keyOf(next)}`);
+      if (next.subject === coord.subject) {
+        assert.equal(steps.length, 1, `한 걸음에 두 요소가 바뀐다: ${keyOf(coord)} → ${keyOf(next)}`);
+        assert.equal(steps[0].axis, "form");
+        inFamily++;
+      }
+      coord = next;
+      history.push(steps);
+    }
+    assert.ok(inFamily > 30, `같은 family 안 변형이 너무 드물다: ${inFamily}/150`);
+  }
+});
+
 test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
   const step = (axis, value) => [{ axis, value }];
   // It is cold → (he) → He is busy: 힌트 "busy"
@@ -381,6 +414,17 @@ test("지정 경로 파싱: 정상·오류", () => {
     new URLSearchParams("mode=path&start=dativeto-give-dat-f4&steps=f3,send,f4")
   );
   assert.ok(!dative.error, dative.error);
+
+  // 준동사 — 새 시제·형태 토큰
+  const verbal = parsePath(
+    new URLSearchParams("mode=path&start=infindef-cold-adjr-core&steps=withadj,to,sweet,core")
+  );
+  assert.ok(!verbal.error, verbal.error);
+  assert.equal(verbal.stepsList.length, 4);
+  const purpose = parsePath(
+    new URLSearchParams("mode=path&start=infpurpose-find-purp-core&steps=to,order,study,core")
+  );
+  assert.ok(!purpose.error, purpose.error);
 
   assert.ok(parsePath(new URLSearchParams("start=xx-yy&steps=she")).error);
   assert.ok(

@@ -148,7 +148,9 @@ test("구두점: 의문(q·의문사)은 ?, 감탄은 !, 평서·부정은 .", (
       for (const t of set.tenses)
         for (const f of set.forms) {
           const s = SENTENCES[`${set.id}-${su}-${t}-${f}`];
-          const end = exclForms.includes(f) ? "!" : qForms.includes(f) ? "?" : ".";
+          // 형태와 무관하게 의문문인 주어 묶음도 있다 (Is there anyone ~?)
+          const isQ = qForms.includes(f) || (set.qSubjects || []).includes(su);
+          const end = exclForms.includes(f) ? "!" : isQ ? "?" : ".";
           assert.ok(s.endsWith(end), `${set.id}-${su}-${t}-${f}: ${s} (${end} 로 끝나야 함)`);
         }
   }
@@ -425,4 +427,172 @@ test("문장 구조: 문장 ID가 기존 영역과 충돌하지 않는다", () =
         for (const f of set.forms) keys.push(`${set.id}-${su}-${t}-${f}`);
   assert.equal(new Set(keys).size, keys.length, "좌표 키 중복");
   assert.equal(keys.length, Object.keys(SENTENCES).length);
+});
+
+// ---------- 준동사 (to부정사) ----------
+
+const VERBAL_SETS = {
+  infsubj: 12, infcomp: 12, infobj: 30,
+  infpurpose: 18, infemotion: 8, infadj: 16, infindef: 18,
+};
+
+test("준동사: 모든 series가 생기고 영어·한국어 수가 맞는다 (총 114문장)", () => {
+  let added = 0;
+  for (const [id, want] of Object.entries(VERBAL_SETS)) {
+    const set = SETS.find((s) => s.id === id);
+    assert.ok(set, `없는 세트: ${id}`);
+    const n = set.subjects.length * set.tenses.length * set.forms.length;
+    assert.equal(n, want, `${id} 문장 수`);
+    for (const su of set.subjects)
+      for (const t of set.tenses)
+        for (const f of set.forms) {
+          const key = `${id}-${su}-${t}-${f}`;
+          assert.ok(SENTENCES[key], `영어 없음: ${key}`);
+          assert.ok(KO[key], `한국어 없음: ${key}`);
+        }
+    added += n;
+  }
+  assert.equal(added, 114, "준동사 총 문장 수");
+});
+
+test("준동사: to부정사는 언제나 〈to + 동사원형〉이다", () => {
+  // 이 갈래에서 to 뒤에 오는 동사원형 전부. 활용형(to sings / to going / to went)이
+  // 섞여 들어오면 목록에 없어 걸린다.
+  const BASE_VERBS = new Set([
+    "ask", "become", "buy", "call", "carry", "catch", "do", "drink", "eat", "find",
+    "finish", "get", "go", "hear", "help", "leave", "meet", "read", "see", "sing",
+    "sit", "stay", "study", "swim", "take", "travel", "visit", "waste", "watch",
+    "win", "write",
+  ]);
+  // 전치사 to (to new places / to the library·store) — 뒤에 명사구가 온다
+  const PREP_HEADS = new Set(["new", "the"]);
+  const seen = new Set();
+  for (const id of Object.keys(VERBAL_SETS)) {
+    const set = SETS.find((s) => s.id === id);
+    for (const su of set.subjects)
+      for (const t of set.tenses)
+        for (const f of set.forms) {
+          const s = SENTENCES[`${id}-${su}-${t}-${f}`];
+          for (const m of s.matchAll(/\bto ([a-z]+)\b/g)) {
+            const w = m[1];
+            if (PREP_HEADS.has(w)) continue;
+            assert.ok(BASE_VERBS.has(w), `to 뒤가 동사원형이 아니다: "${s}" (to ${w})`);
+            seen.add(w);
+          }
+        }
+  }
+  assert.deepEqual(
+    [...BASE_VERBS].filter((v) => !seen.has(v)),
+    [],
+    "쓰이지 않는 동사원형이 목록에 남아 있다"
+  );
+  // 표본
+  assert.equal(SENTENCES["infsubj-read-nom-core"], "To read books is useful.");
+  assert.equal(SENTENCES["infcomp-dream-nom-more"], "My dream is to become a famous singer.");
+  assert.equal(SENTENCES["infobj-want-obj-o3"], "John doesn't want to go shopping.");
+});
+
+test("준동사 명사 역할: 기본 → 확장이 앞부분을 그대로 물려받는다", () => {
+  for (const id of ["infsubj", "infcomp"])
+    for (const su of subjectsOf(id)) {
+      const core = SENTENCES[`${id}-${su}-nom-core`];
+      const more = SENTENCES[`${id}-${su}-nom-more`];
+      assert.notEqual(core, more);
+      // 확장형이 더 길다 — 같은 뼈대에 말을 덧붙인 것이다
+      assert.ok(more.length > core.length, `확장형이 더 길어야 한다: ${core} / ${more}`);
+      if (id === "infsubj") {
+        assert.match(core, /^To \w+/, `주어 자리 to부정사가 아니다: ${core}`);
+        assert.match(more, /^To \w+/, more);
+        // 술어(is ~)는 그대로 유지된다
+        const tail = (x) => x.slice(x.lastIndexOf(" is "));
+        assert.equal(tail(more), tail(core), `술어가 바뀌었다: ${core} / ${more}`);
+      } else {
+        assert.match(core, / is to \w+/, `보어 자리 to부정사가 아니다: ${core}`);
+        assert.match(more, / is to \w+/, more);
+        // 주어부(My dream is 등)는 그대로다
+        const head = (x) => x.slice(0, x.indexOf(" is "));
+        assert.equal(head(more), head(core), `주어부가 바뀌었다: ${core} / ${more}`);
+      }
+    }
+});
+
+test("준동사 목적어: 동사마다 to부정사 목적어를 받고, 걸음마다 한 요소만 바뀐다", () => {
+  const VERBS = ["want", "need", "hope", "wish", "decide", "promise", "learn", "plan", "like", "love"];
+  assert.deepEqual(subjectsOf("infobj"), VERBS);
+  for (const v of VERBS) {
+    const [a, b, c] = ["o1", "o2", "o3"].map((f) => SENTENCES[`infobj-${v}-obj-${f}`]);
+    for (const s of [a, b, c]) assert.match(s, /\bto [a-z]+/, `to부정사가 없다: ${s}`);
+    assert.equal(a.split(" ")[0], "I", `기본형은 I로 시작한다: ${a}`);
+    // 걸음마다 낱말 하나 수준의 변화 — 문장이 통째로 바뀌지 않는다
+    const words = (x) => x.replace(/[.?]$/, "").split(" ");
+    for (const [x, y] of [[a, b], [b, c]]) {
+      const shared = words(x).filter((w) => words(y).includes(w)).length;
+      assert.ok(shared >= words(x).length - 2, `한 걸음에 너무 많이 바뀐다: ${x} → ${y}`);
+    }
+  }
+});
+
+test("준동사 부사 역할: 목적은 기본문 → to → in order to · so as to", () => {
+  for (const su of subjectsOf("infpurpose")) {
+    const core = SENTENCES[`infpurpose-${su}-purp-core`];
+    const to = SENTENCES[`infpurpose-${su}-purp-to`];
+    const order = SENTENCES[`infpurpose-${su}-purp-order`];
+    // 기본문에는 목적의 to부정사가 없다
+    assert.doesNotMatch(core, /\b(in order to|so as to)\b/, core);
+    // to형은 기본문 그대로에 목적만 붙인다
+    assert.ok(to.startsWith(core.replace(/\.$/, " ")), `기본문을 물려받지 않았다: ${core} → ${to}`);
+    assert.match(to, /\bto [a-z]+/, to);
+    // 강조형은 to를 in order to / so as to 로 바꾼 것뿐이다
+    assert.match(order, /\b(in order to|so as to) [a-z]+/, order);
+    assert.equal(
+      order.replace(/\b(in order to|so as to)\b/, "to"),
+      to,
+      `강조형이 to형과 다르다: ${to} / ${order}`
+    );
+  }
+});
+
+test("준동사 부사 역할: 감정의 원인은 감정 상태 → 감정 + to부정사", () => {
+  for (const su of subjectsOf("infemotion")) {
+    const core = SENTENCES[`infemotion-${su}-emo-core`];
+    const to = SENTENCES[`infemotion-${su}-emo-to`];
+    assert.equal(core, `I am ${su}.`, core);
+    assert.ok(to.startsWith(`I am ${su} to `), `감정 + to부정사가 아니다: ${to}`);
+    assert.equal(KO[`infemotion-${su}-emo-core`].includes("되어"), false, "감정만 있는 쪽 해석에 원인이 섞였다");
+    assert.ok(KO[`infemotion-${su}-emo-to`].includes("되어"), "원인 해석이 드러나야 한다");
+  }
+});
+
+test("준동사 형용사 역할: 명사 + to부정사, 전치사가 남는 구조도 유지된다", () => {
+  for (const su of subjectsOf("infadj")) {
+    const core = SENTENCES[`infadj-${su}-adjr-core`];
+    const to = SENTENCES[`infadj-${su}-adjr-to`];
+    // 명사만 있는 문장 그대로에 to부정사만 얹는다
+    assert.ok(to.startsWith(core.replace(/\.$/, " ")), `명사 문장을 물려받지 않았다: ${core} → ${to}`);
+    assert.match(to, /\bto [a-z]+/, to);
+  }
+  // 전치사가 뒤에 남는 구조
+  assert.equal(SENTENCES["infadj-chair-adjr-to"], "I need a chair to sit on.");
+  assert.equal(SENTENCES["infadj-pen-adjr-to"], "She needs a pen to write with.");
+});
+
+test("준동사 -thing/-one/-body: 대명사 → 형용사 → to부정사 어순", () => {
+  const PRON = /\b(something|someone|somebody|anyone|anybody|nothing)\b/;
+  for (const su of subjectsOf("infindef")) {
+    const core = SENTENCES[`infindef-${su}-adjr-core`];
+    const withadj = SENTENCES[`infindef-${su}-adjr-withadj`];
+    const to = SENTENCES[`infindef-${su}-adjr-to`];
+    const pron = core.match(PRON)[1];
+    // 형용사는 반드시 대명사 "뒤"에 온다 (cold something ✗)
+    assert.match(withadj, new RegExp(`\\b${pron} ${su}\\b`), `대명사 뒤 형용사가 아니다: ${withadj}`);
+    assert.doesNotMatch(withadj, new RegExp(`\\b${su} ${pron}\\b`), `형용사가 앞에 왔다: ${withadj}`);
+    // to부정사는 형용사 "뒤"에 온다 (something to drink cold ✗)
+    assert.match(to, new RegExp(`\\b${pron} ${su} to [a-z]+`), `대명사 + 형용사 + to부정사 어순이 아니다: ${to}`);
+    // 단계마다 앞 단계를 그대로 물려받는다
+    assert.ok(withadj.startsWith(core.replace(/[.?]$/, " ").replace(/ $/, " ")) ||
+      withadj.startsWith(core.replace(/[.?]$/, "") + " "), `${core} → ${withadj}`);
+    assert.ok(to.startsWith(withadj.replace(/[.?]$/, "") + " "), `${withadj} → ${to}`);
+  }
+  assert.equal(SENTENCES["infindef-cold-adjr-to"], "I want something cold to drink.");
+  assert.equal(SENTENCES["infindef-available-adjr-to"], "Is there anyone available to help me?");
 });

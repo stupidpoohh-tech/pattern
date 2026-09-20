@@ -55,6 +55,12 @@ export const TENSE_LABELS = {
   sc: "감각 · 변화동사",
   dat: "3형식 ↔ 4형식",
   oc: "5형식",
+  // 준동사
+  nom: "명사 역할",
+  obj: "목적어",
+  purp: "목적",
+  emo: "감정의 원인",
+  adjr: "형용사 역할",
 };
 const FORM_LABELS = {
   aff: "평서",
@@ -100,6 +106,15 @@ const FORM_LABELS = {
   f4: "4형식",
   f3: "3형식",
   svoc: "5형식",
+  // 준동사
+  core: "기본",
+  more: "확장",
+  o1: "기본",
+  o2: "2단계",
+  o3: "3단계",
+  to: "to부정사",
+  order: "in order to",
+  withadj: "형용사 붙이기",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -472,6 +487,21 @@ const STEP_ALIASES = (() => {
     f4: { axis: "form", value: "f4" },
     f3: { axis: "form", value: "f3" },
     svoc: { axis: "form", value: "svoc" },
+    // 준동사 — 시제 축
+    nom: { axis: "tense", value: "nom" },
+    obj: { axis: "tense", value: "obj" },
+    purp: { axis: "tense", value: "purp" },
+    emo: { axis: "tense", value: "emo" },
+    adjr: { axis: "tense", value: "adjr" },
+    // 준동사 — 형태 축
+    core: { axis: "form", value: "core" },
+    more: { axis: "form", value: "more" },
+    o1: { axis: "form", value: "o1" },
+    o2: { axis: "form", value: "o2" },
+    o3: { axis: "form", value: "o3" },
+    to: { axis: "form", value: "to" },
+    order: { axis: "form", value: "order" },
+    withadj: { axis: "form", value: "withadj" },
   });
   return m;
 })();
