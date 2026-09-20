@@ -309,32 +309,47 @@ test("문장 구조: 주어 축의 값이 다른 세트를 섞어도 유효한 �
   assert.equal(seen.size, 4, `네 세트를 모두 오가야 한다: ${[...seen]}`);
 });
 
-test("준동사: 한 family 안의 걸음은 형태 축만 움직인다 (기본 → 확장 → 더 확장)", () => {
-  for (const [scopes, start] of [
-    [{ infsubj: ["nom"] }, { series: "infsubj", subject: "read", tense: "nom", form: "core" }],
-    [{ infpurpose: ["purp"] }, { series: "infpurpose", subject: "find", tense: "purp", form: "core" }],
-    [{ infindef: ["adjr"] }, { series: "infindef", subject: "cold", tense: "adjr", form: "core" }],
-    [{ infobj: ["obj"] }, { series: "infobj", subject: "want", tense: "obj", form: "o1" }],
-  ]) {
-    const cfg = { scopes, width: 1 };
-    let coord = start;
-    const history = [];
-    let inFamily = 0;
-    for (let i = 0; i < 150; i++) {
-      const steps = randomSteps(coord, cfg, history);
-      assert.ok(steps && steps.length >= 1);
-      const next = applySteps(coord, steps);
-      assert.ok(sentenceOf(next), `없는 좌표: ${keyOf(next)}`);
-      if (next.subject === coord.subject) {
-        assert.equal(steps.length, 1, `한 걸음에 두 요소가 바뀐다: ${keyOf(coord)} → ${keyOf(next)}`);
-        assert.equal(steps[0].axis, "form");
-        inFamily++;
-      }
-      coord = next;
-      history.push(steps);
+test("준동사: 목적 세트의 걸음은 to ↔ in order to 전환뿐이다", () => {
+  // 준동사는 대부분 한 문장이 한 좌표라 걸음이 곧 낱말 슬롯 이동이고,
+  // 형태 축이 남은 목적 세트에서만 같은 문장 안의 전환이 일어난다.
+  const cfg = { scopes: { infpurpose: ["purp"] }, width: 1 };
+  let coord = { series: "infpurpose", subject: "find", tense: "purp", form: "to" };
+  const history = [];
+  let inFamily = 0;
+  for (let i = 0; i < 150; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    assert.ok(steps && steps.length >= 1);
+    const next = applySteps(coord, steps);
+    assert.ok(sentenceOf(next), `없는 좌표: ${keyOf(next)}`);
+    if (next.subject === coord.subject) {
+      assert.equal(steps.length, 1, `한 걸음에 두 요소가 바뀐다: ${keyOf(coord)} → ${keyOf(next)}`);
+      assert.equal(steps[0].axis, "form");
+      inFamily++;
     }
-    assert.ok(inFamily > 30, `같은 family 안 변형이 너무 드물다: ${inFamily}/150`);
+    coord = next;
+    history.push(steps);
   }
+  assert.ok(inFamily > 30, `같은 문장 안 전환이 너무 드물다: ${inFamily}/150`);
+});
+
+test("준동사: 형태 축이 하나뿐인 세트도 걸음이 끊기지 않는다", () => {
+  // 한 문장이 곧 한 좌표인 세트들 — 걸음은 낱말 슬롯(주어 축)이나 세트 이동이 된다
+  const cfg = {
+    scopes: { infsubj: ["nom"], infcomp: ["nom"], infobj: ["obj"], infindef: ["adjr"] },
+    width: 1,
+  };
+  let coord = { series: "infsubj", subject: "read", tense: "nom", form: "core" };
+  const history = [];
+  const seen = new Set([coord.series]);
+  for (let i = 0; i < 300; i++) {
+    const steps = randomSteps(coord, cfg, history);
+    assert.ok(steps && steps.length >= 1, "걸음이 끊겼다");
+    coord = applySteps(coord, steps);
+    assert.ok(sentenceOf(coord), `없는 좌표: ${keyOf(coord)}`);
+    history.push(steps);
+    seen.add(coord.series);
+  }
+  assert.equal(seen.size, 4, `네 세트를 모두 오가야 한다: ${[...seen]}`);
 });
 
 test("술부 힌트: 술부가 바뀌는 이동에만 힌트 토큰이 붙는다", () => {
@@ -417,12 +432,12 @@ test("지정 경로 파싱: 정상·오류", () => {
 
   // 준동사 — 새 시제·형태 토큰
   const verbal = parsePath(
-    new URLSearchParams("mode=path&start=infindef-cold-adjr-core&steps=withadj,to,sweet,core")
+    new URLSearchParams("mode=path&start=infindef-cold-adjr-to&steps=sweet,kind,strong")
   );
   assert.ok(!verbal.error, verbal.error);
-  assert.equal(verbal.stepsList.length, 4);
+  assert.equal(verbal.stepsList.length, 3);
   const purpose = parsePath(
-    new URLSearchParams("mode=path&start=infpurpose-find-purp-core&steps=to,order,study,core")
+    new URLSearchParams("mode=path&start=infpurpose-find-purp-to&steps=order,study,to")
   );
   assert.ok(!purpose.error, purpose.error);
 

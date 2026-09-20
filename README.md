@@ -86,28 +86,25 @@ some/any 세트는 명사(books/water/…), 워밍업은 형용사(tall/nice/…
 
 ### 준동사 (다섯 번째 학습 영역 — to부정사)
 
-용법 이름을 맞히는 게 아니라, 기본 문장에서 한 요소씩 얹어 말하게 한다.
-메뉴에서 고르는 단위는 **tense 축**, 드릴로 굴리는 변형은 **form 축**이다.
+용법 이름을 맞히는 게 아니라 to부정사가 들어간 문장을 통째로 말하게 한다.
+메뉴에서 고르는 단위는 **tense 축**이고, 대부분 한 문장이 곧 한 좌표라
+걸음은 낱말 슬롯(주어 축)을 바꾸는 이동이 된다.
 
-| 챕터 | 세트 | form (드릴 변형) | 문장 수 |
+| 챕터 | 세트 | 문장 | 문장 수 |
 |---|---|---|---|
-| 명사 역할 · 주어 | `infsubj` | 기본 / 확장 | 12 |
-| 명사 역할 · 보어 | `infcomp` | 기본 / 확장 | 12 |
-| 목적어 | `infobj` | 기본 / 2단계 / 3단계 | 30 |
-| 부사 역할 · 목적 | `infpurpose` | 기본문 / to부정사 / in order to · so as to | 18 |
-| 부사 역할 · 감정의 원인 | `infemotion` | 감정만 / to부정사 | 8 |
-| 형용사 역할 · 명사 | `infadj` | 명사만 / 명사 + to부정사 | 16 |
-| 형용사 역할 · thing·one·body | `infindef` | 대명사 / + 형용사 / + to부정사 | 18 |
+| 명사 역할 · 주어 | `infsubj` | `To read books is useful.` | 6 |
+| 명사 역할 · 보어 | `infcomp` | `My dream is to sing.` | 6 |
+| 목적어 | `infobj` | `I want to go shopping.` (동사 10개) | 10 |
+| 부사 역할 · 목적 | `infpurpose` | to부정사 ↔ in order to · so as to | 12 |
+| 부사 역할 · 감정의 원인 | `infemotion` | `I am happy to see you.` | 4 |
+| 형용사 역할 · 명사 | `infadj` | `I have five books to read.` | 8 |
+| 형용사 역할 · thing·one·body | `infindef` | `I want something cold to drink.` | 6 |
 
-- 명사 역할은 뼈대를 두고 말을 덧붙인다: `To read books is useful.` → `To read books every day is useful.`
-- 목적어는 주어 축이 동사(want·need·hope…)라 동사를 바꾸는 것이 가족 이동이고,
-  형태 축이 그 동사 안의 걸음이다: `I want to go shopping.` → `Sara wants to go shopping.`
-  → `John doesn't want to go shopping.`
-- 목적은 완성된 문장에 목적을 얹고 다시 힘을 준다: `Paul came early.`
-  → `Paul came early to find his book.` → `Paul came early in order to find his book.`
-- 형용사 역할의 `-thing · -one · -body`는 어순이 핵심이라 세 걸음으로 쌓는다:
-  `I want something.` → `I want something cold.` → `I want something cold to drink.`
-  `to sit on` · `to write with`처럼 전치사가 뒤에 남는 구조도 그대로 둔다.
+- 목적만 form 축이 둘이다: `Paul came early to find his book.`
+  ↔ `Paul came early in order to find his book.` (해석도 "~하려고" / "~하기 위해서"로 갈린다)
+- 형용사 역할은 `to sit on` · `to write with`처럼 전치사가 뒤에 남는 구조를 그대로 둔다.
+- `-thing · -one · -body`는 〈대명사 + 형용사 + to부정사〉 어순을 지킨다:
+  `I want something cold to drink.`
 
 주어 축은 명사 역할이 동사구(read/travel…), 목적어가 동사(want/need…),
 형용사 역할이 명사·형용사(books/chair/cold…)다.
@@ -220,7 +217,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
     문장 종류는 `cmd` `cmdneg` `cmdpol`, `lets` `letsnot` `whywe` `whyyou`,
     `stmt`/`평서문` `excl` `short`, `yn` `wq`, `tagaff` `tagneg`,
     문장 구조는 `plain` `sense`/`감각동사` `chg`, `f4` `f3`, `svoc`,
-    준동사는 `core` `more`, `o1` `o2` `o3`, `to` `order` `withadj`
+    준동사는 `core` `o1`, `to` `order`
   - 세트: `be`, `verb`(일반동사), `prog`(진행), `pass`(수동), `perfbe`, `perfverb`, `can`, `should`, `whbe`, `whdo`,
     `impgen`, `impbe`, `sugg`, `exclhow`, `exclwhat`, `whq`, `whatn`, `whichn`, `whosen`,
     `howadj`, `howadv`, `howmany`, `tag`,
@@ -241,8 +238,8 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ?mode=path&start=tag-she-tbe-tagaff&steps=tagneg,tverb,he
 ?mode=path&start=sensefeel-soft-sc-plain&steps=sense,warm,plain
 ?mode=path&start=dativeto-give-dat-f4&steps=f3,send,f4
-?mode=path&start=infindef-cold-adjr-core&steps=withadj,to,sweet,core
-?mode=path&start=infpurpose-find-purp-core&steps=to,order,study,core
+?mode=path&start=infindef-cold-adjr-to&steps=sweet,kind,strong
+?mode=path&start=infpurpose-find-purp-to&steps=order,study,to
 ```
 
 한글·`?` 토큰은 브라우저가 자동 인코딩하므로 그대로 붙여 넣어도 된다.
@@ -250,7 +247,7 @@ index.html?mode=path&start=<시작좌표>&steps=<걸음,걸음,…>
 ## 프로젝트 구조
 
 ```
-scripts/generate-data.mjs   문장표(1081문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
+scripts/generate-data.mjs   문장표(1019문장) → src/data.js 생성. 표 원문·한국어 해석이 그대로 들어 있다
 src/data.js                 생성된 문장 데이터 (직접 수정 금지)
 src/engine.js               좌표 이동·무작위 걸음(짜임새 규칙)·경로 파싱 로직
 src/app.jsx                 화면 컴포넌트 (홈/드릴/문장표/어휘 바꾸기)

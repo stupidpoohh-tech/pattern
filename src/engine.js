@@ -108,13 +108,9 @@ const FORM_LABELS = {
   svoc: "5형식",
   // 준동사
   core: "기본",
-  more: "확장",
   o1: "기본",
-  o2: "2단계",
-  o3: "3단계",
   to: "to부정사",
   order: "in order to",
-  withadj: "형용사 붙이기",
 };
 export const tokenLabel = (step) => {
   if (step.axis === "subject") return step.value;
@@ -495,13 +491,9 @@ const STEP_ALIASES = (() => {
     adjr: { axis: "tense", value: "adjr" },
     // 준동사 — 형태 축
     core: { axis: "form", value: "core" },
-    more: { axis: "form", value: "more" },
     o1: { axis: "form", value: "o1" },
-    o2: { axis: "form", value: "o2" },
-    o3: { axis: "form", value: "o3" },
     to: { axis: "form", value: "to" },
     order: { axis: "form", value: "order" },
-    withadj: { axis: "form", value: "withadj" },
   });
   return m;
 })();

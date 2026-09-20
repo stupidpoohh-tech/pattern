@@ -1849,16 +1849,16 @@ const TABLE = {
   },
 
   // ===== 준동사 (to부정사) =====
-  // 용법 이름을 맞히는 게 아니라, 기본 문장에서 한 요소씩 얹어 말하게 하는 구조다.
-  // 주어 축은 낱말 슬롯(명사 역할은 동사구, 목적어는 동사, 형용사 역할은 명사·형용사),
-  // 형태 축이 곧 걸음이다: 기본 → 확장 → (더 확장).
+  // 용법 이름을 맞히는 게 아니라 to부정사가 실제로 들어간 문장을 말하게 한다.
+  // 주어 축은 낱말 슬롯(명사 역할은 동사구, 목적어는 동사, 형용사 역할은 명사·형용사)이라
+  // 한 문장에서 다음 문장으로 넘어가는 걸음이 곧 그 슬롯을 바꾸는 이동이다.
 
   // --- 명사 역할: 주어 자리 (To ~ is ...) ---
   infsubj: {
     label: "명사 역할 · 주어",
     tenses: ["nom"],
-    forms: ["core", "more"],
-    formHeads: ["기본", "확장"],
+    forms: ["core"],
+    formHeads: ["문장"],
     subjects: ["getup", "read", "learn", "exercise", "help", "travel"],
     pred: {
       getup: "hard", read: "useful", learn: "fun",
@@ -1866,22 +1866,22 @@ const TABLE = {
     },
     rows: {
       nom: {
-        getup: ["To get up early is hard.", "To get up early in the morning is hard."],
-        read: ["To read books is useful.", "To read books every day is useful."],
-        learn: ["To learn English is fun.", "To learn English with friends is fun."],
-        exercise: ["To exercise is healthy.", "To exercise every morning is healthy."],
-        help: ["To help people is important.", "To help people in need is important."],
-        travel: ["To travel is exciting.", "To travel to new places is exciting."],
+        getup: ["To get up early is hard."],
+        read: ["To read books is useful."],
+        learn: ["To learn English is fun."],
+        exercise: ["To exercise is healthy."],
+        help: ["To help people is important."],
+        travel: ["To travel is exciting."],
       },
     },
     koRows: {
       nom: {
-        getup: ["일찍 일어나는 것은 어렵다", "아침에 일찍 일어나는 것은 어렵다"],
-        read: ["책을 읽는 것은 유익하다", "매일 책을 읽는 것은 유익하다"],
-        learn: ["영어를 배우는 것은 재미있다", "친구들과 영어를 배우는 것은 재미있다"],
-        exercise: ["운동하는 것은 건강에 좋다", "매일 아침 운동하는 것은 건강에 좋다"],
-        help: ["사람들을 돕는 것은 중요하다", "어려움에 처한 사람들을 돕는 것은 중요하다"],
-        travel: ["여행하는 것은 신난다", "새로운 곳으로 여행하는 것은 신난다"],
+        getup: ["일찍 일어나는 것은 어렵다"],
+        read: ["책을 읽는 것은 유익하다"],
+        learn: ["영어를 배우는 것은 재미있다"],
+        exercise: ["운동하는 것은 건강에 좋다"],
+        help: ["사람들을 돕는 것은 중요하다"],
+        travel: ["여행하는 것은 신난다"],
       },
     },
   },
@@ -1890,8 +1890,8 @@ const TABLE = {
   infcomp: {
     label: "명사 역할 · 보어",
     tenses: ["nom"],
-    forms: ["core", "more"],
-    formHeads: ["기본", "확장"],
+    forms: ["core"],
+    formHeads: ["문장"],
     subjects: ["dream", "plan", "goal", "job", "step", "hope"],
     pred: {
       dream: "to sing", plan: "to study abroad", goal: "to win",
@@ -1899,34 +1899,33 @@ const TABLE = {
     },
     rows: {
       nom: {
-        dream: ["My dream is to sing.", "My dream is to become a famous singer."],
-        plan: ["Her plan is to study abroad.", "Her plan is to study abroad next year."],
-        goal: ["His goal is to win.", "His goal is to win the game."],
-        job: ["Our job is to help people.", "Our job is to help people in need."],
-        step: ["The first step is to ask.", "The first step is to ask for help."],
-        hope: ["My hope is to travel.", "My hope is to travel around the world."],
+        dream: ["My dream is to sing."],
+        plan: ["Her plan is to study abroad."],
+        goal: ["His goal is to win."],
+        job: ["Our job is to help people."],
+        step: ["The first step is to ask."],
+        hope: ["My hope is to travel."],
       },
     },
     koRows: {
       nom: {
-        dream: ["내 꿈은 노래하는 것이다", "내 꿈은 유명한 가수가 되는 것이다"],
-        plan: ["그녀의 계획은 유학하는 것이다", "그녀의 계획은 내년에 유학하는 것이다"],
-        goal: ["그의 목표는 이기는 것이다", "그의 목표는 그 경기를 이기는 것이다"],
-        job: ["우리의 일은 사람들을 돕는 것이다", "우리의 일은 어려움에 처한 사람들을 돕는 것이다"],
-        step: ["첫 번째 단계는 묻는 것이다", "첫 번째 단계는 도움을 청하는 것이다"],
-        hope: ["내 바람은 여행하는 것이다", "내 바람은 세계를 여행하는 것이다"],
+        dream: ["내 꿈은 노래하는 것이다"],
+        plan: ["그녀의 계획은 유학하는 것이다"],
+        goal: ["그의 목표는 이기는 것이다"],
+        job: ["우리의 일은 사람들을 돕는 것이다"],
+        step: ["첫 번째 단계는 묻는 것이다"],
+        hope: ["내 바람은 여행하는 것이다"],
       },
     },
   },
 
   // --- 목적어: 동사 + to부정사 ---
-  // 주어 축이 동사라, 동사를 바꾸는 것은 가족 이동(한 동사에 최소 2걸음 머무른다)이고
-  // 형태 축이 그 동사 안에서의 걸음이다: 기본 → 주어 바꾸기 → 덧붙이기.
+  // 주어 축이 동사라, 걸음마다 동사가 바뀌며 열 가지 동사를 훑는다.
   infobj: {
     label: "목적어",
     tenses: ["obj"],
-    forms: ["o1", "o2", "o3"],
-    formHeads: ["기본", "2단계", "3단계"],
+    forms: ["o1"],
+    formHeads: ["문장"],
     subjects: [
       "want", "need", "hope", "wish", "decide",
       "promise", "learn", "plan", "like", "love",
@@ -1938,41 +1937,41 @@ const TABLE = {
     },
     rows: {
       obj: {
-        want: ["I want to go shopping.", "Sara wants to go shopping.", "John doesn't want to go shopping."],
-        need: ["I need to get up early.", "He needs to get up early.", "He doesn't need to get up early."],
-        hope: ["I hope to win the game.", "She hopes to win the game.", "She hopes to win the game tomorrow."],
-        wish: ["I wish to travel abroad.", "She wishes to travel abroad.", "She wishes to travel abroad someday."],
-        decide: ["I decided to study harder.", "She decided to study harder.", "She decided to study harder this year."],
-        promise: ["I promised to call him.", "She promised to call him.", "She promised to call him tonight."],
-        learn: ["I learned to swim.", "She learned to swim.", "She learned to swim last year."],
-        plan: ["I plan to visit Busan.", "We plan to visit Busan.", "We plan to visit Busan next month."],
-        like: ["I like to read.", "I like to read before bed.", "She likes to read before bed."],
-        love: ["I love to take pictures.", "We love to take pictures.", "We love to take pictures together."],
+        want: ["I want to go shopping."],
+        need: ["I need to get up early."],
+        hope: ["I hope to win the game."],
+        wish: ["I wish to travel abroad."],
+        decide: ["I decided to study harder."],
+        promise: ["I promised to call him."],
+        learn: ["I learned to swim."],
+        plan: ["I plan to visit Busan."],
+        like: ["I like to read."],
+        love: ["I love to take pictures."],
       },
     },
     koRows: {
       obj: {
-        want: ["나는 쇼핑하러 가고 싶다", "Sara는 쇼핑하러 가고 싶어 한다", "John은 쇼핑하러 가고 싶어 하지 않는다"],
-        need: ["나는 일찍 일어나야 한다", "그는 일찍 일어나야 한다", "그는 일찍 일어날 필요가 없다"],
-        hope: ["나는 그 경기를 이기기를 바란다", "그녀는 그 경기를 이기기를 바란다", "그녀는 내일 그 경기를 이기기를 바란다"],
-        wish: ["나는 해외로 여행하기를 바란다", "그녀는 해외로 여행하기를 바란다", "그녀는 언젠가 해외로 여행하기를 바란다"],
-        decide: ["나는 더 열심히 공부하기로 결심했다", "그녀는 더 열심히 공부하기로 결심했다", "그녀는 올해 더 열심히 공부하기로 결심했다"],
-        promise: ["나는 그에게 전화하기로 약속했다", "그녀는 그에게 전화하기로 약속했다", "그녀는 오늘 밤 그에게 전화하기로 약속했다"],
-        learn: ["나는 수영하는 것을 배웠다", "그녀는 수영하는 것을 배웠다", "그녀는 작년에 수영하는 것을 배웠다"],
-        plan: ["나는 부산을 방문할 계획이다", "우리는 부산을 방문할 계획이다", "우리는 다음 달에 부산을 방문할 계획이다"],
-        like: ["나는 책 읽는 것을 좋아한다", "나는 자기 전에 책 읽는 것을 좋아한다", "그녀는 자기 전에 책 읽는 것을 좋아한다"],
-        love: ["나는 사진 찍는 것을 아주 좋아한다", "우리는 사진 찍는 것을 아주 좋아한다", "우리는 함께 사진 찍는 것을 아주 좋아한다"],
+        want: ["나는 쇼핑하러 가고 싶다"],
+        need: ["나는 일찍 일어나야 한다"],
+        hope: ["나는 그 경기를 이기기를 바란다"],
+        wish: ["나는 해외로 여행하기를 바란다"],
+        decide: ["나는 더 열심히 공부하기로 결심했다"],
+        promise: ["나는 그에게 전화하기로 약속했다"],
+        learn: ["나는 수영하는 것을 배웠다"],
+        plan: ["나는 부산을 방문할 계획이다"],
+        like: ["나는 책 읽는 것을 좋아한다"],
+        love: ["나는 사진 찍는 것을 아주 좋아한다"],
       },
     },
   },
 
   // --- 부사 역할: 목적 (~하려고 / ~하기 위해서) ---
-  // 완성된 문장에 목적을 얹고, 다시 in order to · so as to 로 힘을 준다.
+  // 형태 축이 to → in order to · so as to 강조형 전환이다.
   infpurpose: {
     label: "부사 역할 · 목적",
     tenses: ["purp"],
-    forms: ["core", "to", "order"],
-    formHeads: ["기본문", "to부정사", "in order to · so as to"],
+    forms: ["to", "order"],
+    formHeads: ["to부정사", "in order to · so as to"],
     subjects: ["find", "air", "study", "milk", "bus", "stage"],
     pred: {
       find: "to find his book", air: "to get some fresh air", study: "to study",
@@ -1981,32 +1980,26 @@ const TABLE = {
     rows: {
       purp: {
         find: [
-          "Paul came early.",
           "Paul came early to find his book.",
           "Paul came early in order to find his book.",
         ],
         air: [
-          "He opened the windows.",
           "He opened the windows to get some fresh air.",
           "He opened the windows in order to get some fresh air.",
         ],
         study: [
-          "She went to the library.",
           "She went to the library to study.",
           "She went to the library in order to study.",
         ],
         milk: [
-          "I went to the store.",
           "I went to the store to buy some milk.",
           "I went to the store in order to buy some milk.",
         ],
         bus: [
-          "We left home early.",
           "We left home early to catch the first bus.",
           "We left home early so as to catch the first bus.",
         ],
         stage: [
-          "She stood up.",
           "She stood up to see the stage better.",
           "She stood up so as to see the stage better.",
         ],
@@ -2014,12 +2007,12 @@ const TABLE = {
     },
     koRows: {
       purp: {
-        find: ["Paul은 일찍 왔다", "Paul은 그의 책을 찾으려고 일찍 왔다", "Paul은 그의 책을 찾기 위해서 일찍 왔다"],
-        air: ["그는 창문을 열었다", "그는 신선한 공기를 마시려고 창문을 열었다", "그는 신선한 공기를 마시기 위해서 창문을 열었다"],
-        study: ["그녀는 도서관에 갔다", "그녀는 공부하려고 도서관에 갔다", "그녀는 공부하기 위해서 도서관에 갔다"],
-        milk: ["나는 가게에 갔다", "나는 우유를 사려고 가게에 갔다", "나는 우유를 사기 위해서 가게에 갔다"],
-        bus: ["우리는 집에서 일찍 나섰다", "우리는 첫차를 타려고 집에서 일찍 나섰다", "우리는 첫차를 타기 위해서 집에서 일찍 나섰다"],
-        stage: ["그녀는 일어섰다", "그녀는 무대를 더 잘 보려고 일어섰다", "그녀는 무대를 더 잘 보기 위해서 일어섰다"],
+        find: ["Paul은 그의 책을 찾으려고 일찍 왔다", "Paul은 그의 책을 찾기 위해서 일찍 왔다"],
+        air: ["그는 신선한 공기를 마시려고 창문을 열었다", "그는 신선한 공기를 마시기 위해서 창문을 열었다"],
+        study: ["그녀는 공부하려고 도서관에 갔다", "그녀는 공부하기 위해서 도서관에 갔다"],
+        milk: ["나는 우유를 사려고 가게에 갔다", "나는 우유를 사기 위해서 가게에 갔다"],
+        bus: ["우리는 첫차를 타려고 집에서 일찍 나섰다", "우리는 첫차를 타기 위해서 집에서 일찍 나섰다"],
+        stage: ["그녀는 무대를 더 잘 보려고 일어섰다", "그녀는 무대를 더 잘 보기 위해서 일어섰다"],
       },
     },
   },
@@ -2028,24 +2021,24 @@ const TABLE = {
   infemotion: {
     label: "부사 역할 · 감정의 원인",
     tenses: ["emo"],
-    forms: ["core", "to"],
-    formHeads: ["감정만", "to부정사"],
+    forms: ["to"],
+    formHeads: ["문장"],
     subjects: ["happy", "glad", "sad", "sorry"],
     pred: { happy: "to see you", glad: "to meet you", sad: "to leave you", sorry: "to hear that" },
     rows: {
       emo: {
-        happy: ["I am happy.", "I am happy to see you."],
-        glad: ["I am glad.", "I am glad to meet you."],
-        sad: ["I am sad.", "I am sad to leave you."],
-        sorry: ["I am sorry.", "I am sorry to hear that."],
+        happy: ["I am happy to see you."],
+        glad: ["I am glad to meet you."],
+        sad: ["I am sad to leave you."],
+        sorry: ["I am sorry to hear that."],
       },
     },
     koRows: {
       emo: {
-        happy: ["나는 행복하다", "나는 너를 보게 되어 행복하다"],
-        glad: ["나는 기쁘다", "나는 너를 만나게 되어 기쁘다"],
-        sad: ["나는 슬프다", "나는 너를 떠나게 되어 슬프다"],
-        sorry: ["나는 안타깝다", "나는 그런 말을 듣게 되어 안타깝다"],
+        happy: ["나는 너를 보게 되어 행복하다"],
+        glad: ["나는 너를 만나게 되어 기쁘다"],
+        sad: ["나는 너를 떠나게 되어 슬프다"],
+        sorry: ["나는 그런 말을 듣게 되어 안타깝다"],
       },
     },
   },
@@ -2055,8 +2048,8 @@ const TABLE = {
   infadj: {
     label: "형용사 역할 · 명사",
     tenses: ["adjr"],
-    forms: ["core", "to"],
-    formHeads: ["명사만", "명사 + to부정사"],
+    forms: ["to"],
+    formHeads: ["명사 + to부정사"],
     subjects: ["books", "work", "ways", "place", "homework", "chair", "pen", "time"],
     pred: {
       books: "to read", work: "to finish", ways: "to get there", place: "to stay",
@@ -2064,38 +2057,38 @@ const TABLE = {
     },
     rows: {
       adjr: {
-        books: ["I have five books.", "I have five books to read."],
-        work: ["She has some work.", "She has some work to finish."],
-        ways: ["There are two ways.", "There are two ways to get there."],
-        place: ["We need a place.", "We need a place to stay."],
-        homework: ["He has a lot of homework.", "He has a lot of homework to do."],
-        chair: ["I need a chair.", "I need a chair to sit on."],
-        pen: ["She needs a pen.", "She needs a pen to write with."],
-        time: ["We have no time.", "We have no time to waste."],
+        books: ["I have five books to read."],
+        work: ["She has some work to finish."],
+        ways: ["There are two ways to get there."],
+        place: ["We need a place to stay."],
+        homework: ["He has a lot of homework to do."],
+        chair: ["I need a chair to sit on."],
+        pen: ["She needs a pen to write with."],
+        time: ["We have no time to waste."],
       },
     },
     koRows: {
       adjr: {
-        books: ["나는 책이 다섯 권 있다", "나는 읽을 책이 다섯 권 있다"],
-        work: ["그녀는 일이 좀 있다", "그녀는 끝내야 할 일이 좀 있다"],
-        ways: ["두 가지 방법이 있다", "거기에 가는 두 가지 방법이 있다"],
-        place: ["우리는 장소가 필요하다", "우리는 머물 장소가 필요하다"],
-        homework: ["그는 숙제가 많다", "그는 해야 할 숙제가 많다"],
-        chair: ["나는 의자가 필요하다", "나는 앉을 의자가 필요하다"],
-        pen: ["그녀는 펜이 필요하다", "그녀는 쓸 펜이 필요하다"],
-        time: ["우리는 시간이 없다", "우리는 낭비할 시간이 없다"],
+        books: ["나는 읽을 책이 다섯 권 있다"],
+        work: ["그녀는 끝내야 할 일이 좀 있다"],
+        ways: ["거기에 가는 두 가지 방법이 있다"],
+        place: ["우리는 머물 장소가 필요하다"],
+        homework: ["그는 해야 할 숙제가 많다"],
+        chair: ["나는 앉을 의자가 필요하다"],
+        pen: ["그녀는 쓸 펜이 필요하다"],
+        time: ["우리는 낭비할 시간이 없다"],
       },
     },
   },
 
   // --- 형용사 역할: -thing / -one / -body + 형용사 + to부정사 ---
-  // 어순이 핵심이다: 대명사 → 대명사 + 형용사 → 대명사 + 형용사 + to부정사.
-  // anyone 묶음은 세 형태 모두 의문문이라 qSubjects로 따로 밝힌다.
+  // 어순이 핵심이다: 대명사 → 형용사 → to부정사 차례로 뒤에 붙는다.
+  // anyone 묶음은 의문문이라 qSubjects로 따로 밝힌다.
   infindef: {
     label: "형용사 역할 · thing · one · body",
     tenses: ["adjr"],
-    forms: ["core", "withadj", "to"],
-    formHeads: ["대명사", "+ 형용사", "+ to부정사"],
+    forms: ["to"],
+    formHeads: ["대명사 + 형용사 + to부정사"],
     qSubjects: ["available"],
     subjects: ["cold", "sweet", "interesting", "kind", "available", "strong"],
     pred: {
@@ -2104,30 +2097,22 @@ const TABLE = {
     },
     rows: {
       adjr: {
-        cold: ["I want something.", "I want something cold.", "I want something cold to drink."],
-        sweet: ["I need something.", "I need something sweet.", "I need something sweet to eat."],
-        interesting: [
-          "There is nothing.",
-          "There is nothing interesting.",
-          "There is nothing interesting to watch.",
-        ],
-        kind: ["I need someone.", "I need someone kind.", "I need someone kind to help me."],
-        available: ["Is there anyone?", "Is there anyone available?", "Is there anyone available to help me?"],
-        strong: [
-          "We need someone.",
-          "We need someone strong.",
-          "We need someone strong to carry this box.",
-        ],
+        cold: ["I want something cold to drink."],
+        sweet: ["I need something sweet to eat."],
+        interesting: ["There is nothing interesting to watch."],
+        kind: ["I need someone kind to help me."],
+        available: ["Is there anyone available to help me?"],
+        strong: ["We need someone strong to carry this box."],
       },
     },
     koRows: {
       adjr: {
-        cold: ["나는 무언가를 원한다", "나는 차가운 것을 원한다", "나는 마실 차가운 것을 원한다"],
-        sweet: ["나는 무언가가 필요하다", "나는 단것이 필요하다", "나는 먹을 단것이 필요하다"],
-        interesting: ["아무것도 없다", "재미있는 것이 아무것도 없다", "볼 만한 재미있는 것이 아무것도 없다"],
-        kind: ["나는 누군가가 필요하다", "나는 친절한 사람이 필요하다", "나는 나를 도와줄 친절한 사람이 필요하다"],
-        available: ["누구 있니?", "시간 되는 사람 있니?", "나를 도와줄 시간 되는 사람 있니?"],
-        strong: ["우리는 누군가가 필요하다", "우리는 힘센 사람이 필요하다", "우리는 이 상자를 옮길 힘센 사람이 필요하다"],
+        cold: ["나는 마실 차가운 것을 원한다"],
+        sweet: ["나는 먹을 단것이 필요하다"],
+        interesting: ["볼 만한 재미있는 것이 아무것도 없다"],
+        kind: ["나는 나를 도와줄 친절한 사람이 필요하다"],
+        available: ["나를 도와줄 시간 되는 사람 있니?"],
+        strong: ["우리는 이 상자를 옮길 힘센 사람이 필요하다"],
       },
     },
   },
